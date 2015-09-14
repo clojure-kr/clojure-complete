@@ -1,0 +1,27 @@
+= Preface
+:source-language: clojure
+:source-highlighter: coderay
+
+[preface]
+== 소스코드 예제 표기법
+
+소스 코드를 실행한 결과를 표시할 때, 다음의 표기법을 사용했다. 참고로 아래에서 `;` 기호는
+클로저의 주석 처리 기호로, 소스 코드를 Copy & Paste해서 실행할 때 불편이 없게 했다.
+
+[source]
+....
+(defn get-name []
+  (println "Enter Your Name:")
+  (let [name (read-line)]
+    (println "Hello," name)
+    name))
+ 
+(get-name)
+; >> Enter Your Name:   ; <1>
+; << Mr. Kim            ; <2>
+; >> Hello, Mr. Kim
+; => "Mr. Kim"          ; <3>
+....
+<1> ; >> 화면에 출력된 내용을 표시한다.
+<2> ; << 키보드로 입력한 내용을 표시한다. 
+<3> ; pass:macros[=>] 함수의 반환값을 표시한다.

@@ -1,0 +1,61 @@
+= asciidoctor 사용법
+:sectnums:
+
+== ruby 설치
+
+asciidoctor는 루비 언어로 작성되어 있으므로, 먼저 ruby를 설치한다. 다음은 리눅스
+Ubuntu에서 설치한 예이다.
+
+ $ sudo apt-get install ruby
+
+
+== asciidoctor 설치
+
+asciidoctor gem을 설치한다. 참고로, 루비에서는 라이브러리를 gem이라 부른다.
+
+ $ sudo gem install asciidoctor
+
+
+== coderay 설치
+
+syntax highlighting을 위해 coderay gem을 설치한다.
+
+ $ sudo gem install coderay
+
+
+== asciidoctor-pdf 설치
+
+pdf 변환을 위해 asciidoctor-pdf gem을 설치한다.
+
+ $ sudo gem install --pre asciidoctor-pdf
+
+
+== asciidoctor-pdf-cjk-kai_gen_gothic 설치
+
+asciidoctor-pdf만으로 pdf를 만들면 한글이 제대로 출력되지 않는다. 따라서
+asciidoctor-pdf-cjk-kai_gen_gothic gem을 추가로 설치해 주어야 한다.
+
+ $ sudo gem install asciidoctor-pdf-cjk-kai_gen_gothic
+
+
+== asciidoctor-pdf-cjk-kai_gen_gothic-install 실행
+
+다음을 실행해 pdf 생성에 필요한 폰트 파일을 다운로드 받는다. 한 번만 실행해 주면 된다.
+
+ $ sudo asciidoctor-pdf-cjk-kai_gen_gothic-install
+
+
+== pdf 만들기
+
+ $ asciidoctor-pdf -r asciidoctor-pdf-cjk-kai_gen_gothic -a pdf-style=KaiGenGothicKR sample.adoc
+
+WARNING: 위의 방식으로 pdf를 생성할 때, mathjax를 이용한 수식 처리는 아직 제대로 되지 않는다는 점에
+주의한다.
+
+
+== Chrome plugin asciidoctor.js 설치
+
+asciidoctor.js Chrome plugin을 설치한 후 크롬 브라우저 상에서 asciidoctor 문서를 열면,
+문서를 저장할 때마다 실시간(실제로는 2초 간격)으로 변경된 내용이 반영되어 나타나므로
+설치하는 것이 편리하다.
+

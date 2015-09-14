@@ -1,0 +1,8 @@
+:linkcss:
+:source-highlighter: coderay
+:source-language: clojure
+:sectnums:
+:icons: font
+:toc:
+:imagesdir: ../img
+

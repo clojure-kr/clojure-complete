@@ -1,0 +1,17 @@
+prj/target
+prj/classes
+prj/checkouts
+prj/pom.xml
+prj/pom.xml.asc
+*.jar
+*.class
+#*.html
+#*.pdf
+#*.pdfmarks
+
+prj/.lein-*
+prj/.nrepl-port
+
+*~
+*#
+.#*
