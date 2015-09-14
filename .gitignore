@@ -5,9 +5,9 @@ prj/pom.xml
 prj/pom.xml.asc
 *.jar
 *.class
-#*.html
-#*.pdf
-#*.pdfmarks
+*.html
+*.pdf
+*.pdfmarks
 
 prj/.lein-*
 prj/.nrepl-port
