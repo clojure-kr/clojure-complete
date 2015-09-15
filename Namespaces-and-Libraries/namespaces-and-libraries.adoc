@@ -14,7 +14,7 @@ indexterm:[이름공간] indexterm:[namespace]
 
 클로저에서 REPL을 실행하면 다음의 예에서 볼 수 있듯이 기본적으로 `user` 이름공간 안에서
 실행된다. `def` 문을 평가한 결과로 var가 반환되었는데 이때 이름공간 ``user``가 앞에 붙어
-있는 것에 주목할 필요가 있다. 이 var가 소속된 이름공간이 `user`임을 명시적으로 표시하고
+있는 것에 주목할 필요가 있다. 이 var가 소속된 이름공간이 ``user``임을 명시적으로 표시하고
 있다.
 
 [source]
@@ -25,13 +25,13 @@ user> (def a 10)
 
 
 실제 이름공간 관련 작업을 할 때는 주로 `ns` 매크로를 사용하지만 이에 대한 설명은 나중으로
-미루고, `require`, `use`, `import` 같은 함수들을 먼저 다루겠다. 그 이유는 `ns`가 배후에서
-이 함수들을 이용하는 매크로에 불과하기 때문이다.
+미루고, `require`, `use`, `import` 같은 함수들을 먼저 다루겠다. 그 이유는 ``ns``가
+배후에서 이 함수들을 이용하는 매크로에 불과하기 때문이다.
 
 == require
 indexterm:[require]
 
-먼저 예제에서 사용할 라이브러리 `clj-time`을 `project.clj` 파일의 `:dependencies` 부분에
+먼저 예제에서 사용할 라이브러리 ``clj-time``을 `project.clj` 파일의 `:dependencies` 부분에
 다음과 같이 추가한다.
 
 [source]
@@ -52,7 +52,7 @@ indexterm:[require]
 모듈을 로드하고, 이미 로드되어 있으면 다시 로드를 시도하지 않는다.
 
 NOTE: 모듈 이름 앞에 인용(') 기호가 붙어야 한다는 점에 주의한다. 다시 말해, 이 함수의 인수는
-반드시 *심볼형*이어야 한다.
+반드시 **심볼형**이어야 한다.
 
 [source]
 ....
@@ -74,7 +74,7 @@ NOTE: 모듈 이름 앞에 인용(') 기호가 붙어야 한다는 점에 주의
 === 벡터 형태의 인수
 
 
-제대로 실행되었지만 함수를 실행할 때마다 이름공간인 `clj-time.core`를 함수명 앞에 매번
+제대로 실행되었지만 함수를 실행할 때마다 이름공간인 ``clj-time.core``를 함수명 앞에 매번
 붙여 주어야 한다면 상당히 짜증날 것이다. 이름공간을 *벡터* 안에 넣은 후 `:as` 키워드 뒤에
 별칭(alias)을 부여해 대신 사용할 수 있다. 이 경우에도 벡터 앞에 인용(') 기호 붙이는 것을
 잊지 않도록 한다.
@@ -113,10 +113,10 @@ NOTE: 모듈 이름 앞에 인용(') 기호가 붙어야 한다는 점에 주의
 ....
 
 `:refer` 키워드 뒤에는 `:all` 키워드도 올 수 있는데, 해당 모듈의 모든 함수를 이름공간 없이
-호출할 수 있다. 이 경우는 뒤에 설명할 `use` 함수를 사용한 것과 같은 효과를 내는데, `:refer
-:all`의 형태를 사용하는 것이 권장되고 있다. (그러나 이름공간을 붙이지 않고 사용하는 것은
-권장할 만한 것은 아니다. 실제로 이러한 이유로 인해 클로저스크립트에서는 `:refer :all`이
-허용되지 않는다. 다만 클로저에서는 하위 호환성을 위해서 남아있을 뿐이다)
+호출할 수 있다. 이 경우는 뒤에 설명할 `use` 함수를 사용한 것과 같은 효과를 내는데,
+``:refer :all``의 형태를 사용하는 것이 권장되고 있다. (그러나 이름공간을 붙이지 않고
+사용하는 것은 권장할 만한 것은 아니다. 실제로 이러한 이유로 인해 클로저스크립트에서는
+``:refer :all``이 허용되지 않는다. 다만 클로저에서는 하위 호환성을 위해서 남아있을 뿐이다)
 
 [source]
 ....
@@ -158,8 +158,8 @@ NOTE: 모듈 이름 앞에 인용(') 기호가 붙어야 한다는 점에 주의
 
 앞에서 `require` 함수는 이미 로드된 모듈은 다시 로드하지 않는다고 했다. 하지만 라이브러리
 개발 도중에는 이미 로드된 모듈도 다시 강제로 require할 필요가 생긴다. 이름공간
-`example.a`가 `example.b`를, `example.b`가 다시 `example.c`를 require하는 경우를 예로 들어
-보자.
+``example.a``가 ``example.b``를, ``example.b``가 다시 ``example.c``를 require하는 경우를
+예로 들어 보자.
 
 [listing]
 ----
@@ -223,7 +223,7 @@ example.a  -------->  example.b  -------->  example.c
 indexterm:[refer]
 
 `refer` 함수는 `require` 함수의 인수에 `:refer` 옵션이 있거나 `use` 함수가 호출될 때 이
-함수들의 내부에서 이용되는 함수로, 개발자가 `require`나 `use`같은 일을 하는 함수를 직접
+함수들의 내부에서 이용되는 함수로, 개발자가 ``require``나 ``use``같은 일을 하는 함수를 직접
 개발할 일이 없는 한 호출할 일은 거의 없는 함수이지만, 그 작동 원리는 이해할 필요가 있다.
 
 클로저는 이름공간마다 다음과 같은 형태(실제로는 map 자료형의 키/값 쌍)로 심볼 테이블의
@@ -247,7 +247,7 @@ user> (upper-case "hello")
 "My upper-case function: arg = hello"
 ....
 
-이때`user` 이름공간의 심볼 테이블에는 다음의 항목이 새로 추가된다.
+이때 `user` 이름공간의 심볼 테이블에는 다음의 항목이 새로 추가된다.
 
 .user 심볼 테이블
 [listing]
@@ -350,7 +350,7 @@ indexterm:[use]
 공간을 여러 개 지정할 수 있고, <<vector-form-argument,벡터 형태>>나 <<list-form-argument,리스트
 형태>>의 인수도 `require` 함수에서처럼 허용된다. 심지어는 `require` 함수에서 사용한
 <<require-flags,플래그들>>도 그대로 사용할 수 있다. 그래서 다음과 같이 `use` 함수를
-`require`와 `refer` 함수를 하나로 합쳐 놓은 것으로 흔히들 많이 설명한다.
+``require``와 `refer` 함수를 하나로 합쳐 놓은 것으로 흔히들 많이 설명한다.
 
 [listing]
 ----
@@ -455,7 +455,8 @@ date   ; => #inst "2015-09-10T07:52:54.847-00:00"
 
 [NOTE]
 ====
-`import` 함수에서 자바 클래스를 개별적으로 나열할 때에는, 인용 기호를 붙이지 않아도 된다. 다음의 두 형태 모두 허용된다.
+`import` 함수에서 자바 클래스를 개별적으로 나열할 때에는, 인용 기호를 붙이지 않아도
+된다. 다음의 두 형태 모두 허용된다.
 
 [source]
 ....
@@ -486,8 +487,8 @@ date   ; => #inst "2015-09-10T07:52:54.847-00:00"
 (StringUtils/isEmpty "")   ; => true
 ....
 
-물론 import하려는 자바 라이브러리는 `project.clj`의 `:resource-paths`에 다음과 같이 지정된
-디렉토리에 있어야 한다.
+물론 import하려는 자바 라이브러리는 ``project.clj``의 ``:resource-paths``에 다음과 같이
+지정된 디렉토리에 있어야 한다.
 
 [source]
 ....
@@ -509,7 +510,7 @@ indexterm:[refer-clojure]
   "my new inc function")
 ....
 
-`my-namespace` 이름공간에 새로 정의한 `inc` 함수가 `clojure.core`에 이미 정의되어 있는 `inc`
+`my-namespace` 이름공간에 새로 정의한 `inc` 함수가 ``clojure.core``에 이미 정의되어 있는 `inc`
 함수를 덮어 쓴다는 경고 메시지를 컴파일러가 내보낸다.
 
 [listing]
@@ -543,7 +544,7 @@ WARNING: inc already refers to: #'clojure.core/inc in namespace: my-namespace,
 ====
 
 참고로 이 함수는 `ns` 매크로 안에서 실행해야만 효과가 있다. 다음과 같이 실행하면 (1)의
-단계에서 기본적으로 `(refer-clojure)`가 이미 실행되어서, (2)를 실행한다 해도 그 효과가
+단계에서 기본적으로 ``(refer-clojure)``가 이미 실행되어서, (2)를 실행한다 해도 그 효과가
 발생하기에는 때가 너무 늦기 때문이다.
 
 [source]
@@ -559,7 +560,7 @@ WARNING: inc already refers to: #'clojure.core/inc in namespace: my-namespace,
 
 
 ====
-따라서 `refer-clojure`는 `refer` 함수에서 사용할 수 있는 <<refer-filters,필터들>>을 모두
+따라서 ``refer-clojure``는 `refer` 함수에서 사용할 수 있는 <<refer-filters, 필터들>>을 모두
 사용할 수 있다.
 
 [source]
@@ -653,7 +654,7 @@ ns-map   =   ns-refers   +   ns-imports   +   ns-interns
 
 * `ns-map` 함수는 심볼 테이블의 모든 구성 요소들의 키/값 쌍들의 맵을 반환한다.
 
-* `ns-refers` 함수는 `ns` 매크로 실행시 기본적으로 실행되는 `(refer-clojure)`의 결과로
+* `ns-refers` 함수는 `ns` 매크로 실행시 기본적으로 실행되는 ``(refer-clojure)``의 결과로
   refer되는 clojure.core 안의 모든 '심볼과 var'로 이루어진 키/값 쌍들의 맵을 반환한다.
   
 +
