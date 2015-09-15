@@ -7,13 +7,17 @@
 :icons: font
 :imagesdir: ./img
 
-.Version: &nbsp; 2015-09-14
---
---
+=== Version: &nbsp; 2015-09-14
 
-:leveloffset: 1
+****
+commit은 수시로 이루어지지만, 버전 번호는 큰 변화가 있을 때(예를 들면, 새로운 장을 마쳤을
+때)에만 올라 갑니다.
+****
+
 
 === Table of Contents
+
+:leveloffset: 1
 
 include::Preface/preface.adoc[]
 
