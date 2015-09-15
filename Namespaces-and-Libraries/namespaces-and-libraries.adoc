@@ -435,8 +435,7 @@ JRE에 기본적으로 탑재된 자바 클래스들은, 직접 호출할 수 �
 ....
 (def date (java.util.Date.))
 
-date
-; => #inst "2015-09-10T07:49:28.622-00:00"
+date   ; => #inst "2015-09-10T07:49:28.622-00:00"
 ....
 
 === 자바 클래스 import 하기
@@ -616,9 +615,11 @@ indexterm:[ns]
   (+ a b))
 ....
 
+indexterm:[ns-interns] indexterm:[ns-publics]
+
 아래의 실행 결과에서도 확인할 수 있듯이, `ns-interns` 함수는 개발자가 직접 해당 이름공간에
-정의한 모든 public/private 심볼과 var로 이루어진 키/값 쌍을 반환한다. `ns-publics` 함수는
-그 중에서도 public var만으로 이루어진 키/값 쌍을 반환한다.
+정의한 모든 public/private '심볼과 var'로 이루어진 키/값 쌍을 반환한다. `ns-publics`
+함수는 그 중에서 public '심볼과 var'만으로 이루어진 키/값 쌍을 반환한다.
 
 [source]
 ....
@@ -633,8 +634,8 @@ indexterm:[ns]
 ;     my-public-var #'my-new-namespace/my-public-var}
 ....
 
-심볼 테이블의 자세한 내용을 살펴 보기 전에, ``my-new-namespace``를 실행했을 때의 심볼
-테이블을 구성하는 모든 요소들의 각 종류별 개수를 먼저 알아 보자.
+심볼 테이블의 자세한 내용을 살펴 보기 전에, 위의 ``my-new-namespace``를 실행했을 때의 심볼
+테이블을 구성하는 모든 요소들의 각 종류 별 개수를 먼저 알아 보자.
 
 
 [source]
@@ -652,6 +653,8 @@ ns-map   =   ns-refers   +   ns-imports   +   ns-interns
 ------       ---------       ----------       ----------
  699개        599개           96개             4개
 ----
+
+indexterm:[ns-map] indexterm:[ns-refers] indexterm:[ns-imports]
 
 * `ns-map` 함수는 심볼 테이블의 모든 구성 요소들의 키/값 쌍들의 맵을 반환한다.
 
@@ -689,4 +692,90 @@ ns-map   =   ns-refers   +   ns-imports   +   ns-interns
 
 
 
+== 이름공간 조회 및 제거 함수
+
+indexterm:[all-ns]
+
+`all-ns` 함수는 모든 이름공간을 반환한다.
+
+[source]
+....
+(all-ns)
+; => (#<Namespace clojure.string> #<Namespace clojure.set>
+;     #<Namespace clojure.java.io> #<Namespace clojure.java.javadoc>
+;     #<Namespace clojure.walk> #<Namespace clojure.zip>
+;     ......)
+....
+
+indexterm:[find-ns]
+
+`find-ns` 함수는 이름공간 심볼을 인수로 받아, 그 이름공간이 존재하면 해당 이름공간
+객체를 반환하고 없으면 nil을 반환한다.
+
+[source]
+....
+(find-ns 'clojure.string)
+; => #<Namespace clojure.string>
+
+(find-ns 'not-yet-exist)
+; => nil
+....
+
+indexterm:[the-ns]
+
+`the-ns` 함수는 이름공간 객체를 인수로 받으면, 그 이름공간 객체를 다시 반환한다. 이름공간
+심볼을 인수로 받을 때, 그 이름공간이 존재하면 이름공간 객체를 반환하고, 없으면 예외를
+발생시킨다.
+
+[source]
+....
+(def for-later-use (create-ns 'my-namespace))
+
+(the-ns for-later-use)
+; => #<Namespace my-namespace>
+
+(the-ns 'my-namespace)
+; => #<Namespace my-namespace>
+
+(the-ns 'not-yet-exist)
+; >> Exception No namespace: not-yet-exist found  clojure.core/the-ns
+....
+
+indexterm:[remove-ns]
+
+`remove-ns` 함수는 이름공간 심볼을 인수로 받아, 그 이름 공간이 존재하면 제거하고 없으면
+nil을 반환한다.
+
+[source]
+....
+(clojure.string/upper-case "abc")   ; => "ABC"
+
+(remove-ns 'clojure.string)
+
+(clojure.string/upper-case "abc")
+; => ClassNotFoundException clojure.string  java.net.URLClassLoader.findClass
+
+(remove-ns 'not-yet-exist)
+; => nil
+....
+
+
+
+== 기타
+
+indexterm:[*ns*]
+
+`\*ns*` 동적 var는 현재의 이름공간 객체를 담고 있다.
+
+[source]
+....
+user> *ns*
+#<Namespace user>
+
+user> (ns new-namespace)
+nil
+
+new-namespace> *ns*
+#<Namespace new-namespace>
+....
 
