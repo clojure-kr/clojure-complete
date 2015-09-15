@@ -13,7 +13,7 @@ indexterm:[이름공간] indexterm:[namespace]
 라이브러리들의 사용을 원활하게 해주는 역할을 수행한다.
 
 클로저에서 REPL을 실행하면 다음의 예에서 볼 수 있듯이 기본적으로 `user` 이름공간 안에서
-실행된다. `def` 문을 평가한 결과로 var가 반환되었는데 이때 이름공간 `user`가 앞에 붙어
+실행된다. `def` 문을 평가한 결과로 var가 반환되었는데 이때 이름공간 ``user``가 앞에 붙어
 있는 것에 주목할 필요가 있다. 이 var가 소속된 이름공간이 `user`임을 명시적으로 표시하고
 있다.
 
@@ -85,7 +85,7 @@ NOTE: 모듈 이름 앞에 인용(') 기호가 붙어야 한다는 점에 주의
 
 ;; 위의 코드는 아래를 실행한 것과 같다.
 ;; (require 'clj-time.core)
-;; (alias time 'clj-time.core)
+;; (alias 'time 'clj-time.core)
 
 (time/date-time 2015 10 10 3 25 28 456)
 ; => #object[org.joda.time.DateTime 0x1c27e3aa "2015-10-10T03:25:28.456Z"]
