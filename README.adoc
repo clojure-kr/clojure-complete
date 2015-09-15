@@ -88,9 +88,9 @@ include::Namespaces-and-Libraries/namespaces-and-libraries.adoc[]
 
 이 책의 집필에 함께 참여하고자 하는 분들을 환영합니다. 참여를 원하시는 분은
 https://github.com/[github]에 먼저 사용자 계정을 만드신 후, 이 repository를 자신의
-계정으로 fork합니다. 그리고 문서를 작성하신 후에 pull request를 보내 주시면 됩니다. 최초
-pull request가 받아들여진 후에 Contributors 명단에 문서의 집필에 기여하신 분의 이름이
-등재됩니다.
+계정으로 fork합니다. 그리고 문서를 작성하신 후에 pull request를 보내 주시면 됩니다. 몇
+차례의 pull request가 받아들여진 후에, 문서의 집필에 기여하신 분의 이름이 Contributors
+명단에 등록되면, 그 이후부터 자유로운 commit이 가능해집니다.
 
 이 책의 문서 형식은 asciidoc이고, http://asciidoctor.org/[asciidoctor]를 이용해
 관리됩니다. 문서 관리에 필요한 asciidoctor 프로그램 설치 정보는 guide 디렉토리 밑에

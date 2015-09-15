@@ -478,7 +478,7 @@ date   ; => #inst "2015-09-10T07:52:54.847-00:00"
 
 === 외부 자바 라이브러리의 클래스 import 하기
 
-또한 다른 외부 자바 라이브러리의 클래스를 사용하려 할 때도 `import`를 사용한다.
+또한 다른 외부 자바 라이브러리의 클래스를 사용하려 할 때도 ``import``를 사용한다.
 
 [source]
 ....
@@ -519,8 +519,8 @@ WARNING: inc already refers to: #'clojure.core/inc in namespace: my-namespace,
   being replaced by: #'my-namespace/inc
 ----
 
-하지만 다음과 같이 `refer-clojure`를 추가하면, 위와 같은 메시지가 뜨지 않도록 컴파일러에게
-미리 알려주는 역할을 수행한다.
+하지만 다음과 같이 ``refer-clojure``를 추가하면, 위와 같은 메시지가 뜨지 않도록
+컴파일러에게 미리 알려주는 역할을 수행한다.
 
 [source]
 ....
@@ -633,12 +633,13 @@ indexterm:[ns]
 ;     my-public-var #'my-new-namespace/my-public-var}
 ....
 
-심볼 테이블의 자세한 내용을 살펴 보기 전에, Clojure 1.7.0 기준으로 `my-new-namespace`을
-실행했을 때의 심볼 테이블을 구성하는 모든 요소들의 각 종 류별 개수를 먼저 알아 보자.
+심볼 테이블의 자세한 내용을 살펴 보기 전에, ``my-new-namespace``를 실행했을 때의 심볼
+테이블을 구성하는 모든 요소들의 각 종류별 개수를 먼저 알아 보자.
 
 
 [source]
 ....
+;; Clojure 1.7.0 기준
 (count (ns-map 'my-new-namespace))       ; => 699
 (count (ns-refers 'my-new-namespace))    ; => 599
 (count (ns-imports 'my-new-namespace))   ; => 96
