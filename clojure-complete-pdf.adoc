@@ -59,7 +59,7 @@ include::Preface/preface.adoc[]
 
 //include::Start/start.adoc[]
 
-//include::Basic-Data-Types/basic-data-types.adoc[]
+//include::Simple-Data-Types/simple-data-types.adoc[]
 
 //include::Flow-Controls/flow-controls.adoc[]
 

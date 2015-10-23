@@ -10,18 +10,18 @@
 == Clojure Data Type Diagram
 
 다음의 도표는 클로저의 모든 자료형들을 한 눈에 살펴볼 수 있도록 일목요연하게 정리한
-것이다. 먼저 전체적인 지도를 마음 속에 두고 각 부분을 자세하게 살펴 나가는 것이 빠르고
-정확한 이해의 지름길이라 생각한다. 각 자료형 옆에는 실제로 구현되어 있는 자바 클래스를
-병기했다. 이 장에서는 기본 자료형(Basic values)들을 중심으로 살펴보고, 다음 장에서
-Collection 자료형들을 살펴 보겠다.
+것이다. 먼저 전체적인 지도를 마음 속에 두고 각 부분을 자세하게 살펴 나가는 것이 클로저를
+빠르고 정확하게 이해하는 지름길이다. 각 자료형 옆에는 실제로 구현되어 있는 자바 클래스를
+병기했다. 이 장에서는 단순 자료형(Simple values)들을 중심으로 살펴보고, 다음 장에서 복합
+자료형인 Collection들을 살펴 보겠다.
 
 [[clojure-data-type-diagram]]
 
 [listing]
 ----
 Clojure Data Types
-|-- Immutables
-|   |-- Basic values
+|-- Immutables (= Values)
+|   |-- Simple values
 |   |   |-- Integers: java.lang.Long
 |   |   |             clojure.lang.BigInt
 |   |   |-- Floating point numbers: java.lang.Double
@@ -31,8 +31,8 @@ Clojure Data Types
 |   |   |-- Characters: java.lang.Character
 |   |   |-- Symbols: clojure.lang.Symbol
 |   |   |-- Keywords: clojure.lang.Keyword
-|   |   |-- Booleans: java.lang Boolean
-|   |   |-- Null: nil
+|   |   |-- Booleans: java.lang.Boolean
+|   |   |-- nil: null 
 |   |   `-- Regex patterns: java.util.regex.Pattern
 |   |-- Collections
 |   |    |-- Lists: clojure.lang.PersistentList

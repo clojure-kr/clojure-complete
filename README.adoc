@@ -9,9 +9,10 @@
 
 === Version: &nbsp; 2015-09-14
 
+[sidebar]
 ****
-commit은 수시로 이루어지지만, 버전 번호는 큰 변화가 있을 때(예를 들면, 새로운 장을 마쳤을
-때)에만 올라 갑니다.
+commit은 수시로 이루어지지만, 버전 번호는 큰 변화가 있다고 판단될 때(예를 들어, 새로운
+장을 마쳤을 때)에만 올라 갑니다.
 ****
 
 
@@ -19,65 +20,67 @@ commit은 수시로 이루어지지만, 버전 번호는 큰 변화가 있을 �
 
 :leveloffset: 1
 
-include::Preface/preface.adoc[]
+* link:Preface/preface.adoc[Preface]
 
-//include::Development-Environments/development-environments.adoc[]
+//* link:Development-Environments/development-environments.adoc[Development Environment]
 
-//include::Leiningen/leiningen.adoc[]
+//* link:Leiningen/leiningen.adoc[Leiningen]
 
-//include::Start/start.adoc[]
+//* link:Start/start.adoc[Start]
 
-//include::Basic-Data-Types/basic-data-types.adoc[]
+//* link:Sumple-Data-Types/Simple-data-types.adoc[Simple Data Types]
 
-//include::Flow-Controls/flow-controls.adoc[]
+//* link:Flow-Controls/flow-controls.adoc[Flow Controls]
 
-//include::Collections-and-Sequences/collections-and-sequences.adoc[]
+//* link:Collections-and-Sequences/collections-and-sequences.adoc[Collections and Sequences]
 
-//include::Functions-and-Functional-Programming/functions-and-functional-programming.adoc[]
+//* link:Functions-and-Functional-Programming/functions-and-functional-programming.adoc[Functions and Functional Programming]
 
-//include::Destructuring/destructuring.adoc[]
+//* link:Destructuring/destructuring.adoc[Destructuring]
 
-//include::Recursions/recursions.adoc[]
+//* link:Recursions/recursions.adoc[Recursions]
 
-//include::Transducers/transducers.adoc[]
+//* link:Transducers/transducers.adoc[Transducers]
 
-//include::Java-Interoperability/java-interoperability.adoc[]
+//* link:Java-Interoperability/java-interoperability.adoc[Java Interoperability]
 
-//include::Metadata/metadata.adoc[]
+//* link:Metadata/metadata.adoc[Metadata]
 
-include::Namespaces-and-Libraries/namespaces-and-libraries.adoc[]
+* link:Namespaces-and-Libraries/namespaces-and-libraries.adoc[Namespace and Libraries]
 
-//include::State-Management-and-Parallel-Programming/state-management-and-parallel-programming.adoc[]
+//* link:State-Management-and-Parallel-Programming/state-management-and-parallel-programming.adoc[State Management and Parallel Programming]
 
-//include::Core-Async/core-async.adoc[]
+//* link:Core-Async/core-async.adoc[core.async]
 
-//include::Multimedthos-and-Hierarchies/multimedthos-and-hierarchies.adoc[]
+//* link:Multimedthos-and-Hierarchies/multimedthos-and-hierarchies.adoc[Multimedthos and Hierarchies]
 
-//include::Protocols-Records-and-Types/protocols-records-and-types.adoc[]
+//* link:Protocols-Records-and-Types/protocols-records-and-types.adoc[Protocols, Records and Types]
 
-//include::Macros/macros.adoc[]
+//* link:Macros/macros.adoc[Macros]
 
-//include::Numerics and Mathematics/numerics-and-mathematics.adoc[]
+//* link:Numerics and Mathematics/numerics-and-mathematics.adoc[Numerics and Mathematics]
 
-//include::Project-Management/project-management.adoc[]
+//* link:Project-Management/project-management.adoc[Project Management]
 
-//include::Testing/testing.adoc[]
+//* link:Testing/testing.adoc[Testing]
 
-//include::Type-Checking/type-checking.adoc[]
+//* link:Type-Checking/type-checking.adoc[Type Checking]
 
-//include::Database-Programming/database-programming.adoc[]
+//* link:Database-Programming/database-programming.adoc[Database Programming]
 
-//include::Web-Programming/web-programming.adoc[]
+//* link:Web-Programming/web-programming.adoc[Web Programming]
 
-//include::index.asciidoc[]
+//* link:index.asciidoc[Index]
 
-//include::colo.asciidoc[]
+//* link:colo.asciidoc[Colophon]
 
 
 :leveloffset: 0
 
 
 === Copyright
+
+Copyright (C) 2015. All rights reserved.
 
 이 책의 저작권은 https://creativecommons.org/licenses/by-nc-sa/4.0/[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)]을 따른다.
 
@@ -97,8 +100,8 @@ pull request가 받아들여지고, 문서의 집필에 기여하신 분의 이�
 이후부터 자유로운 commit이 가능해집니다.
 
 이 책의 문서 형식은 asciidoc이고, http://asciidoctor.org/[asciidoctor]를 이용해
-관리됩니다. 문서 관리에 필요한 asciidoctor 프로그램 설치 정보는 link:guide[] 디렉토리 밑에
-있으니 참고하시기 바라며, asciidoc 문서 작성 요령은
+관리됩니다. 문서 관리에 필요한 asciidoctor 프로그램 설치 정보는 link:guide[] 디렉토리
+아래에 있는 문서를 참고하시기 바라며, asciidoc 문서 작성 요령은
 http://asciidoctor.org/docs/user-manual/[Asciidoctor User Manual]에 자세히 나와 있습니다.
 
 보내 주신 문서는 문서의 통일성과 완결성을 위해 필요에 따라 내용의 첨삭/편집/재배치 과정을
