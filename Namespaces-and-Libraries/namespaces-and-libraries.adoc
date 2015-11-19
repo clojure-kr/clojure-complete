@@ -1,10 +1,9 @@
 = Namespaces and Libraries
 :source-language: clojure
 :source-highlighter: coderay
-:linkcss:
 :sectnums:
 :imagesdir: ../img
-:toc:
+
 
 indexterm:[이름공간] indexterm:[namespace]
 
