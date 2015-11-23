@@ -8,8 +8,9 @@
 OS의 경우에는 이 장의 내용을 참고해서 약간 변용하면 설치가 가능할 것이다.
 
 [[environment-variables]]
-[sidebar]
+
 .Windows 환경 변수 설정하기
+[sidebar]
 ****
 Windows에서 환경 변수를 설정할 때는 다음의 경로로 찾아 들어가, 해당 환경 변수를 설정해 주면
 된다.
