@@ -54,8 +54,8 @@ Clojure Data Types
 
 == 정수(Integers)
 
-클로저에서 정수는 자기 자신으로 평가되는 값이다. 즉, 아래에서 정수 ``17``을 평가하면 그
-결과는 자기 자신인 ``17``이다.
+클로저에서 정수는 자기 자신으로 평가되는 값(value)이다. 즉, 아래에서 정수 ``17``을
+평가하면 그 결과는 자기 자신인 ``17``이 된다.
 
 [listing]
 ----
@@ -148,7 +148,7 @@ user> 9999999999999999999999999999999999999999999999999999
 
 == 실수(Floating Point Numbers)
 
-클로저에서 부동 소수점 실수 역시 자기 자신으로 평가되는 값이다.
+클로저에서 부동 소수점 실수 역시 자기 자신으로 평가되는 값(value)이다.
 ``java.lang.Double``형으로, '기본(primitive) 자료형 double'을 내부적으로 감싸고 있는
 wrapper class의 인스턴스이다.
 
@@ -171,7 +171,7 @@ user> 6.0221412927e23
 
 실수 뒤에 대문자 ``M``footnote:[원래는 ``deciMal``의 ``M``에서 비롯된 것이나, ``Money``의
 ``M``으로 이해하는 사람도 있다.]을 붙이면, 정확도가 보장되는 임의의 길이의
-실수(arbitrary-precision signed floating point decimal)롤 표현할 수 있다.
+실수(arbitrary-precision signed floating point decimal)를 표현할 수 있다.
 
 [listing]
 ----

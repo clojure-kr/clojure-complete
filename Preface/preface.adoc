@@ -17,11 +17,11 @@
     name))
  
 (get-name)
-; >> Enter Your Name:   ; <1>
-; << Mr. Kim            ; <2>
-; >> Hello, Mr. Kim
-; => "Mr. Kim"          ; <3>
+;>> Enter Your Name:   ; <1>
+;<< Mr. Kim            ; <2>
+;>> Hello, Mr. Kim
+;=> "Mr. Kim"          ; <3>
 ....
-<1> ; >> 화면에 출력된 내용을 표시한다.
-<2> ; << 키보드로 입력한 내용을 표시한다. 
-<3> ; pass:macros[=>] 함수의 반환값을 표시한다.
+<1> ;>> 화면에 출력된 내용을 표시한다.
+<2> ;<< 키보드로 입력한 내용을 표시한다. 
+<3> ;pass:macros[=>] 함수의 반환값을 표시한다.

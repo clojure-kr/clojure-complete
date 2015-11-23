@@ -44,7 +44,7 @@ indexterm:[require]
 [source]
 ....
 (clj-time.core/date-time 2015 9 10 3 25 28 456)
-; >> ClassNotFoundException clj-time.core  java.net.URLClassLoader.findClass
+;>> ClassNotFoundException clj-time.core  java.net.URLClassLoader.findClass
 ....
 
 `require` 함수는 인수로 주어진 모듈이 이미 메모리에 로드되어 있지 않은 경우에만 해당
@@ -58,7 +58,7 @@ NOTE: 모듈 이름 앞에 인용(') 기호가 붙어야 한다는 점에 주의
 (require 'clj-time.core)
 
 (clj-time.core/date-time 2015 9 10 3 25 28 456)
-; => #object[org.joda.time.DateTime 0x56c4a13 "2015-09-10T03:25:28.456Z"]
+;=> #object[org.joda.time.DateTime 0x56c4a13 "2015-09-10T03:25:28.456Z"]
 ....
 
 `require` 함수는 모듈 이름을 여러 개 나열할 수도 있다.
@@ -82,12 +82,12 @@ NOTE: 모듈 이름 앞에 인용(') 기호가 붙어야 한다는 점에 주의
 ....
 (require '[clj-time.core :as time])
 
-;; 위의 코드는 아래를 실행한 것과 같다.
-;; (require 'clj-time.core)
-;; (alias 'time 'clj-time.core)
+;;위의 코드는 아래를 실행한 것과 같다.
+;;(require 'clj-time.core)
+;;(alias 'time 'clj-time.core)
 
 (time/date-time 2015 10 10 3 25 28 456)
-; => #object[org.joda.time.DateTime 0x1c27e3aa "2015-10-10T03:25:28.456Z"]
+;=> #object[org.joda.time.DateTime 0x1c27e3aa "2015-10-10T03:25:28.456Z"]
 ....
 
 `require` 함수의 벡터 형태의 인수에는 `:refer` 키워드도 올 수 있는데, 이 키워드 뒤에 오는
@@ -97,18 +97,18 @@ NOTE: 모듈 이름 앞에 인용(') 기호가 붙어야 한다는 점에 주의
 ....
 (require '[clojure.string :as str :refer [upper-case capitalize]])
 
-;; 위의 코드는 아래를 실행한 것과 같다.
-;; (require 'clojure.string)
-;; (alias 'str 'clojure.string)
-;; (refer 'clojure.string :only '[upper-case capitalize])
+;;위의 코드는 아래를 실행한 것과 같다.
+;;(require 'clojure.string)
+;;(alias 'str 'clojure.string)
+;;(refer 'clojure.string :only '[upper-case capitalize])
 
-(upper-case "korean")    ; => "KOREAN"
-(capitalize "korean")    ; => "Korean"
-(str/lower-case "USA")   ; => "usa"
+(upper-case "korean")    ;=> "KOREAN"
+(capitalize "korean")    ;=> "Korean"
+(str/lower-case "USA")   ;=> "usa"
 
 (lower-case "USA")
-; >> CompilerException java.lang.RuntimeException:
-;      Unable to resolve symbol: lower-case in this context,
+;>> CompilerException java.lang.RuntimeException:
+;     Unable to resolve symbol: lower-case in this context,
 ....
 
 `:refer` 키워드 뒤에는 `:all` 키워드도 올 수 있는데, 해당 모듈의 모든 함수를 이름공간 없이
@@ -122,7 +122,7 @@ NOTE: 모듈 이름 앞에 인용(') 기호가 붙어야 한다는 점에 주의
 ....
 (require '[clojure.string :refer :all])
 
-(lower-case "USA")   ; => "usa"
+(lower-case "USA")   ;=> "usa"
 ....
 
 [[list-form-argument]]
@@ -173,15 +173,15 @@ example.a  -------->  example.b  -------->  example.c
 .:reload 플래그
 [source]
 ....
-;; example/a.clj
+;;example/a.clj
 (ns example.a
-  (:require [example.b :as b] :reload))   ; <1>
+  (:require [example.b :as b] :reload))   ;<1>
 
-;; example/b.clj
+;;example/b.clj
 (ns example.b
   (:require [example.c :as c]))
 
-;; example/c.clj
+;;example/c.clj
 (ns example.c)
 ....
 
@@ -192,15 +192,15 @@ example.a  -------->  example.b  -------->  example.c
 .:reload-all 플래그
 [source]
 ....
-;; example/a.clj
+;;example/a.clj
 (ns example.a
-  (:require [example.b :as b] :reload-all))   ; <2>
+  (:require [example.b :as b] :reload-all))   ;<2>
 
-;; example/b.clj
+;;example/b.clj
 (ns example.b
   (:require [example.c :as c]))
 
-;; example/c.clj
+;;example/c.clj
 (ns example.c)
 ....
 
@@ -212,10 +212,10 @@ example.a  -------->  example.b  -------->  example.c
 .:verbose 플래그
 [source]
 ....
-(require '[clojure.string :as str] :verbose)   ; <3>
-; >> (clojure.core/in-ns 'user)
-;    (clojure.core/alias 'str 'clojure.string)
-; => nil
+(require '[clojure.string :as str] :verbose)   ;<3>
+;>> (clojure.core/in-ns 'user)
+;   (clojure.core/alias 'str 'clojure.string)
+;=> nil
 ....
 
 
@@ -297,13 +297,13 @@ upper-case --> #'clojure.string/upper-case
 (refer 'clojure.string
        :only '[upper-case])
 
-(upper-case "world")   ; => "WORLD"
+(upper-case "world")   ;=> "WORLD"
 
 (lower-case "UNESCO")
-; >> CompilerException java.lang.RuntimeException:
-;      Unable to resolve symbol: lower-case in this context
+;>> CompilerException java.lang.RuntimeException:
+;     Unable to resolve symbol: lower-case in this context
 
-(clojure.string/lower-case "NASA")   ; => "nasa"
+(clojure.string/lower-case "NASA")   ;=> "nasa"
 ....
 
 반대로 `:exclude` 키워드 뒤에 심볼들을 나열하면, 그 심볼들을 제외한 나머지 모든 심볼들을
@@ -315,10 +315,10 @@ upper-case --> #'clojure.string/upper-case
        :exclude '[lower-case])
 
 (lower-case "UFO")
-; >> CompilerException java.lang.RuntimeException:
-;      Unable to resolve symbol: lower-case in this context
+;>> CompilerException java.lang.RuntimeException:
+;     Unable to resolve symbol: lower-case in this context
 
-(upper-case "love")   ; => "LOVE"
+(upper-case "love")   ;=> "LOVE"
 ....
 
 
@@ -330,15 +330,15 @@ upper-case --> #'clojure.string/upper-case
 (refer 'clojure.string
        :rename '{upper-case upcase})
 
-(upcase "people")   ; => "PEOPLE"
+(upcase "people")   ;=> "PEOPLE"
 
-;; upper-case는 더 이상 사용할 수 없다.
+;;upper-case는 더 이상 사용할 수 없다.
 (upper-case "ruby")
-; >> CompilerException java.lang.RuntimeException:
-;      Unable to resolve symbol: upper-case in this context
+;>> CompilerException java.lang.RuntimeException:
+;     Unable to resolve symbol: upper-case in this context
 
-;; 사용하려면 clojure.string 이름공간을 붙여 주여야 한다.
-(clojure.string/upper-case "ruby")   ; => "RUBY"
+;;사용하려면 clojure.string 이름공간을 붙여 주여야 한다.
+(clojure.string/upper-case "ruby")   ;=> "RUBY"
 ....
 
 
@@ -367,20 +367,20 @@ use = require + refer
      '(clojure.java io shell)
      :reload
      :verbose)
-; >> (clojure.core/load "/clojure/test")
-;    (clojure.core/in-ns 'user)
-;    (clojure.core/refer 'clojure.test)
-;    (clojure.core/load "/clojure/string")
-;    (clojure.core/in-ns 'user)
-;    (clojure.core/refer 'clojure.string :rename '{capitalize cap, reverse rev}
-;                                        :only '[capitalize trim])
-;    (clojure.core/load "/clojure/java/io")
-;    (clojure.core/in-ns 'user)
-;    (clojure.core/refer 'clojure.java.io)
-;    (clojure.core/load "/clojure/java/shell")
-;    (clojure.core/in-ns 'user)
-;    (clojure.core/refer 'clojure.java.shell)
-; => nil
+;>> (clojure.core/load "/clojure/test")
+;   (clojure.core/in-ns 'user)
+;   (clojure.core/refer 'clojure.test)
+;   (clojure.core/load "/clojure/string")
+;   (clojure.core/in-ns 'user)
+;   (clojure.core/refer 'clojure.string :rename '{capitalize cap, reverse rev}
+;                                       :only '[capitalize trim])
+;   (clojure.core/load "/clojure/java/io")
+;   (clojure.core/in-ns 'user)
+;   (clojure.core/refer 'clojure.java.io)
+;   (clojure.core/load "/clojure/java/shell")
+;   (clojure.core/in-ns 'user)
+;   (clojure.core/refer 'clojure.java.shell)
+;=> nil
 ....
 
 `use` 함수가 `refer` 함수와 다른 점은 `:as` 키워드를 붙여 별칭(alias)을 사용할 수 있다는
@@ -390,11 +390,11 @@ use = require + refer
 ....
 (use '[clojure.string :as str :only [split]])
 
-;; clojure.string 대신 별칭 str을 쓸 수 있다.
-(str/replace "foobar" "bar" "baz")   ; => "foobaz"
+;;clojure.string 대신 별칭 str을 쓸 수 있다.
+(str/replace "foobar" "bar" "baz")   ;=> "foobaz"
 
-;; split 함수의 경우에는 이름공간 없이 사용할 수 있다.
-(split "hello world" #" ")   ; => ["hello" "world"]
+;;split 함수의 경우에는 이름공간 없이 사용할 수 있다.
+(split "hello world" #" ")   ;=> ["hello" "world"]
 ....
 
 사실 다음 두 표현은 같은 일을 한다.
@@ -417,12 +417,12 @@ use = require + refer
                       :only [upper-case]])
 
 (lower-case "ASCII")
-; >> CompilerException java.lang.RuntimeException:
-;      Unable to resolve symbol: lower-case in this context
+;>> CompilerException java.lang.RuntimeException:
+;     Unable to resolve symbol: lower-case in this context
 
-(str/lower-case "ASCII")   ; => "ascii"
-(upper-case "physcs")      ; => "PHYSICS"
-(cap "math")               ; => "Math"
+(str/lower-case "ASCII")   ;=> "ascii"
+(upper-case "physcs")      ;=> "PHYSICS"
+(cap "math")               ;=> "Math"
 ....
 
 
@@ -435,7 +435,7 @@ JRE에 기본적으로 탑재된 자바 클래스들은, 직접 호출할 수 �
 ....
 (def date (java.util.Date.))
 
-date   ; => #inst "2015-09-10T07:49:28.622-00:00"
+date   ;=> #inst "2015-09-10T07:49:28.622-00:00"
 ....
 
 === 자바 클래스 import 하기
@@ -449,7 +449,7 @@ date   ; => #inst "2015-09-10T07:49:28.622-00:00"
 
 (def date (Date.))
 
-date   ; => #inst "2015-09-10T07:52:54.847-00:00"
+date   ;=> #inst "2015-09-10T07:52:54.847-00:00"
 ....
 
 [NOTE]
@@ -483,7 +483,7 @@ date   ; => #inst "2015-09-10T07:52:54.847-00:00"
 ....
 (import '(org.apache.commons.lang StringUtils SystemUtils))
 
-(StringUtils/isEmpty "")   ; => true
+(StringUtils/isEmpty "")   ;=> true
 ....
 
 물론 import하려는 자바 라이브러리는 ``project.clj``의 ``:resource-paths``에 다음과 같이
@@ -548,9 +548,9 @@ WARNING: inc already refers to: #'clojure.core/inc in namespace: my-namespace,
 
 [source]
 ....
-(ns my-namespace)                ; (1)
+(ns my-namespace)                ;(1)
 
-(refer-clojure :exclude [inc])   ; (2)
+(refer-clojure :exclude [inc])   ;(2)
 
 (defn inc []
   "my new inc function")
@@ -624,14 +624,14 @@ indexterm:[ns-interns] indexterm:[ns-publics]
 [source]
 ....
 (ns-interns 'my-new-namespace)
-; => {my-private-var #'my-new-namespace/my-private-var,
-;     my-public-var #'my-new-namespace/my-public-var,
-;     my-public-fn #'my-new-namespace/my-public-fn,
-;     my-private-fn #'my-new-namespace/my-private-fn}
+;=> {my-private-var #'my-new-namespace/my-private-var,
+;    my-public-var #'my-new-namespace/my-public-var,
+;    my-public-fn #'my-new-namespace/my-public-fn,
+;    my-private-fn #'my-new-namespace/my-private-fn}
 
 (ns-publics 'my-new-namespace)
-; => {my-public-fn #'my-new-namespace/my-public-fn,
-;     my-public-var #'my-new-namespace/my-public-var}
+;=> {my-public-fn #'my-new-namespace/my-public-fn,
+;    my-public-var #'my-new-namespace/my-public-var}
 ....
 
 심볼 테이블의 자세한 내용을 살펴 보기 전에, 위의 ``my-new-namespace``를 실행했을 때의 심볼
@@ -640,11 +640,11 @@ indexterm:[ns-interns] indexterm:[ns-publics]
 
 [source]
 ....
-;; Clojure 1.7.0 기준
-(count (ns-map 'my-new-namespace))       ; => 699
-(count (ns-refers 'my-new-namespace))    ; => 599
-(count (ns-imports 'my-new-namespace))   ; => 96
-(count (ns-interns 'my-new-namespace))   ; => 4
+;;Clojure 1.7.0 기준
+(count (ns-map 'my-new-namespace))       ;=> 699
+(count (ns-refers 'my-new-namespace))    ;=> 599
+(count (ns-imports 'my-new-namespace))   ;=> 96
+(count (ns-interns 'my-new-namespace))   ;=> 4
 ....
 
 [listing]
@@ -665,11 +665,11 @@ indexterm:[ns-map] indexterm:[ns-refers] indexterm:[ns-imports]
 [source]
 ....
 (ns-refers 'my-new-namespace)
-; => {comparator #'clojure.core/comparator,
-;     sorted-map #'clojure.core/sorted-map,
-;     send #'clojure.core/send,
-;     drop-while #'clojure.core/drop-while,
-;     ......}
+;=> {comparator #'clojure.core/comparator,
+;    sorted-map #'clojure.core/sorted-map,
+;    send #'clojure.core/send,
+;    drop-while #'clojure.core/drop-while,
+;    ......}
 ....
 +
 
@@ -679,11 +679,11 @@ indexterm:[ns-map] indexterm:[ns-refers] indexterm:[ns-imports]
 [source]
 ....
 (ns-imports 'my-new-namespace)
-; => {Thread java.lang.Thread,
-;     StringBuffer java.lang.StringBuffer,
-;     BigDecimal java.math.BigDecimal,
-;     Math java.lang.Math,
-;    ......}
+;=> {Thread java.lang.Thread,
+;    StringBuffer java.lang.StringBuffer,
+;    BigDecimal java.math.BigDecimal,
+;    Math java.lang.Math,
+;   ......}
 ....
 + 
  
@@ -701,10 +701,10 @@ indexterm:[all-ns]
 [source]
 ....
 (all-ns)
-; => (#<Namespace clojure.string> #<Namespace clojure.set>
-;     #<Namespace clojure.java.io> #<Namespace clojure.java.javadoc>
-;     #<Namespace clojure.walk> #<Namespace clojure.zip>
-;     ......)
+;=> (#<Namespace clojure.string> #<Namespace clojure.set>
+;    #<Namespace clojure.java.io> #<Namespace clojure.java.javadoc>
+;    #<Namespace clojure.walk> #<Namespace clojure.zip>
+;    ......)
 ....
 
 indexterm:[find-ns]
@@ -715,10 +715,10 @@ indexterm:[find-ns]
 [source]
 ....
 (find-ns 'clojure.string)
-; => #<Namespace clojure.string>
+;=> #<Namespace clojure.string>
 
 (find-ns 'not-yet-exist)
-; => nil
+;=> nil
 ....
 
 indexterm:[the-ns]
@@ -732,13 +732,13 @@ indexterm:[the-ns]
 (def for-later-use (create-ns 'my-namespace))
 
 (the-ns for-later-use)
-; => #<Namespace my-namespace>
+;=> #<Namespace my-namespace>
 
 (the-ns 'my-namespace)
-; => #<Namespace my-namespace>
+;=> #<Namespace my-namespace>
 
 (the-ns 'not-yet-exist)
-; >> Exception No namespace: not-yet-exist found  clojure.core/the-ns
+;>> Exception No namespace: not-yet-exist found  clojure.core/the-ns
 ....
 
 indexterm:[remove-ns]
@@ -748,15 +748,15 @@ nil을 반환한다.
 
 [source]
 ....
-(clojure.string/upper-case "abc")   ; => "ABC"
+(clojure.string/upper-case "abc")   ;=> "ABC"
 
 (remove-ns 'clojure.string)
 
 (clojure.string/upper-case "abc")
-; => ClassNotFoundException clojure.string  java.net.URLClassLoader.findClass
+;=> ClassNotFoundException clojure.string  java.net.URLClassLoader.findClass
 
 (remove-ns 'not-yet-exist)
-; => nil
+;=> nil
 ....
 
 
