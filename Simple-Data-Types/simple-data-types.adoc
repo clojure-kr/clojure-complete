@@ -72,7 +72,8 @@ java.lang.Long
 ----
 
 위의 결과에서도 알 수 있듯이, 클로저에서 정수형은 자바의 ``java.lang.Long``형으로,
-내부적으로 '64비트 부호있는 정수'를 감싸고 있는 wrapper class의 인스턴스이다.
+기본(primitive) 자료형 '64비트 부호있는 long형'를 내부적으로 감싸고 있는 wrapper class의
+인스턴스이다.
 
 CAUTION: 자바의 기본(primitive) 자료형인 ``long``형이 아니라, 레퍼런스(reference) 타입인
          ``java.lang.Long``형임에 주의하자. 레퍼런스 타입이므로, 컬렉션 자료형의 요소로
@@ -146,8 +147,8 @@ user> 9999999999999999999999999999999999999999999999999999
 
 == 실수(Floating Point Numbers)
 
-클로저에서 부동 소수점 실수 역시 자기 자신으로 평가되는 값으로,
-``java.lang.Double``형이다. 내부적으로 '기본(primitive) 자료형 double'을 감싸고 있는
+클로저에서 부동 소수점 실수 역시 자기 자신으로 평가되는 값이다.
+``java.lang.Double``형으로, '기본(primitive) 자료형 double'을 내부적으로 감싸고 있는
 wrpper class의 인스턴스이다.
 
 [listing]
