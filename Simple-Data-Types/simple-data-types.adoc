@@ -1,4 +1,4 @@
-= Simple Data Types
+= Simple Values
 :source-highlighter: coderay
 :source-language: clojure
 :sectnums:
@@ -71,13 +71,17 @@ user> (type 17)
 java.lang.Long
 ----
 
-위의 결과에서도 알 수 있듯이, 클로저에서 정수형은 자바의 ``java.lang.Long``형으로,
-기본(primitive) 자료형인 '64비트 부호있는 정수 long형'를 내부적으로 감싸고 있는 wrapper
-class의 인스턴스이다.
+위의 결과에서도 알 수 있듯이, 클로저에서 정수형은 자바의 '기본(primitive) 자료형 long'
+타입을 내부적으로 감싸고 있는 wrapper class인 ``java.lang.Long`` 클래스의 인스턴스이다.
 
 CAUTION: 자바의 기본(primitive) 자료형인 ``long``형이 아니라, 레퍼런스(reference) 타입인
          ``java.lang.Long``형임에 주의하자. 레퍼런스 타입이므로, 컬렉션 자료형의 요소로
-         쓰일 수 있게 된다.
+         쓰일 수 있다.
+
+NOTE: 클로저에서는 정수 연산의 속도를 높이기 위한 방법으로, 기본 자료형인 ``long``형도
+      다룰 수 있는 방법을 제공한다. 이에 대해서는
+      link:../Numerics-and-Mathematics/numerics-and-mathematics.adoc[Numerics and
+      Mathematics] 장에서 자세히 다룰 것이다.
 
 정수 맨 앞에 숫자 ``0``이 있으면 8진수를 표시하고, `0x` 또는 ``0X``가 있으면 16진수를
 표시한다.
@@ -95,8 +99,8 @@ user> 0X10
 ----
 
 클로저는 8진수와 16진수 이외에도, 2진수에서 36진수까지 표기할 수 있는 방법을 제공한다. `r`
-또는 `R` 문자footnote:[radix의 준말이다.] 앞에 표현하고자 하는 진법을 나타내고, 그 뒤에
-숫자를 표시하면 된다. 실제 숫자를 표시할 때, `0` -- `9`를 넘어가는 숫자는 알파벳 `a` --
+또는 `R` 문자footnote:[radix의 약어다.] 앞에 표현하고자 하는 진법을 나타내고, 그 뒤에
+숫자를 표시하면 된다. 실제 숫자를 표시할 때, `0` -- ``9``를 넘어가는 숫자는 알파벳 `a` --
 `z` 또는 `A` -- `Z` 문자를 이용한다.
 
 [listing]
@@ -118,12 +122,12 @@ user> 36r1z    ; 36진법
 ----
 
 정수의 맨 뒤에 대문자 ``N``footnote:[``iNteger``의 ``N``을 의미한다.]을 붙이면,
-``Long``형보다 큰 임의의 길이의 정수((arbitrary-precision integer)도 표현할 수 있다.
+``Long``형보다 큰 임의의 길이의 정수(arbitrary-precision integer)도 표현할 수 있다.
 
 [listing]
 ----
-user> 9999999999999999999999999999999999999999999999999999N
-9999999999999999999999999999999999999999999999999999N
+user> 99999999999999999999N
+99999999999999999999N
 ----
 
 다음의 ``2N``은 ``java.lang.Long``형이 아니라, ``clojure.lang.BigInt``형이다. 
@@ -137,20 +141,26 @@ user> (type 2N)
 clojure.lang.BigInt
 ----
 
-아주 큰 정수에 명시적으로 N을 붙이지 않아도, clojure.lang.BigInt형으로 자동 형변환된다.
+``Long``형보다 큰 정수에 명시적으로 N을 붙이지 않아도, ``clojure.lang.BigInt``형으로 자동
+형변환된다.
 
 [listing]
 ----
-user> 9999999999999999999999999999999999999999999999999999
-9999999999999999999999999999999999999999999999999999N
+user>  99999999999999999999
+ 99999999999999999999N
 ---- 
 
 
-== 실수(Floating Point Numbers)
+== 실수(Floats)
 
-클로저에서 부동 소수점 실수 역시 자기 자신으로 평가되는 값(value)이다.
-``java.lang.Double``형으로, '기본(primitive) 자료형 double'을 내부적으로 감싸고 있는
-wrapper class의 인스턴스이다.
+클로저에서 부동 소수점 실수 역시 자기 자신으로 평가되는 값(value)이다. 클로저에서 실수형은
+자바의 '기본(primitive) 자료형 double' 타입을 내부적으로 감싸고 있는 wrapper class인
+``java.lang.Double`` 클래스의 인스턴스이다.
+
+NOTE: 클로저에서는 실수 연산의 속도를 높이기 위한 방법으로, 기본 자료형인 ``double``형도
+      다룰 수 있는 방법을 제공한다. 이에 대해서는
+      link:../Numerics-and-Mathematics/numerics-and-mathematics.adoc[Numerics and
+      Mathematics] 장에서 자세히 다룰 것이다.
 
 [listing]
 ----
@@ -185,6 +195,21 @@ user> (* 100.01M 100)
 10001.00M
 ----
 
+`decimal?` 함수는 주어진 숫자가 ``BigDecimal``형인지 판별한다.
+
+[listing]
+----
+user> (decimal? 0.1M)
+true
+
+user> (decimal? 0.1)
+false
+
+user> (decimal? 1)
+false
+----
+
+
 
 == 분수 (Ratios)
 
@@ -203,6 +228,25 @@ user> (type 2/3)
 clojure.lang.Ratio
 ----
 
+`ratio?` 함수는 주어진 숫자가 ``clojure.lang.Ratio``형인지를 판별한다.
+
+[listing]
+----
+user> (ratio? 4/7)
+true
+
+user> (ratio? 7)
+false
+----
+
+약분이 가능한 경우에는, 약분된 값이 반환된다.
+
+[listing]
+----
+user> 2/4
+1/2
+----
+
 분자와 분모는 모두 정수형이어야 한다. 그렇지 않으면 예외가 발생한다. 
 
 [listing]
@@ -212,11 +256,19 @@ user> 2/3.5
 
 ----
 
-약분이 가능한 경우에는, 약분된 값이 반환된다.
+`denominator` 함수와 `numerator` 함수는 인수로 주어진 분수의 분자와 분모 부분만을
+반환한다.
+
 [listing]
 ----
-user> 2/4
-1/2
+user> (numerator 2/3)
+2
+
+user> (numerator 2/4)
+1
+
+user> (denominator 2/3)
+3
 ----
 
 분수의 정확한 연산이 보장된다.
@@ -252,17 +304,60 @@ user> (float 1/3)
 0.33333334
 ----
 
+`rational?` 함수는 유리수인지를 판별한다. 즉, 정수나 분수이면 ``true``를 반환하고, 그렇지
+않으면 ``false``를 반환한다.
+
+TIP: 클로저에서 분수형은 내부적으로 분자와 분모가 정수형으로 구현되어 있다. 따라서
+     내부적인 구현이 정수형으로 이루어진 모든 자료형의 경우, `rational?` 함수는 ``true``를
+     반환한다고 생각하면 된다.
+
+[listing]
+----
+user> (rational? 1/2)
+true
+
+user> (rational? 1)
+true
+
+user> (rational? 1.0)
+false
+
+user> (rational? 2N)
+true
+----
+
+`rationalize` 함수는 주어진 숫자를 유리수(rational number)로 변환한다. 무리수가 인수로
+주어진 경우에는 가장 근접한 유리수로 변환한다.
+
+[listing]
+----
+user> (rationalize 1.5)
+3/2
+
+user> (rationalize Math/PI)
+3141592653589793/1000000000000000
+
+user> (rationalize (Math/sqrt 2))
+14142135623730951/10000000000000000
+
+user> (rationalize 2/4)
+1/2
+
+user> (rationalize 4/2)
+2
+
+user> (rationalize 2)
+2
+
+user> (rationalize 2.0)
+2N
+----
 
 
 
 
 
-
-
-
-. 
-
-
+   
 
 
 
