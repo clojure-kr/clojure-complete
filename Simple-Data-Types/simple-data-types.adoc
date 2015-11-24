@@ -15,13 +15,9 @@
 
 [[clojure-data-type-diagram]]
 
-[cols="1,1,1,6"]
+[cols="1,1,2,6", width="60%", options="header"]
 |===
-
-h|
-h|
-^h| 클로저 타입
-^h| 자바 클래스
+|  |  ^| 클로저 타입 ^| 자바 클래스
 
 .13+^.^|Immutables (= Values)
 
