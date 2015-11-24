@@ -28,7 +28,7 @@ commit은 수시로 이루어지지만, 버전 번호는 큰 변화가 있다고
 
 //* link:Start/start.adoc[Start]
 
-* link:Simple-Data-Types/simple-data-types.adoc[Simple Data Types]
+* link:Simple-Values/simple-values.adoc[Simple Values]
 
 //* link:Flow-Controls/flow-controls.adoc[Flow Controls]
 
