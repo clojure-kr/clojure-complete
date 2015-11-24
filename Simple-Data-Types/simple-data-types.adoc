@@ -15,6 +15,7 @@
 
 [[clojure-data-type-diagram]]
 
+
 [cols="1,1,2,6", width="60%", options="header"]
 |===
 |  |  ^| 클로저 타입 ^| 자바 클래스
