@@ -92,7 +92,7 @@ C:\leiningen> wget --no-check-certificate https://raw.githubusercontent.com/tech
 +
 [listing]
 ----
-C:\lang\leiningen\bin> tree /a /f
+C:\leiningen\bin> tree /a /f
 C:.
 |   lein.bat
 \---self-installs
