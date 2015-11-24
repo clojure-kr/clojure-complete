@@ -30,7 +30,7 @@ Clojure Data Types
 |   |   |-- Symbols: clojure.lang.Symbol
 |   |   |-- Keywords: clojure.lang.Keyword
 |   |   |-- Booleans: java.lang.Boolean
-|   |   `-- nil: null 
+|   |   `-- nil: null
 |   |-- Collections
 |   |    |-- Lists: clojure.lang.PersistentList
 |   |    |-- Vectors: clojure.lang.PersistentVector
@@ -50,6 +50,70 @@ Clojure Data Types
     |-- Vars: clojure.lang.Var
     `-- Java Objects
 ----
+
+[cols="1,1,1,6"]
+|===
+
+h|
+h|
+^h| 클로저 타입
+^h| 자바 클래스
+
+.13+^.^|Immutables (= Values)
+
+.9+^.^|Simple values
+^| Integers
+a| * java.lang.Long
+   * clojure.lang.BigInt
+
+^| Floats
+a| * java.lang.Double
+   * java.math.GigDecimal
+
+^| Ratios
+ | clojure.lang.Ratio
+
+^| Strings    | java.lang.String
+
+^| Characters | java.lang.Character
+
+^| Symbols    | clojure.lang.Symbol
+
+^| Keywords   | clojure.lang.Keyword
+
+^| Booleans   | java.lang.Boolean
+
+^| nil        | null
+
+
+.4+^.^|Collections
+^| Lists      | clojure.lang.PersistentList
+
+^| Vectors    | clojure.lang.PersistentVector
+
+^| Maps
+a| * array-map: clojure.lang.PersistentArrayMap
+   * hash-map: clojure.lang.PersistentHashMap
+   * sorted-map: clojure.lang.PersistentTreeMap
+^| Sets
+a| * hash-set: clojure.lang.PersistentHashSet
+   * sorted-set: clojure.lang.PersistentTreeSet
+
+.4+^.^|Mutables (= References)
+
+.4+^.^|Identities
+^| Atoms      | clojure.lang.Atom
+
+^| Refs       | clojure.lang.Ref
+
+^| Agents     | clojure.lang.Agent
+
+^| Vars       | clojure.lang.Var
+
+|===
+
+
+
 
 
 == 정수(Integers)
@@ -126,7 +190,7 @@ user> 9999999999999999999999999999999999999999999999999999N
 9999999999999999999999999999999999999999999999999999N
 ----
 
-다음의 ``2N``은 ``java.lang.Long``형이 아니라, ``clojure.lang.BigInt``형이다. 
+다음의 ``2N``은 ``java.lang.Long``형이 아니라, ``clojure.lang.BigInt``형이다.
 
 [listing]
 ----
@@ -143,7 +207,7 @@ clojure.lang.BigInt
 ----
 user> 9999999999999999999999999999999999999999999999999999
 9999999999999999999999999999999999999999999999999999N
----- 
+----
 
 
 == 실수(Floating Point Numbers)
@@ -203,12 +267,12 @@ user> (type 2/3)
 clojure.lang.Ratio
 ----
 
-분자와 분모는 모두 정수형이어야 한다. 그렇지 않으면 예외가 발생한다. 
+분자와 분모는 모두 정수형이어야 한다. 그렇지 않으면 예외가 발생한다.
 
 [listing]
 ----
 user> 2/3.5
-;>> NumberFormatException Invalid number: 2/3.5 
+;>> NumberFormatException Invalid number: 2/3.5
 
 ----
 
@@ -260,7 +324,7 @@ user> (float 1/3)
 
 
 
-. 
+.
 
 
 
