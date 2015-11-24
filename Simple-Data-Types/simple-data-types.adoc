@@ -15,42 +15,6 @@
 
 [[clojure-data-type-diagram]]
 
-[listing]
-----
-Clojure Data Types
-|-- Immutables (= Values)
-|   |-- Simple values
-|   |   |-- Integers: java.lang.Long
-|   |   |             clojure.lang.BigInt
-|   |   |-- Floating point numbers: java.lang.Double
-|   |   |                           java.math.BigDecimal
-|   |   |-- Ratios: clojure.lang.Ratio
-|   |   |-- Strings: java.lang.String
-|   |   |-- Characters: java.lang.Character
-|   |   |-- Symbols: clojure.lang.Symbol
-|   |   |-- Keywords: clojure.lang.Keyword
-|   |   |-- Booleans: java.lang.Boolean
-|   |   `-- nil: null
-|   |-- Collections
-|   |    |-- Lists: clojure.lang.PersistentList
-|   |    |-- Vectors: clojure.lang.PersistentVector
-|   |    |-- Maps
-|   |    |   |-- array-map: clojure.lang.PersistentArrayMap
-|   |    |   |-- hash-map: clojure.lang.PersistentHashMap
-|   |    |   `-- sorted-map: clojure.lang.PersistentTreeMap
-|   |    `-- Sets
-|   |        |-- hash-set: clojure.lang.PersistentHashSet
-|   |        `-- sorted-set: clojure.lang.PersistentTreeSet
-|   `-- Functions
-`-- Mutables (= References)
-    |-- Identities
-    |   |-- Atoms: clojure.lang.Atom
-    |   |-- Refs: clojure.lang.Ref
-    |   `-- Agents: clojure.lang.Agent
-    |-- Vars: clojure.lang.Var
-    `-- Java Objects
-----
-
 [cols="1,1,1,6"]
 |===
 
