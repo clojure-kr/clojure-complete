@@ -29,7 +29,7 @@
 clojure.lang.BigInt
 
 ^.^| Floats
-^.| java.lang.Double
+^v| java.lang.Double
 java.math.GigDecimal
 
 ^.^| Ratios     ^| clojure.lang.Ratio
@@ -44,18 +44,19 @@ java.math.GigDecimal
 
 ^.^| Booleans   ^| java.lang.Boolean
 
-^| nil         ^| null
+^| nil          ^| null
 
 
 .4+^.^|Collections
-^| Lists      | clojure.lang.PersistentList
+^| Lists         | clojure.lang.PersistentList
 
-^| Vectors    ^| clojure.lang.PersistentVector
+^| Vectors      ^| clojure.lang.PersistentVector
 
 ^.^| Maps
 ^v| array-map: clojure.lang.PersistentArrayMap
 hash-map: clojure.lang.PersistentHashMap
 sorted-map: clojure.lang.PersistentTreeMap
+
 ^.^| Sets
 ^v| hash-set: clojure.lang.PersistentHashSet
 sorted-set: clojure.lang.PersistentTreeSet
@@ -164,7 +165,7 @@ NOTE: 클로저에서는 정수 연산의 속도를 높이기 위한 방법으�
 [listing]
 ----
  99999999999999999999   ;=> 99999999999999999999N
----- 
+----
 
 
 == 실수(Floats)
@@ -244,12 +245,12 @@ NOTE: 클로저에서는 실수 연산의 속도를 높이기 위한 방법으�
 2/4   ;=> 1/2
 ----
 
-분자와 분모는 모두 정수형이어야 한다. 그렇지 않으면 예외가 발생한다. 
+분자와 분모는 모두 정수형이어야 한다. 그렇지 않으면 예외가 발생한다.
 
 [listing]
 ----
 2/3.5
-;>> NumberFormatException Invalid number: 2/3.5 
+;>> NumberFormatException Invalid number: 2/3.5
 
 ----
 
@@ -302,7 +303,7 @@ TIP: 클로저에서 분수형은 내부적으로 분자와 분모가 정수형�
 (rational? 1/2)   ;=> true
 (rational? 1)     ;=> true
 
-(rational? 1.0)   ;=> false 
+(rational? 1.0)   ;=> false
 (rational? 2N)    ;=> true
 ----
 
