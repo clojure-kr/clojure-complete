@@ -16,60 +16,62 @@
 [[clojure-data-type-diagram]]
 
 
-[cols="1,1,2,6", width="60%", options="header"]
+[cols="1,1,^.^2,^.^6", width="50%", options="header"]
 |===
 |  |  ^| 클로저 타입 ^| 자바 클래스
 
-.13+^.^|Immutables (= Values)
+.13+^.^v|Immutables
+(= Values)
 
 .9+^.^|Simple values
-^| Integers
-a| * java.lang.Long
-   * clojure.lang.BigInt
+^.^| Integers
+^v| java.lang.Long
+clojure.lang.BigInt
 
-^| Floats
-a| * java.lang.Double
-   * java.math.GigDecimal
+^.^| Floats
+^v| java.lang.Double
+java.math.GigDecimal
 
-^| Ratios
- | clojure.lang.Ratio
+^.^| Ratios     ^| clojure.lang.Ratio
 
-^| Strings    | java.lang.String
+^.^| Strings    ^| java.lang.String
 
-^| Characters | java.lang.Character
+^.^| Characters ^| java.lang.Character
 
-^| Symbols    | clojure.lang.Symbol
+^.^| Symbols    ^| clojure.lang.Symbol
 
-^| Keywords   | clojure.lang.Keyword
+^.^| Keywords   ^| clojure.lang.Keyword
 
-^| Booleans   | java.lang.Boolean
+^.^| Booleans   ^| java.lang.Boolean
 
-^| nil        | null
+^| nil          ^| null
 
 
 .4+^.^|Collections
-^| Lists      | clojure.lang.PersistentList
+^| Lists         | clojure.lang.PersistentList
 
-^| Vectors    | clojure.lang.PersistentVector
+^| Vectors      ^| clojure.lang.PersistentVector
 
-^| Maps
-a| * array-map: clojure.lang.PersistentArrayMap
-   * hash-map: clojure.lang.PersistentHashMap
-   * sorted-map: clojure.lang.PersistentTreeMap
-^| Sets
-a| * hash-set: clojure.lang.PersistentHashSet
-   * sorted-set: clojure.lang.PersistentTreeSet
+^.^| Maps
+^v| array-map: clojure.lang.PersistentArrayMap
+hash-map: clojure.lang.PersistentHashMap
+sorted-map: clojure.lang.PersistentTreeMap
 
-.4+^.^|Mutables (= References)
+^.^| Sets
+^v| hash-set: clojure.lang.PersistentHashSet
+sorted-set: clojure.lang.PersistentTreeSet
+
+.4+^.^v|Mutables
+(= References)
 
 .4+^.^|Identities
-^| Atoms      | clojure.lang.Atom
+^| Atoms      ^| clojure.lang.Atom
 
-^| Refs       | clojure.lang.Ref
+^| Refs       ^| clojure.lang.Ref
 
-^| Agents     | clojure.lang.Agent
+^| Agents     ^| clojure.lang.Agent
 
-^| Vars       | clojure.lang.Var
+^| Vars       ^| clojure.lang.Var
 
 |===
 
@@ -164,7 +166,7 @@ NOTE: 클로저에서는 정수 연산의 속도를 높이기 위한 방법으�
 [listing]
 ----
  99999999999999999999   ;=> 99999999999999999999N
----- 
+----
 
 
 === 실수(Floats)
@@ -245,12 +247,12 @@ NOTE: 클로저에서는 실수 연산의 속도를 높이기 위한 방법으�
 2/4   ;=> 1/2
 ----
 
-분자와 분모는 모두 정수형이어야 한다. 그렇지 않으면 예외가 발생한다. 
+분자와 분모는 모두 정수형이어야 한다. 그렇지 않으면 예외가 발생한다.
 
 [listing]
 ----
 2/3.5
-;>> NumberFormatException Invalid number: 2/3.5 
+;>> NumberFormatException Invalid number: 2/3.5
 
 ----
 
