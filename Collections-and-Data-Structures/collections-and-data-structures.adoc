@@ -1,6 +1,0 @@
-= Collections and data structure
-:source-highlighter: coderay
-:source-language: clojure
-:sectnums:
-:icons: font
-:imagesdir: ../img
