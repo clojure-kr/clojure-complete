@@ -22,7 +22,7 @@ commit은 수시로 이루어지지만, 버전 번호는 큰 변화가 있다고
 
 * link:Preface/preface.adoc[Preface]
 
-* link:Development-Environments/development-environments.adoc[Development Environment]
+* link:Development-Environments/development-environments.adoc[Development Environments]
 
 //* link:Leiningen/leiningen.adoc[Leiningen]
 
