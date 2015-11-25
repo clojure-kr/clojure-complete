@@ -15,100 +15,67 @@
 .Table of Contents
 [sidebar]
 ****
-//. <<Development-Environments/development-environments.html#, Development Environments>>
-
+. <<Preface/preface.html#, Preface>>
+. <<Development-Environments/development-environments.html#, Development Environments>>
 //. <<Leiningen/leiningen.html#, Leiningen>>
-
 //. <<Start/start.html#, Start>>
-
 . <<Simple-Values/simple-values.html#, Simple Values>>
-
 //. <<Flow-Controls/flow-controls.html#, Flow Controls>>
-
 //. <<Collections-and-Sequences/collections-and-sequences.html#, Collections and Sequences>>
-
 //. <<Functions-and-Functional-Programming/functions-and-functional-programming.html#, Functions and Functional Programming>>
-
 //. <<Destructuring/destructuring.html#, Destructuring>>
-
 //. <<Recursions/recursions.html#, Recursions>>
-
 //. <<Transducers/transducers.html#, Transducers>>
-
 //. <<Java-Interoperability/java-interoperability.html#, Java Interoperability>>
-
 //. <<Metadata/metadata.html#, Metadata>>
-
 . <<Namespaces-and-Libraries/namespaces-and-libraries.html#, Namespaces and Libraries>>
-
 //. <<State-Management-and-Parallel-Programming/state-management-and-parallel-programming.html#, State Management and Parallel Programming>>
-
 //. <<Core-Async/core-async.html#, core//.async>>
-
 //. <<Multimedthos-and-Hierarchies/multimedthos-and-hierarchies.html#, Multimedthos and Hierarchies>>
-
 //. <<Protocols-Records-and-Types/protocols-records-and-types.html#, Protocols, Records and Types>>
-
 //. <<Macros/macros.html#, Macros>>
-
 //. <<Numerics-and-Mathematics/numerics-and-mathematics.html#, Numerics and Mathematics>>
-
 //. <<Project-Management/project-management.html#, Project Management>>
-
 //. <<Testing/testing.html#, Testing>>
-
 //. <<Type-Checking/type-checking.html#, Type Checking>>
-
 //. <<Database-Programming/database-programming.html#, Database Programming>>
-
 //. <<Web-Programming/web-programming.html#, Web Programming>>
 ****
 
 :leveloffset: 0
 
+== [small]#Copyright#
 
-=== 소스코드 예제 표기법
-
-소스 코드를 실행한 결과를 표시할 때, 다음의 표기법을 사용했다. 참고로 아래에서 `;` 기호는
-클로저의 주석 처리 기호로, 소스 코드를 Copy & Paste해서 실행할 때 불편이 없게 했다.
-
-[source]
-....
-(defn get-name []
-  (println "Enter Your Name:")
-  (let [name (read-line)]
-    (println "Hello," name)
-    name))
- 
-(get-name)
-; >> Enter Your Name:   ;; <1>
-; << Mr. Kim            ;; <2>
-; >> Hello, Mr. Kim
-; => "Mr. Kim"          ;; <3>
-....
-<1> ; >> 화면에 출력된 내용을 표시한다.
-<2> ; << 키보드로 입력한 내용을 표시한다. 
-<3> ; pass:macros[=>] 함수의 반환값을 표시한다.
-
-
-
-=== Copyright
+Copyright (C) 2015. All rights reserved.
 
 이 책의 저작권은 https://creativecommons.org/licenses/by-nc-sa/4.0/[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)]을 따른다.
 
-즉 다음의 조건을 준수하는 한 이 책의 자유로운 복제, 수정 및 배포가 가능하다.
+즉, 다음의 조건을 준수하는 한 이 책의 자유로운 복제, 수정 및 배포가 가능하다.
 
 * 이 책의 내용을 기반으로 2차 저작물을 만들 경우 원작자를 표시하여여 한다.
 * 상업적 목적으로 이용할 수 없다.
 * 2차 저작물의 경우 위와 동일한 저작권을 사용해야 한다.
 
 
-=== Contributors
+== [small]#Contributing#
 
-* 김영태 (philos99@gmail.com)
+이 책의 집필에 함께 참여하고자 하는 분들을 환영합니다. 참여를 원하시는 분은
+https://github.com/[github]에 먼저 사용자 계정을 만드신 후, 이 repository를 자신의
+계정으로 fork합니다. 그리고 문서를 작성하신 후에 pull request를 보내 주십시오. 몇 차례의
+pull request가 받아들여지고, 문서의 집필에 기여하신 분의 이름이 Contributors 명단에 등록된
+이후부터 자유로운 commit이 가능해집니다.
+
+이 책의 문서 형식은 asciidoc이고, http://asciidoctor.org/[asciidoctor]를 이용해
+관리됩니다. 문서 관리에 필요한 asciidoctor 프로그램 설치 정보는 link:guide[] 디렉토리
+아래에 있는 문서를 참고하시기 바라며, asciidoc 문서 작성 요령은
+http://asciidoctor.org/docs/user-manual/[Asciidoctor User Manual]에 자세히 나와 있습니다.
+
+보내 주신 문서는 문서의 통일성과 완결성을 위해 필요에 따라 내용의 첨삭/편집/재배치 과정을
+거칠 수 있음을 미리 밝힙니다.
+
+
+== [small]#Contributors#
+
+* 김영태 (philos99@gmail.com) &nbsp; Main editor
 * 박상규 (psk810@gmail.com)
 * 김만명 (manmyung@gmail.com)
-
-
-
-

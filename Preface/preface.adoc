@@ -1,6 +1,8 @@
 = Preface
 :source-language: clojure
 :source-highlighter: coderay
+:stylesdir: ../
+:stylesheet: my-asciidoctor.css
 
 [preface]
 == 소스코드 예제 표기법

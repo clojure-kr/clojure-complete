@@ -3,7 +3,8 @@
 :source-highlighter: coderay
 :sectnums:
 :imagesdir: ../img
-
+:stylesdir: ../
+:stylesheet: my-asciidoctor.css
 
 indexterm:[이름공간] indexterm:[namespace]
 

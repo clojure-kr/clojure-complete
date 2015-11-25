@@ -3,6 +3,8 @@
 :source-highlighter: coderay
 :sectnums:
 :imagesdir: ../img
+:stylesdir: ../
+:stylesheet: my-asciidoctor.css
 
 이 장에서는 `Windows 7` (64비트 버전)에 클로저 개발 환경을 설치하는 예를 보여준다. 다른
 OS의 경우에는 이 장의 내용을 참고해서 약간 변용하면 설치가 가능할 것이다.

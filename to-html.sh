@@ -1,2 +1,2 @@
-asciidoctor clojure-complete.adoc **/*.adoc
-mv clojure-complete.html index.html
+asciidoctor -a stylesheet=my-asciidoctor.css clojure-complete-html.adoc **/*.adoc
+mv clojure-complete-html.html index.html
