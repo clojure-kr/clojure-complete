@@ -8,7 +8,13 @@
 :icons: font
 :imagesdir: ./img
 
-//* Version: 2015-11-27
+== [small]#Version: &nbsp; 2015-11-27#
+
+[sidebar]
+****
+commit은 수시로 이루어지지만, 버전 번호는 큰 변화가 있다고 판단될 때(예를 들어, 새로운
+장을 마쳤을 때)에만 올라 갑니다.
+****
 
 :leveloffset: 1
 
