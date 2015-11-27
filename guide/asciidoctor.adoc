@@ -1,5 +1,7 @@
 = asciidoctor 사용법
 :sectnums:
+:stylesdir: ../
+:stylesheet: my-asciidoctor.css
 
 == ruby 설치
 

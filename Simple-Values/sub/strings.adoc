@@ -1,0 +1,268 @@
+= 문자열(Strings)
+:source-highlighter: coderay
+:source-language: clojure
+:sectnums:
+:icons: font
+
+클로저에서 문자열 역시 자기 자신으로 평가되는 값(value)으로, 쌍따옴표(`"`)로 둘러싸 표현한다.
+
+[source]
+....
+"Welcome to Clojure!"          ;=> "Welcome to Clojure!"
+
+(type "functional language")   ;=> java.lang.String
+(string? "hello")              ;=> true
+....
+
+자바의 `java.lang.String` 클래스를 그대로 이용하므로, `String` 클래스의 메소드도 이용할 수
+있다.
+
+[source]
+....
+(.toUpperCase "modern lisp")   ;=> "MODERN LISP"
+....
+
+여러 줄의 입력도 가능하다.
+
+[source]
+....
+"multiline strings
+are allowed too."
+;=> "multiline strings\nare allowed too."
+....
+
+`str` 함수는 주어진 인수들을 문자열로 변환한 후, 공백 없이 연결된 문자열을 반환한다. 단,
+``nil``은 빈 문자열(`""`)로 변환된다.
+
+[source]
+....
+(str)      ;=> ""
+(str nil)  ;=> ""
+
+(str 1)          ;=> "1"
+(str 1 2 nil 3)  ;=> "123"
+
+(str [1 2 3])    ;=> "[1 2 3]"
+
+(str 1 'symbol :keyword)   ;=> "1symbol:keyword"
+(str "Hello, " "World!")   ;=> "Hello, World!"
+....
+
+`format` 함수는 `java.lang.String.format` 함수를 그대로 이용한다. 자세한 포맷 서식은
+`java.util.Formatter`
+http://docs.oracle.com/javase/1.5.0/docs/api/java/util/Formatter.html[관련 문서]를
+참조하도록 한다.
+
+[source]
+....
+(format "Hello there, %s" "Bob")
+;=> "Hello there, Bob"
+
+(format "%5d" 3)
+;=> "    3"
+
+(format "Pad with leading zeros %07d" 5432)
+;=> "Pad with leading zeros 0005432"
+
+(format "Left justified :%-7d:" 5432)
+;=> "Left justified :5432   :"
+....
+
+`subs` 함수는 주어진 문자열의 '시작 index(포함)'에서 '종료 index(불포함)'까지의 부분
+문자열(substring)을 반환한다. index는 0부터 시작하고, '종료 index'가 주어지지 않으면,
+문자열의 마지막까지 반환한다.
+
+[source]
+....
+(subs "Clojure" 1 3)   ;=> "lo"
+(subs "Clojure" 1)     ;=> "lojure"
+....
+
+== println-str/print-str/prn-str/pr-str 함수
+
+이 함수들은 `println`/`print`/`prn`/`pr` 함수들과 관계가 있다. 함수명에 `-str`이 붙지 않은
+이 함수들은, 문자열을 '반환'하는 함수가 아니라, 문자열을 stdout(표준 출력, 일반적으로
+디스플레이 화면)에 '출력'하는 함수이다.
+
+[source]
+....
+(println "Hello world.")
+;>> Hello world.
+;=> nil
+
+(println-str "Hello world.")
+;=> "Hello world.\n"
+....
+
+위 두 함수의 출력 결과를 표시할 때, 표기 방식이 약간 다르다는 점에 먼저 주목할 필요가
+있다. ``;>> `` 기호는 그 뒤의 문자열이 '화면'에 출력되었다는 것을 나타내고, `pass:c[;=>]`
+기호는 이 함수의 반환값이 ``nil``이라는 것을 표시하고 있다. 즉, `println` 함수는 side
+effect(부수 효과)를 수행하는 함수이다. 그리고 클로저에서 부수 효과를 실행하는 함수들은
+대개 `nil` 값을 반환한다.
+
+반면에 `println-str` 함수는, ``println``을 사용했다면 화면에 출력되었어야 할 문자열을,
+화면에 출력하지 않고 함수의 반환값으로 리턴한다. ``-str``이 붙고 붙지 않은 나머지 함수들의
+관계도 마찬가지이다.
+
+`println` 함수는 개행 문자(newline)를 맨마지막에 추가하는 반면, `print` 함수는 개행 문자를
+추가하지 않는다.
+
+[source]
+....
+(println "foo") (println "foo")
+;>> foo
+;>> foo
+;=> nil
+
+(print "foo") (print "foo")
+;>> foofoo
+;=> nil
+....
+
+`prn` 함수와 `pr` 함수의 관계도 `println` 함수와 `print` 함수의 관계와 같다. 즉,
+개행문자를 추가하는지 여부의 차이이다.
+
+[source]
+....
+(prn "foo") (prn "foo")
+;>> "foo"
+;>> "foo"
+;=> nil
+
+(pr "foo") (pr "foo")
+;>> "foo""foo"
+;=> nil
+....
+
+이번에는 ``println``과 ``prn``의 차이를 알아보자. 이 두 함수는 '문자열'과 '문자'를 출력할
+때에만 차이가 있다.
+
+[source]
+....
+(println 10 "foo\nbar" \A :keyword [1 2 3])
+;>> 10 foo
+;>> bar A :keyword [1 2 3]
+;=> nil
+
+(prn 10 "foo\nbar" \A :keyword [1 2 3])
+;>> 10 "foo\nbar" \A :keyword [1 2 3]
+;=> nil
+....
+
+즉, 문자열 자료형을 출력할 때, `println` 함수는 '사람이 읽기 쉬운' 형태로 출력한다. 그래서
+출력할 때, 겹따옴표(`"`)를 제거하고 개행 문자 ``\n``도 실제 개행을 한 결과를
+보여준다. 그리고 문자 자료형인 경우에는 역슬래시(`\`) 기호를 제거한 상태로 출력해 준다.
+이 두 자료형을 제외한 나머지 자료형들의 경우에는, 두 함수 모두 출력한 결과에 차이가 없다.
+
+반면에 ``prn`` 함수는 클로저의 리더(reader) 함수인 ``read``나 `read-string` 함수가
+다시 읽어 들일 수 있는 형태로 출력해 준다.
+
+[source]
+....
+(prn "hello")
+;>> "hello"
+;=> nil
+
+(println "hello")
+;>> hello
+;=> nil
+
+(prn-str "hello")
+;>> "\"hello\"\n"
+
+(println-str "hello")
+;>> "hello\n"
+....
+
+다음에서 `"hello"` 문자열이 인수로 주어졌지만, 첫번째 줄은 문자열 `"hello"`을 반환한
+반면에, 두번째 줄은 심볼 `hello`을 반환했다. 그래서 출력한 문자열을 문자열 그대로 클로저
+리더 함수로 다시 읽어 들이고 싶다면 `prn-str` 또는 `pr-str` 함수를 사용해야 한다.
+
+[source]
+....
+(read-string (prn-str "hello"))       ;=> "hello"
+(read-string (println-str "hello"))   ;=> hello
+....
+
+
+== `clojure.string` 이름 공간의 문자열 처리 함수들
+
+`clojure.string` 이름 공간에는 문자열 처리시 유용한 함수들이 많다. 그 중 몇 개만
+소개하겠다.
+
+``upper-case``와 `lower-case` 함수는 각각 주어진 문자열을 대문자와 소문자로 바꾼다.
+
+[source]
+....
+(require '[clojure.string :as str])
+
+(str/upper-case "Clojure User Groups")
+;=> "CLOJURE USER GROUPS"
+
+(str/lower-case "Clojure User Groups")
+;=> "clojure user groups"
+....
+
+
+`split` 함수는 문자열과 정규식 패턴을 받아, 분할된 문자열의 벡터를 반환한다. 클로저에서
+정규식은 문자열 앞에 `#` 기호를 붙여 표시하는데, 자바의 정규식 표현을 따른다.
+
+[source]
+....
+(str/split "Clojure is awesome!" #" ")
+;=> ["Clojure" "is" "awesome!"]
+
+(str/split "q1w2e3r4t5y6u7i8o9p0" #"\d+")
+;=> ["q" "w" "e" "r" "t" "y" "u" "i" "o" "p"]
+....
+
+정규식 인수 뒤에 숫자를 지정하면, 해당하는 숫자만큼의 문자열들을 반환한다. 
+
+[source]
+....
+(str/split "q1w2e3r4t5y6u7i8o9p0" #"\d+" 5)
+;=> ["q" "w" "e" "r" "t5y6u7i8o9p0"]
+....
+
+``join`` 함수는 인수로 주어진 컬렉션을, 문자열로 변환환 후 연결해 반환한다.
+
+[source]
+....
+(str/join [1 2 3])
+;=> "123"
+....
+
+연결할 떄 사용할 문자열을 컬렉션 앞에 지정해 주는 것이 일반적이다.
+
+[source]
+....
+(str/join ", " ["spam" "eggs" "spam"])
+;=> "spam, eggs, spam"
+
+(str/join ", " ["spam" "" "eggs" nil "spam"])
+;=> "spam, , eggs, , spam"
+
+(str/join "\n" (str/split "The Quick Brown Fox" #"\s"))
+;=> "The\nQuick\nBrown\nFox"
+....
+
+`trim` 함수는 주어진 문자열의 좌우 끝에 있는 공백 문자들을 모두 제거한 문자열을
+반환한다. ``triml``과 `trimr` 함수는 각각 주어진 문자열의 좌측과 우측 끝에 있는 공백
+문자들을 제거한 문자열을 반환한다.
+
+이 세 함수 모두 문자열 중간에 있는 공백 문자들을 제거하지는 않는다.
+ 
+[source]
+....
+(str/trim "        my  string         ")
+;=> "my  string"
+
+(str/triml "        my  string         ")
+;=> "my  string         "
+
+(str/trimr "        my  string         ")
+;=> "        my  string"
+....
+
+
+
