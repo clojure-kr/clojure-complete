@@ -1325,7 +1325,38 @@ Math/E          <span class="comment">;=&gt; 2.718281828459045</span>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_문자_characters">6. 문자(Characters)</h2>
+<h2 id="_심볼_symbols">6. 심볼(Symbols)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>클로저의 심볼은 다른 언어들에서의 식별자(identifiers)와 유사한 개념이다. 심볼은 숫자가
+아닌 문자로 시작해야 하고, 그 뒤에 <code>*</code>, <code>+</code>, <code>?</code>,<code>!</code>, <code>-</code>, <code>_</code> 같은 기호와 문자들이 올 수
+있다.</p>
+</div>
+<div class="paragraph">
+<p>심볼은 일반적으로 어떤 값을 가리킨다. 그래서 심볼이 평가되면 가리키던 값을 반환하게
+된다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure"><span class="comment">;; 전역 심볼 a를 정의한다.</span>
+(<span class="keyword">def</span> <span class="function">a</span> <span class="integer">10</span>)
+
+<span class="comment">;; 전역 심볼 a를 평가하면, 가리키던 값 10을 반환한다.</span>
+a   <span class="comment">;=&gt; 10</span>
+
+<span class="comment">;; 지역 심볼 a를 정의한다. let 안에서 지역 심볼 a는 전역 심볼 a을 가린다(shadowing).</span>
+(<span class="keyword">let</span> [a <span class="integer">20</span>]
+  (<span class="keyword">+</span> <span class="integer">100</span> a))
+<span class="comment">;=&gt; 120</span>
+
+<span class="comment">;; 전역 심볼 a는 여전히 10을 가리키고 있다.</span>
+a   <span class="comment">;=&gt; 10</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_문자_characters">7. 문자(Characters)</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>문자는 역슬래쉬(<code>\</code>) 기호 뒤에 한 개의 문자를 덧붙여 표현한다.</p>
@@ -1377,7 +1408,7 @@ Math/E          <span class="comment">;=&gt; 2.718281828459045</span>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_문자열_strings">7. 문자열(Strings)</h2>
+<h2 id="_문자열_strings">8. 문자열(Strings)</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>클로저에서 문자열 역시 자기 자신으로 평가되는 값(value)으로, 쌍따옴표(<code>"</code>)로 둘러싸 표현한다.</p>
@@ -1460,7 +1491,7 @@ are allowed too.</span><span class="delimiter">&quot;</span></span>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_println_str_print_str_prn_str_pr_str_함수">7.1. println-str/print-str/prn-str/pr-str 함수</h3>
+<h3 id="_println_str_print_str_prn_str_pr_str_함수">8.1. println-str/print-str/prn-str/pr-str 함수</h3>
 <div class="paragraph">
 <p>이 함수들은 <code>println</code>/<code>print</code>/<code>prn</code>/<code>pr</code> 함수들과 관계가 있다. 함수명에 `-str`이 붙지 않은
 이 함수들은, 문자열을 '반환&#8217;하는 함수가 아니라, 문자열을 stdout(표준 출력, 일반적으로
@@ -1576,7 +1607,7 @@ effect(부수 효과)를 수행하는 함수이다. 그리고 클로저에서 �
 </div>
 </div>
 <div class="sect2">
-<h3 id="__code_clojure_string_code_이름_공간의_문자열_처리_함수들">7.2. <code>clojure.string</code> 이름 공간의 문자열 처리 함수들</h3>
+<h3 id="__code_clojure_string_code_이름_공간의_문자열_처리_함수들">8.2. <code>clojure.string</code> 이름 공간의 문자열 처리 함수들</h3>
 <div class="paragraph">
 <p><code>clojure.string</code> 이름 공간에는 문자열 처리시 유용한 함수들이 많다. 그 중 몇 개만
 소개하겠다.</p>
@@ -1685,7 +1716,7 @@ effect(부수 효과)를 수행하는 함수이다. 그리고 클로저에서 �
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-11-27 20:04:26 KST
+Last updated 2015-11-27 20:19:53 KST
 </div>
 </div>
 </body>
