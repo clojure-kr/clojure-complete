@@ -32,7 +32,7 @@ commit은 수시로 이루어지지만, 버전 번호는 큰 변화가 있다고
 //. <<Destructuring/destructuring.html#, Destructuring>>
 //. <<Recursions/recursions.html#, Recursions>>
 //. <<Transducers/transducers.html#, Transducers>>
-//. <<Java-Interoperability/java-interoperability.html#, Java Interoperability>>
+. <<Java-Interoperability/java-interoperability.html#, Java Interoperability>>
 //. <<Metadata/metadata.html#, Metadata>>
 . <<Namespaces-and-Libraries/namespaces-and-libraries.html#, Namespaces and Libraries>>
 //. <<State-Management-and-Parallel-Programming/state-management-and-parallel-programming.html#, State Management and Parallel Programming>>
