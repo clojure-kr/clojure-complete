@@ -94,6 +94,23 @@ NOTE: 2 ~ 36진수까지의 표현은 link:++http://docs.oracle.com/javase/7/doc
  99999999999999999999   ;=> 99999999999999999999N
 ....
 
+자동 승격 연산자(+', -', *', inc', and dec')들은 Long 계산이 오버플로우가 발생하면 자동으로 BigInt로 변환해 준다.
+
+[source]
+....
+(+ 1 Long/MAX_VALUE)
+;>> java.lang.ArithmeticException: integer overflow
+
+(+' 1 Long/MAX_VALUE)
+;=> 9223372036854775808N
+
+(class (+' 1 Long/MAX_VALUE))
+;=> clojure.lang.BigInt
+
+(class (+' 1))
+;=> java.lang.Long
+....
+
 
 == 실수(Floats)
 
