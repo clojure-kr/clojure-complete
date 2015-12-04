@@ -257,7 +257,38 @@ a   ;=> 10
 ....
 
 
+`name` 함수는 심볼을 문자열로 바꾼다.
 
+
+[source]
+....
+(name 'a) ;=> "a"
+....
+
+
+`symbol` 함수는 문자열을 심볼로 만든다.
+
+
+[source]
+....
+(symbol "a") ;=> a
+(symbol "my-namespace" "a") ;=> my-namespace/a
+....
+
+
+`symbol?` 함수는 심볼인지 여부를 확인한다.
+
+
+[source]
+....
+(def a 1)      ;=> 1
+(symbol? 'a)   ;=> true
+(symbol? a)    ;=> false
+
+(symbol? "a")  ;=> false
+(symbol? :a)   ;=> false
+(symbol? 1)    ;=> false
+....
 
 
 == 문자(Characters)
