@@ -171,6 +171,19 @@ false   ;=> false
 (type :city)       ;=> clojure.lang.Keyword
 
 (keyword? :city)   ;=> true
+
+;; keyword함수는 문자열을 키워드로 바꾸어 준다.
+(keyword "city")   ;=> :city
+(= :city (keyword "city")) ;=> true
+....
+
+
+콜론은 키워드를 만들기 위한 문법적 기능을 수행하기 위한 것이지 키워드의 이름은 아니다.
+
+[source]
+....
+(= :seoul (keyword "seoul"))
+(= :seoul (keyword ":seoul"))
 ....
 
 키워드는 특히 키/값 쌍으로 이루어진 맵 자료형의 키로 많이 사용된다.
