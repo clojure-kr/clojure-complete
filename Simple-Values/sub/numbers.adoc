@@ -402,6 +402,18 @@ TIP: 클로저에서 분수형은 내부적으로 분자와 분모가 정수형�
 (min 1.1 2 3 4 5.5)   ;=> 1.1
 ....
 
+`min-key`와 `max-key`는 주어진 인수들에 함수를 적용해서 나온 최대값과 최소값을 반환한다.
+
+[source]
+....
+(min-key #(Math/abs %) -3 1 4)          ;=> 1
+(apply min-key #(Math/abs %) [-3 1 4])  ;=> 1
+
+(max-key #(Math/abs %) -3 1 4)          ;=> 4
+(apply max-key #(Math/abs %) [-3 1 4])  ;=> 4
+....
+
+
 기타 수학 함수는 `java.lang.Math` 클래스의 정적(static) 메소드를 이용해야 한다.
 
 [source]
