@@ -324,6 +324,24 @@ a   ;=> 10
 * `\tab`
 
 
+`char`함수는 정수를 문자로 바꾼다.
+
+[source]
+....
+(char 97)     ;=> \a
+....
+
+
+`char?`는 문자인지를 판별한다.
+
+
+[source]
+....
+(char? \a)    ;=> true
+(char? 97)    ;=> false
+(char? "a")   ;=> false
+....
+
 :leveloffset: 1
 
 include::sub/strings.adoc[]
