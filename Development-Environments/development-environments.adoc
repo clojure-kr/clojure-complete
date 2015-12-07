@@ -3,6 +3,7 @@
 :source-highlighter: coderay
 :sectnums:
 :imagesdir: ../img
+:linkcss:
 :stylesdir: ../
 :stylesheet: my-asciidoctor.css
 

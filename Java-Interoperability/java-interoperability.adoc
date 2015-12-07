@@ -3,9 +3,12 @@
 :source-language: clojure
 :source-highlighter: coderay
 //:stem: latexmath
-:linkcss:
 :icons: font
 :imagesdir: ./img
+:linkcss:
+:stylesdir: ../
+:stylesheet: my-asciidoctor.css
+
 
 클로저가 다른 리습 계열 언어들(Common Lisp, Scheme, Racket, ...)에 비해 갖는 장점들 중의
 하나는 풍부한 라이브러리들을 이용할 수 있다는 것이다. 리습 언어가 자체적으로는 아무리

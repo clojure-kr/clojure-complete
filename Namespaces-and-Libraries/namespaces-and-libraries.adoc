@@ -3,6 +3,7 @@
 :source-highlighter: coderay
 :sectnums:
 :imagesdir: ../img
+:linkcss:
 :stylesdir: ../
 :stylesheet: my-asciidoctor.css
 
@@ -426,7 +427,6 @@ use = require + refer
 (cap "math")               ;=> "Math"
 ....
 
-<<import>>
 == import
 indexterm:[import]
 

@@ -4,6 +4,9 @@
 :sectnums:
 :icons: font
 :imagesdir: ../img
+:linkcss:
+:stylesdir: ../
+:stylesheet: my-asciidoctor.css
 
 == Collections
 
