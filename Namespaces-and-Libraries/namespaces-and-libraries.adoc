@@ -426,7 +426,7 @@ use = require + refer
 (cap "math")               ;=> "Math"
 ....
 
-
+<<import>>
 == import
 indexterm:[import]
 
@@ -468,16 +468,6 @@ date   ;=> #inst "2015-09-10T07:52:54.847-00:00"
 ....
 ====
 
-`require` 함수의 경우처럼 <<list-form-argument,리스트 형태의 인수>>를 취할 수 있다. 이
-경우에는 인용 기호를 반드시 앞에 붙여 주어야 한다.
-
-[source]
-....
-(import java.sql.DriverManager
-        '(java.util Date Calendar)
-        '(java.net URI ServerSocket))
-....
-
 [NOTE]
 ====
 java.lang 패키지의 모든 클래스들은 디폴트로 모두 import된다. 예를 들어 java.lang.String
@@ -492,6 +482,38 @@ hello   ;=> "Hello World!"
 ....
 ====
 
+`require` 함수의 경우처럼 <<list-form-argument,리스트 형태의 인수>>를 취할 수 있다. 이
+경우에는 인용 기호를 반드시 앞에 붙여 주어야 한다.
+
+[source]
+....
+(import java.sql.DriverManager
+        '(java.util Date Calendar)
+        '(java.net URI ServerSocket))
+....
+
+
+[NOTE]
+====
+자바 라이브러리를 불러다 쓰다 보면, 패키지명은 다르지만 클래스명이 우연히도 같은 경우가
+있다. 그런데 `import` 함수는, `require`나 `use` 함수와는 달리, alias 기능(`:as`)을
+제공하지 않는다. 그래서 이런 경우에는, 댜음의 예에서처럼 자주 쓰는 클래스는 `import`
+함수로 불러 쓰고, 자주 쓰이지 않는 클래스는 완전한 패키지명을 붙인 형태로 호출해 주면
+된다.
+  
+[source]
+....
+(import java.util.Date)
+
+(def date (Date.))
+
+(def sql-date (java.sql.Date. (.getTime date)))
+....
+
+
+   
+
+====
 
 === 외부 자바 라이브러리의 클래스 import 하기
 

@@ -61,11 +61,11 @@ ClassName.staticMethod(arg1, arg2, ...)
 |===
 
 위의 '객체의 인스턴스 필드 읽기' 항목에서 ``.field``와 ``.-field``의 두 가지 형태가
-제공되는데, 가급적이면 ``.-field``의 형태를 쓰기를 권한다. ``(.field object)``의 호출
-형태가 객체의 인스턴스 메소드 호출 형태인 ``(.methodName object)``와 겉모습이 동일해서,
-실제 사용될 떄 인스턴스 필드 읽기인지 아니면 인스턴스 메소드 호출인지 구분이 가지 않기
-때문이다. ``.-`` 형태는 클로저스크립트에서 먼저 도입되었고, 나중에 클로저에서도 이
-표기법을 수용한 결과로, 현재는 두 가지 표기법이 혼재한다.
+제공되는데, 가급적이면 ``.-field``의 형태를 쓰기를 권한다. 그 이유는 ``(.field object)``의
+호출 형태가 객체의 인스턴스 메소드 호출 형태인 ``(.methodName object)``와 겉모습이
+동일해서, 실제 사용될 떄 인스턴스 필드 읽기인지 아니면 인스턴스 메소드 호출인지 구분이
+가지 않기 때문이다. ``.-`` 형태는 클로저스크립트에서 먼저 도입되었고, 나중에 클로저에서도
+이 표기법을 수용한 결과로, 현재는 두 가지 표기법이 혼재한다.
  
 위의 여러가지 Java Interp 형태는 일종의 syntactic sugar(구문 단축형)로, 내부적으로는 모두
 클로저의 특수 형식(special form)인``.``과 `new` 두 개로 구현되어 있다. 이 구문 단축형은
@@ -112,11 +112,31 @@ ClassName.staticMethod(arg1, arg2, ...)
 
 |===
 
-=== import
+=== 자바 클래스 import하기 
+
+자바 클래스를 사용할 때는, `clojure.core/import` 함수를 이용해 먼저 import해 주면, 짧은
+클래스 이름만을 이용해 다음과 같이 간편하게 호출할 수 있다.
+
+[source]
+....
+(import java.util.Date)
+
+(Date.)   ;=> #inst "2015-12-07T08:07:00.231-00:00"
+....
+
+하지만 `import` 함수를 이용하지 않고, 다음과 같이 완전한 패키지명을 붙여 호출할 수도 있다.
+
+[source]
+....
+(java.util.Date.)   ;=> #inst "2015-12-07T08:08:23.918-00:00"
+....
+
+자바 클래스 import와 관련된 자세한 내용은,
+link:../Namespaces-and-Libraries/namespaces-and-libraries.html#_import[Namespaces and
+Libraries: import] 부분을 참조하기 바란다.
 
 
-
-=== 인스턴스 생성 및 메소드 호출
+=== 인스턴스 생성 및 인스턴스 메소드 호출
 
 자바 클래스의 인스턴스를 생성하려먼, 클래스 이름 바로 뒤에 ``.``을 붙인다. 생성자의
 인수들은 그 뒤에 나열하면 된다. 
@@ -130,7 +150,7 @@ ClassName.staticMethod(arg1, arg2, ...)
 
 그리고 해당 인스턴스의 메소드를 호출하려면, 메소드 이름 바로 앞에 ``.``을 붙이고, 그 뒤에
 인스턴스 객체가 온다. 호출하려는 메소드에 추가로 인수가 있는 경우에는 이 인스턴스 객체
-뒤에 차레로 나열해 주면 된다.
+뒤에 차례로 나열해 준다.
 
 [source]
 ....
@@ -141,16 +161,23 @@ ClassName.staticMethod(arg1, arg2, ...)
 ....
 
 
-=== 정적 필드 및 메소드 호출
+=== 정적 필드 및 정적 메소드 호출
+
+정적 필드는 클래스명 뒤에 슬래시 기호를 붙인 후 필드명을 써 준다.
 
 [source]
 ....
-Double/MAX_VALUE
-;=> 1.7976931348623157E308
-
-(Double/parseDouble "3.141592653589793")
-;=> 3.141592653589793
+Double/MAX_VALUE   ;=> 1.7976931348623157E308
 ....
+
+정적 메소드 역시 클래스명 뒤에 슬래시 기호를 붙인 후 메소드명을 써 준다. 정적 메소드의
+인수들은 메소드명 뒤에 차례대로 나열해 준다.
+
+[source]
+....
+(Double/parseDouble "3.141592653589793")   ;=> 3.141592653589793
+....
+
 
 
 === 객체의 필드 읽고 쓰기 
@@ -175,7 +202,9 @@ Double/MAX_VALUE
 물론, 위에서 `.-x` 대신 ``.x``를 써도 된다.
 
 
-== Handy Interop Utilities
+== 유용한 Interop 관련 함수들
+
+=== `class` 함수
 
 `class` 함수는 인수로 주어진 객체의 class를 반환한다.
 
@@ -184,13 +213,73 @@ Double/MAX_VALUE
 (class "foo")   ;=> java.lang.String
 ....
 
-`instance?` 함수는 두 번째 인수가 첫 번째 인수로 주어진 클래스의 인스턴스이면 true를
+=== `instance?` 함수
+
+`instance?` 함수는 두 번째 인수가 첫 번째 인수로 주어진 클래스의 인스턴스인지 여부를
 반환한다.
 
 [source]
 ....
 (instance? String "foo")   ;=> true
 ....
+
+=== `..` 매크로
+
+다음과 같은 연속 호출(chained calls) 형태의 자바 코드를, 클로저에서는 `..` 매크로를 이용할
+수 있다.
+
+[source,java]
+....
+import java.util.Date;
+
+Date date = new Date();
+
+date.getTime().toString();
+....
+
+
+[source]
+....
+(import 'java.util.Date)
+
+(.. (Date.) getTime toString)   ;=> "1449477417080"
+....
+
+호출하고자 하는 메소드가 인수를 필요로 하지 않으면 괄호로 둘러 싸지 않아도 된다. 즉,
+다음의 두 코드는 같은 결과를 반환한다. 하지만, 코드의 간결성을 위해서는 괄호로 둘러싸지
+않는 것이 바람직하다.
+
+[source]
+....
+(.. "fooBAR" (toLowerCase) (contains "ooba"))   ;=> true
+
+(.. "fooBAR" toLowerCase (contains "ooba"))     ;=> true
+....
+
+
+[NOTE]
+====
+
+위의 코드는 pass:q[`->`] 매크로를 통해서도 표현할 수 있다. 차이점은 pass:q[`->`] 매크로를
+사용할 떄에는, 자바 메소드 호출시 매번 ``.``을 붙여 주어야 한다는 것이다. 그래서
+pass:q[`->`] 매크로는 자바 메소드와 클로저 함수를 혼합해 사용해마만 하는 경우에
+유용하다(참고로, pass:q[`..`] 매크로 안에서는 클로저 함수를 호출할 수 없다). 개인적인
+취향의 문제이겠지만, 본인은 자바 메소드 호출만으로 이루어진 경우에는 코드의 간결성을 위해
+`..` 매크로를, 그 이외의 경우에는 pass:q[`->`] 매크로를 사용한다.
+
+[source]
+....
+;; 자바 메소드만을 호출한 경우
+(-> "fooBAR" .toLowerCase (.contains "ooba"))     ;=> true 
+
+(require '[clojure.string :as str])
+
+;; 클로저 함수와 자바 메소드를 혼합해 호출한 경우
+(-> "fooBAR" str/lower-case (.contains "ooba"))   ;=> true 
+....
+====
+
+=== doto
 
 `doto` 매크로는 자바의 '동일한' 인스턴스 객체를 대상으로 여러 번의 설정 작업을 반복적으로
 수행할 때 이용하면 편리하다.
@@ -200,6 +289,7 @@ Double/MAX_VALUE
 [source]
 ....
 ArrayList list = new ArrayList();
+
 list.add(1);
 list.add(2);
 list.add(3);
@@ -247,7 +337,7 @@ list.add(3);
 ....
 
 
- == Exceptions and Error Handling
+== Exceptions and Error Handling
 
 클로저의 예외 처리는 자바의 예외 처리 방식을 그대로 이용한다. `catch` 절은 여러 개 나열될
 수 있고, `finally` 절은 선택적으로 올 수 있다.
@@ -306,12 +396,13 @@ public static int parseInt(String s) throws NumberFormatException
 }
 ----
 
-자바에서는, 이와 같은 메소드를 '호출'하는 코드에서 `try/catch/finally` 구문에서 이 예외를
-반드시 명시적으로 처리해 주어야 한다. 그렇지 않으면 컴파일러시 에러가 발생한다.
+자바에서는, 이와 같은 메소드를 '호출'하는 코드에서 `try/catch/finally` 구문르 통해 이
+예외를 반드시 명시적으로 처리해 주어야 한다. 그렇지 않으면 컴파일러시 에러가 발생한다.
 
 하지만 클로저에서는 그럴 필요가 없다. 그 이유는 checked exception을 강제하는 것은 자바
 컴파일러이지 JVM 자체의 요구 사양은 아니기 때문이다. 클로저 소스 코드는 클로저의 자체
 컴파일러가 직접 컴파일을 수행하므로 자바 컴파일러의 요구 사항을 무시할 수 있다.
+
 
 == Type Hinting for Performance
 
@@ -324,8 +415,8 @@ public static int parseInt(String s) throws NumberFormatException
   (.length text))
 ....
 
-위와 같이 타입 힌팅 정보를 주면 ``^{:tag String} text``의 형식으로 metadata에 `:tag` 키에
-type 정보가 저장된다.
+위와 같이 타입 힌팅 정보를 주면 ``^{:tag String} text``의 형식으로 text 인수의 metadata에
+`:tag` 키에 type 정보가 들어간다.
 
 그런데 타입 힌팅 정보를 주더라도, Java Interop 호출을 하지 않으면 그 정보는 쓰이지 않고
 컴파일러에 의해 무시된다.
@@ -343,7 +434,10 @@ type 정보가 저장된다.
   x)
 ....
 
-.accepts_anything_hint 함수 decompile 결과 
+위의 두 함수를 컴파일 한 후에, 컴파일된 `.class` 파일을 다시 decompile해 보면, 그 결과에
+차이가 전혀 발견되지 않는 것을 확인할 수 있다.
+
+.accepts_anything_hint 함수의 decompile 결과 
 [source,java]
 ....
 import clojure.lang.AFunction;
@@ -389,8 +483,8 @@ public final class java_interop$accepts_anything_no_hint extends AFunction {
 }
 ....
 
-Java Interop 호출이 있는 경우에는, type hint 정보가 compile시 반영되어 runtime
-reflection으로 인한 실행 시간 지연을 막을 수 있다.
+반면에 Java Interop 호출이 있는 경우에는, type hint 정보가 있는 경웅는, 컴파일시 그 정보가
+반영되어, 런타임시 reflection으로 인한 실행 시간 지연을 막을 수 있다.
 
 [source]
 ....
@@ -415,7 +509,7 @@ public final class java_interop$length_of_hint extends AFunction {
     public static Object invokeStatic(Object text) {
         Object var10000 = text;
         text = null;
-        return Integer.valueOf(((String)var10000).length());
+        return Integer.valueOf(((String)var10000).length()); // <1>
     }
 
     public Object invoke(Object var1) {
@@ -425,7 +519,7 @@ public final class java_interop$length_of_hint extends AFunction {
     }
 }
 ....
-
+<1> ``(String)``으로 타입 캐스팅되어 있다.
 
 .length_of_no_hint 함수 decompile 결과
 [source,java]
@@ -440,7 +534,7 @@ public final class java_interop$length_of_no_hint extends AFunction {
     public static Object invokeStatic(Object text) {
         Object var10000 = text;
         text = null;
-        return Reflector.invokeNoArgInstanceMember(var10000, "length", false);
+        return Reflector.invokeNoArgInstanceMember(var10000, "length", false); // <1>
     }
 
     public Object invoke(Object var1) {
@@ -450,6 +544,8 @@ public final class java_interop$length_of_no_hint extends AFunction {
     }
 }
 ....
+<1> 런타임에 reflection이 행해져 실행 시간의 지연을 초래하고 있다.
+
 
 타입 힌팅 정보를 주면, 실행 속도를 향상시킬 수 있다.
 
@@ -478,8 +574,15 @@ public final class java_interop$length_of_no_hint extends AFunction {
 ;>> "Elapsed time: 154.889 msecs"
 ....
 
-`\*warn-on-reflection*` 값을 ``true``로 설정해 주면, 컴파일시 클로저 컴파일러가 코드의 어느
-부분에서 reflection 기능을 호출하고 있는지 확인할 수 있다.
+위의 실행 결과를 보면, 타입 힌팅 정보가 주어졌을 때 실행 시간이 단축되는 것을 확인할 수
+있다. 하지만, 실행 속도를 향상시킬 수 있다고 해서 타입 힌팅 정보를 남발하는 것은
+바람직하지 못하다. 프로파일링(profiling)을 실시해서 병목 지점을 확인한 후, 그 부분만을
+최적화할 때 타입 힌팅 정보를 주는 것이 바람직하다.
+
+그런데 클로저 컴파일러가 코드의 어느 부분에서 reflection 기능을 호출하고 있는지 확인할 수
+있으면 코드의 어느 부분에 타입 힌팅 정보를 주어야 할지 판단하는 데 도움이 될 것이다. 이런
+경우에 `\*warn-on-reflection*` 값을 ``true``로 설정해 주면, 컴파일시 클로저 컴파일러가
+코드의 어느 부분에서 reflection 기능을 호출하고 있는지 확인할 수 있다.
 
 [source]
 ....
@@ -496,9 +599,10 @@ public final class java_interop$length_of_no_hint extends AFunction {
 ;>> Reflection warning, NO_SOURCE_PATH:29 - call to substring can't be resolved.
 ....
 
-타입 힌팅 정보는 아무 식(expression)에나 붙일 수 있다.
+project.clj 파일에서 ``:warn-on-reflectio true``로 설정해도 같은 결과를 얻을 수 있다.
 
-함수의 반환값에도 표시할 수 있다.
+타입 힌팅 정보는 아무 식(expression)에나 붙일 수 있다. 다음과 같이 함수의 반환값에도
+표시할 수 있다.
 
 [source]
 ....
@@ -508,18 +612,19 @@ public final class java_interop$length_of_no_hint extends AFunction {
           (.split ^String (:name user) " ")))
 ....
 
-함수 정의시 반환값에도 표시할 수 있다.
+함수를 정의할 때 반환값에도 표시할 수 있다.
 
 [source]
 ....
 (defn file-extension
-  ^String [^java.io.File f]
+  ^String [^java.io.File f]   ; <1> 
   (-> (re-seq #"\.(.+)" (.getName f))
       first
       second))
 
 (.toUpperCase (file-extension (java.io.File. "image.png")))
 ....
+<1> `^String` 부분이 함수의 반환값이 String형임을 표시한다. 
 
 var에도 표시할 수 있다.
 
@@ -540,8 +645,8 @@ var에도 표시할 수 있다.
 == Arrays
 
 클로저에서는 자바의 기본(primitive) 자료형의 배열도 직접 다룰 수 있는 방법을
-제공한다. 그래서 필요한 경우 처리 속도를 높이는 데 사용할 수 있다. 자세한 내용은 11장
-'Numerics and Mathematics'에서 다룬다.
+제공한다. 그래서 필요한 경우 처리 속도를 높이는 데 사용할 수 있다. 자세한 내용은
+link:../Numerics-and-Mathematics.html#[Numerics and Mathematics]에서 다룬다.
 
 [cols="1l,2l,2l", options="header"]
 |===
