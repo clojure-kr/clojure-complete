@@ -574,9 +574,8 @@ WARNING: inc already refers to: #'clojure.core/inc in namespace: my-namespace,
   "my new inc function")
 ....
 
-
-
 ====
+
 따라서 ``refer-clojure``는 `refer` 함수에서 사용할 수 있는 <<refer-filters, 필터들>>을 모두
 사용할 수 있다.
 
@@ -609,6 +608,99 @@ indexterm:[ns]
   (:import java.util.Date
            [java.util.concurrent Executors TimeUnit]))
 ....
+
+
+indexterm:[create-ns] indexterm:[in-ns] indexterm:[ns]
+
+== create-ns/in-ns/ns 비교
+
+다음에 `create-ns`, `in-ns`, `ns` 간의 차이점을 비교 설명한다.
+
+`create-ns` 함수는 인수로 주어진 이름공간이 존재하지 않으면 새로 생성한 후 그 이름공간을
+반환한다. 이미 존재하면 단순히 그 이름공간을 반환한다. 아래의 예제에서 `user>` 프람프트가
+변경되지 않은 것에 주목하자.
+
+[source]
+----
+user> (create-ns 'my-new-namespace)
+#namespace[my-new-namespace]
+
+user> 
+----
+
+`in-ns` 함수는 `create-ns` 함수가 하는 일에 더해, 현재의 이름공간을 해당 이름공간으로
+변경한다. 아래의 예제에서 `user>` 프람프트가 ``my-new-namespace>``로 변경된 것에 주목하자.
+ 
+[source]
+----
+user> (in-ns 'my-new-namespace)
+#namespace[my-new-namespace]
+
+my-new-namespace> 
+----
+
+하지만 이 상태에서는 클로저 코어에 정의되어 있는 `+` 함수조차 실행되지 않는다. 그래서 `+`
+함수를 실행하려면 앞에 `clojure.core` 이름공간을 앞에 붙여 주어야 한다.
+
+[source]
+....
+my-new-namespace> (+ 5 6)
+CompilerException java.lang.RuntimeException: Unable to resolve symbol: + in this context
+
+my-new-namespace> (clojure.core/+ 5 6)
+11
+....
+
+하지만, 클로저의 특수 형식들(special forms)은 실행 가능하다. 다음은 특수 형식인 ``def``가
+실행된 예이다.
+
+[source]
+....
+my-new-namespace> (def a 10)
+#'my-new-namespace/a
+
+my-new-namespace> a
+10
+....
+
+이에 반해, `ns` 매크로는 `in-ns` 함수가 하는 일에 더해, `refer-clojure` 함수를 내부적으로
+호출해 주므로 `clojure.core` 이름공간에 정의되어 있는 모든 것들을 그대로 이용할 수 있게
+된다.
+
+[source]
+....
+user> (ns my-new-namespace)
+nil
+
+my-new-namespace> (+ 2 3)
+5
+....
+
+그래서 `in-ns` 함수의 주요 용도는, 아래의 예에서처럼, 이미 `ns` 매크로로 만들어진 이름공간
+사이를 REPL에서 이동하기 위한 목적으로 주로 사용된다.
+
+[source]
+....
+user> (ns my-new-namespace)
+nil
+
+my-new-namespace> (in-ns 'user)
+#namespace[user]
+
+user> (+ 1 2)
+3
+
+user> (in-ns 'my-new-namespace)
+#namespace[my-new-namespace]
+
+my-new-namespace> (* 4 5)
+20
+....
+
+
+   
+
+
 
 
 == 심볼 테이블의 구성
