@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.3">
+<title>Start</title>
+<link rel="stylesheet" href="..//my-asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Start</h1>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_클로저_언어의_특징들">1. 클로저 언어의 특징들</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>컴퓨터 언어의 역사에서 Lisp 계열 언어들(Common Lisp, Scheme, Racket, Clojure, &#8230;&#8203;)은 Algol
+계열 언어들과는 다른 계보를 형성해 왔다. 오늘날의 주류 언어들(C, C++, C#, Java,
+JavaScript, Python, Ruby, Perl, &#8230;&#8203;)이 모두 알골계 언어들인데 반해, 클로저는 리습 계열
+언어여서 실제 코드를 본 후 아마도 생소한 느낌을 갖는 사람들이 많을 것이다. 따라서 클로저
+언어를 본격적으로 익히기에 앞서, 다른 언어들과의 두드러진 차이점 몇 가지를 먼저 소개한다.</p>
+</div>
+<div class="sect2">
+<h3 id="_괄호의_사용">1.1. 괄호의 사용</h3>
+<div class="paragraph">
+<p>클로저 코드를 처음 접한 사람들은 아마도 그 많은 괄호에 놀라고 거부감도 들었을 것이다. 그런
+느낌들은 이 글을 쓰고 있는 필자들의 경우도 예외가 아니었다. 하지만 그 형태가 아니라 괄호가
+있음으로 인해 가지게 되는 막강한 효용에 눈 뜨기 시작할 때부터, 거부감의 대상이던 그
+괄호들이 아릅답게 보이기 시작한다. 이것은 단순한 주관적인 느낌이 아니라, 리습 언어를 알아
+가는 사람들의 공통된 심리적 패턴이다.</p>
+</div>
+<div class="paragraph">
+<p>괄호가 있어서 얻을 수 있는 첫 번째 이점은, 코드의 의미가 명확해져 문맥에 의지할 필요가
+없다는 점과, 연산자 우선 순위를 따로 외울 필요가 없다는 점이다. 다음의 두 코드를 보면 어느
+것의 의미가 명확한 지는 자명하다.</p>
+</div>
+<div class="listingblock">
+<div class="title">C</div>
+<div class="content">
+<pre class="highlight"><code class="language-c" data-lang="c">a &gt; b + c * d &amp;&amp; e</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Clojure</div>
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(and (&gt; a (+ b (* c d))) e)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>하지만, 괄호를 사용하는 진정한 위력은 매크로를 작성할 때 나온다. 리습 언어가 Programmable
+Programming Language라고 불리는 이유는 매크로를 통해 코드를 조작할 수 있기 때문인데, 이
+괄호가 있음으로 해서 코드 조작이 수월해진다. 위의 클로저 코드를 잘 살펴보면, 이미 코드
+형태 자체가 추상 구문 트리(Abstract Syntax Tree)의 형식이어서, 이 코드를 변형하기 위해
+별도의 파싱(parsing) 과정을 거칠 필요가 없기 때문이다. 지금 당장은 잘 이해가 안되더라도
+매크로를 작성하다 보면 그 가치를 깨닫게 된다. 그리고 바로 그 순간부터 괄호가 예뻐 보이기
+시작한다. 괄호가 있음으로 해서 좀더 쉽고 간결한 프로그래밍이 가능해진다면 괄호가
+많다는 것이 무슨 그리 큰 대수이겠는가?</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_전위_표기법_prefix_notation">1.2. 전위 표기법(Prefix Notation)</h3>
+<div class="paragraph">
+<p>리습 언어들에서는 연산자와 함수명이 괄호 내의 맨 앞 자리(전위 표기법: Prefix Notation)에
+온다. 사실 함수명의 경우에는 C 언어나 클로저나 큰 차이가 없다. 단지 함수 이름이 괄호 밖에
+있는가 안에 있는가의 차이와, 함수의 인수들 사이에 콤마를 찍느냐 마느냐의 차이밖에는
+없다. 함수명의 경우에는, 약간의 차이만 있을 뿐 C 언어도 이미 전위 표기법을 사용하고 있다는
+말이다.</p>
+</div>
+<div class="listingblock">
+<div class="title">C</div>
+<div class="content">
+<pre class="highlight"><code class="language-c" data-lang="c">printf("ASCII value = %d, Character = %c\n", ch , ch);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Clojure</div>
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(printf "ASCII value = %d, Character = %c%n" ch ch)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>차이가 있다면 연산자의 경우인데, C 언어에서는 중위 표기법(Infix Notation)을 사용하고
+클로저에서는 함수명과 마찬가지로 전위 표기법을 사용한다.</p>
+</div>
+<div class="listingblock">
+<div class="title">C</div>
+<div class="content">
+<pre class="highlight"><code class="language-c" data-lang="c">a + b + c + d + e;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Clojure</div>
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(+ a b c d e)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>클로저의 경우에는 전위 표기법을 사용함으로써, 연산항이 많을 때 <code>+</code> 기호를 반복할 필요가
+없다는 장점이 있다.</p>
+</div>
+<div class="paragraph">
+<p>리습 계열 언어에서는 연산자와 함수가 다른 취급을 받지 않는다. 수학에서 중위 표기법을 이미
+사용하고 있어 대부분의 언어가 그것을 답습하고 있을 뿐, 프로그래밍에서는 굳이 그것을 분리해
+처리하지 않는 것이 오히려 일관되고 편리하다. 연산자가 중간에 위치하게 되면 컴파일러에서는
+이를 파싱해야하는 수고를 한 번 더 거쳐야 하기 때문이다.</p>
+</div>
+<div class="paragraph">
+<p>예를 들어, C 언어에서 <code>**</code> 연산자를 거듭제곱 연산자로 언어에 추가하고 싶다고 가정해
+보자. 그러자면 우선 C 표준을 다루는 위원회에 제안을 해야 할 것이다. 물론 이 제안이
+받아들여진다는 보장도 없지만 이 위원회가 그 타당성을 인정해 새로운 C 언어 표준에
+반영하기로 했다고 가정해 보자. 그러면 그 후에 모든 C 컴파일러를 이 새로운 표준에 맞춰 다시
+작성해야 할 것이고, 이 연산자를 이용해 작성한 C 소스는 구 버전의 컴파일러에서는 제대로
+컴파일이 되지도 않을 것이다. 이 상황을 클로저에 적용해 보면 일은 너무도 간단해진다. 클로저
+프로그래머는 다음과 같이 코드를 작성할 것이다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn ** [a b]
+  (Math/pow a b))
+
+(** 2 8)   ; =&gt; 256.0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>얼마나 간단한가? 연산자와 함수를 구별할 필요가 없는 데서 오는 편리함이다. 함수 추가하듯이
+연산자를 추가하면 된다. 사실 엄밀하게 말하자면 클로저에는 다른 언어들에서의 연산자라는
+개념이 없다. 함수의 이름으로 기호를 사용할 수 있어서 오직 함수만이 존재할 뿐이다. 연산자의
+중위 표기법을 과감하게 버림으로써, 다른 언어에서 언어의 표준 위원회에서나 결정할 수 있는
+일을 개발자가 직접 할 수 있게 된 것이다.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_모든_것이_식_expression_이다">1.3. 모든 것이 식(expression)이다.</h3>
+<div class="paragraph">
+<p>클로저는 리습 계열의 언어이다. 따라서 클로저가 갖는 리습 언어로서의 특징을 먼저 이해해야
+한다. 클로저에서는 모든 것이 식이다. 즉, 어떤 코드의 일부를 실행하든 전체를 실행하든
+반드시 어떤 값(value)을 반환한다. 다른 언어들에서의 문(statement)이라는 개념이 클로저에는
+없다.</p>
+</div>
+<div class="paragraph">
+<p>이해를 돕기 위해, C 언어에서의 삼항 연산자(? :)와 if 문을 예로 들어 보자.</p>
+</div>
+<div class="paragraph">
+<p>아래의 삼항 연산자는 식(expression)이어서, 이 연산자 자체가 `10`이나 `20`을 반환한 후 그
+결과값이 `result`에 저장된다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c" data-lang="c">result = a &gt; b ? 10 : 20;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>하지만 아래의 <code>if</code> 문은 식(expression)이 아니라 문(statement)이어서, <code>if</code> 문 자체가 <code>10`이나
+`20`을 반환하는 것이 아니라, `if</code> 문의 내부에서 <code>result</code> 변수의 상태를 변경하고 있다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c" data-lang="c">if (a &gt; b) {
+    result = 10;
+} else {
+    result = 20;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>만약 C의 `if`가 식이였다면 다음의 코드가 작동해야 한다(물론 다음의 코드는 적법한 C 코드가 아니다).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c" data-lang="c">result = if (a &gt; b) 10 else 20;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>이와 같이 문은 주로 어떤 명령을 수행하고 부수효과를 낸다. 즉 문은 코드가 어떤 동작을 하고(상태를 변경하는 등)하는데 주안점이 있다면
+ 식은 코드가 어떤 값을 나타내느냐 하는 것에 주안점이 있다.</p>
+</div>
+<div class="paragraph">
+<p>그러면 이것이 왜 중요한가? 모든 코드가 식으로 구성되면, 코드의 표현력이 늘어나고 아울러 코드의 조합력이 증가한다. 왜냐하면 코드가 부수효과 없이 어떤 값만을 나타낸다면, 코드는 참조 투명성이 보장되며, 또한 제 1급 시민이 될 수 있어서 함수의 파라미터로 사용될 수 있기 때문이다.</p>
+</div>
+<div class="paragraph">
+<p>`if`가 문이 아니라 식일 때, 코드의 표현력이 어떻게 증가하는지 다음의 실제 예제를 통해 살펴보자.</p>
+</div>
+<div class="paragraph">
+<p>다음의 버전 1은, 우리가 흔히 사용하는 <code>if</code> 문의 예이다. `n`이 참이면, `-n`만큼 이동하고,
+거짓이면 `-1`만큼 이동한다.</p>
+</div>
+<div class="listingblock">
+<div class="title">Version 1</div>
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(if n            ; condition
+  (move (- n))   ; then-part
+  (move -1))     ; else-part</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>if`가 식이 아니라 문인 언어에 익숙해져 있는 사람들에게는 위의 코드를 더 간결하게 표현할
+수 있다는 생각 자체가 떠오르지 않을 것이다. 하지만 리습 언어로 사고하는 사람들은 문제점을
+발견한다. 즉, 위 코드의 문제점은 `move</code> 호출이 두 번씩이나 중복되어 있다는 것이다. `if`가
+식인 언어에서는, 이를 수학에서 인수분해할 때 공통 인수 뽑아내듯이 더 간단하게 다음과 같이
+줄일 수 있다.</p>
+</div>
+<div class="listingblock">
+<div class="title">Version 2</div>
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(move (if n (- n) -1))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>위의 코드가 C 언어에서 동작할 수 없는 이유는, <code>move</code> 함수의 첫 번째 인수 자리에 놓인 <code>if</code>
+문이 어떤 값도 반환할 수 없기 때문이다. 하지만 리습 계열 언어에서는 모든 것이 식이이서,
+`if`조차도 값을 반환할 수 있어 위와 같은 표현이 가능해진다.</p>
+</div>
+<div class="paragraph">
+<p>한 걸음 더 나아가 `-`도 한 번 더 공통 인수로 뽑아낼 수 있다.</p>
+</div>
+<div class="listingblock">
+<div class="title">Version 3</div>
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(move (- (if n n 1)))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>if`를 `or</code> 로 대치하면 더 간결해 진다.</p>
+</div>
+<div class="listingblock">
+<div class="title">Version 4</div>
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(move (- (or n 1)))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>클로저에서는 반복문조차도 값을 반환한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(for [n [1 2 3 4 5]]
+  (* 2 n))
+; =&gt; (2 4 6 8 10)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>위와 같이 클로저와 같은 리습 계열 언어에서는 코드의 일부 또는 전체가 모두 식으로 구성되어
+있다. 그래서 모든 리습 계열 언어에서는 코드를 '실행(execution)'한다고 하지 않고
+'평가(evaluation)'한다고 표현하는데, 그 이유는 evaluation이라는 말 자체가 접두어 e-(out)와
+value(값)의 합성어로, 어떤 값을 내놓는다, 즉 평가한다는 의미를 갖고 있기 때문이다. 다시
+말해, 비리습 계열 언어에서의 실행한다는 말 속에는 실행 결과가 어떤 값을 내놓지 않을 수도
+있다는 의미가 함축되어 있기 때문에, 리습 계열 언어에서는 평가한다는 말을 주로 사용한다.</p>
+</div>
+<div class="paragraph">
+<p>아울러 모든 코드가 식이라는 사실은, 나중에 배우게 될 매크로(Macros)의 구현에도 대단히
+중요한 의미를 갖는다.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2015-12-08 16:17:06 KST
+</div>
+</div>
+</body>
+</html>

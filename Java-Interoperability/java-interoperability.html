@@ -258,7 +258,7 @@ Libraries: import</a> 부분을 참조하기 바란다.</p>
 <h2 id="_유용한_interop_관련_함수들">2. 유용한 Interop 관련 함수들</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="__code_class_code_함수">2.1. <code>class</code> 함수</h3>
+<h3 id="__code_class_code">2.1. <code>class</code></h3>
 <div class="paragraph">
 <p><code>class</code> 함수는 인수로 주어진 객체의 class를 반환한다.</p>
 </div>
@@ -269,7 +269,7 @@ Libraries: import</a> 부분을 참조하기 바란다.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="__code_instance_code_함수">2.2. <code>instance?</code> 함수</h3>
+<h3 id="__code_instance_code">2.2. <code>instance?</code></h3>
 <div class="paragraph">
 <p><code>instance?</code> 함수는 두 번째 인수가 첫 번째 인수로 주어진 클래스의 인스턴스인지 여부를
 반환한다.</p>
@@ -281,10 +281,10 @@ Libraries: import</a> 부분을 참조하기 바란다.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="__code_code_매크로">2.3. <code>..</code> 매크로</h3>
+<h3 id="__code_code">2.3. <code>..</code></h3>
 <div class="paragraph">
-<p>다음과 같은 연속 호출(chained calls) 형태의 자바 코드를, 클로저에서는 <code>..</code> 매크로를 이용할
-수 있다.</p>
+<p>다음과 같은 연속 호출(chained calls) 형태의 자바 코드를, 클로저에서는 <code>..</code> 매크로를 이용해
+표현할 수 있다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -346,7 +346,7 @@ date.getTime().toString();</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_doto">2.4. doto</h3>
+<h3 id="__code_doto_code">2.4. <code>doto</code></h3>
 <div class="paragraph">
 <p><code>doto</code> 매크로는 자바의 '동일한' 인스턴스 객체를 대상으로 여러 번의 설정 작업을 반복적으로
 수행할 때 이용하면 편리하다.</p>
@@ -481,7 +481,7 @@ list.add(<span class="integer">3</span>)<span class="comment">;</span></code></p
 </div>
 </div>
 <div class="paragraph">
-<p>자바에서는, 이와 같은 메소드를 '호출&#8217;하는 코드에서 <code>try/catch/finally</code> 구문르 통해 이
+<p>자바에서는, 이와 같은 메소드를 '호출&#8217;하는 코드에서 <code>try/catch/finally</code> 구문을 통해 이
 예외를 반드시 명시적으로 처리해 주어야 한다. 그렇지 않으면 컴파일러시 에러가 발생한다.</p>
 </div>
 <div class="paragraph">
@@ -909,9 +909,9 @@ list.add(<span class="integer">3</span>)<span class="comment">;</span></code></p
 </ul>
 </div>
 <div class="sect2">
-<h3 id="_instances_of_anonymous_classes_proxy">6.1. Instances of Anonymous Classes: proxy</h3>
+<h3 id="_무명_클래스의_인스턴스_만들기_code_proxy_code">6.1. 무명 클래스의 인스턴스 만들기: <code>proxy</code></h3>
 <div class="paragraph">
-<p><code>refiy</code>와 <code>proxy</code> 둘 다 무명 클래스의 인스턴스를 생성한다. 그리고 둘다 top level
+<p><code>refiy</code>와 <code>proxy</code> 둘 다 무명 클래스의 인스턴스를 생성한다. 그리고 둘 다 top level
 form으로 쓰여서는 안된다. 이 무명 클래스는 컴파일할 때 한 번만 생성되고, 이 무명 클래스의
 인스턴스는 <code>refiy</code>와 <code>proxy</code>를 감싸고 있는 함수가 호출될 때마다 매번 생성된다.</p>
 </div>
@@ -919,36 +919,80 @@ form으로 쓰여서는 안된다. 이 무명 클래스는 컴파일할 때 한 
 <ul>
 <li>
 <p><code>reify</code>는 클로저의 프로토콜과 자바의 인터페이스를 구현(implement)하고, 자바의 클래스들
-중 <code>Object</code> 클래스만을 확장(extend)할 수 있다.</p>
+중 <code>java.lang.Object</code> 클래스만을 확장(extend)할 수 있다. 실제로 <code>java.lang.Object</code>
+클래스를 확장하는 일은 거의 없으므로, 주로 클로저의 프로토콜과 자바의 인터페이스를
+구현(implement)할 때 주로 사용한다.</p>
 </li>
 <li>
-<p><code>proxy</code>는 <code>refiy</code>가 할 수 있는 일에 더해, 모든 자바의 클래스들을 확장할 수 있다.</p>
+<p><code>proxy</code>는 <code>refiy</code>가 할 수 있는 일에 더해, 모든 자바의 클래스들을 확장할 수
+있다. 따라서 상위 클래스의 메소드를 재정의(overriding)할 필요가 있을 때 주로
+사용한다. 하지만 상위 클래스에는 없는 새로운 메소드를 정의할 수는 없다. 이 일을
+하려먼 <code>gen-class</code>를 사용해야 한다.</p>
 </li>
 </ul>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+상위 클래스를 subclassing할 일이 없으면, <code>reify</code>를 사용하는 것이 좋다.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">proxy API</div>
+<div class="content">
+<pre>(proxy [super-class? interface*] [super-class-constructor-argument*]
+  fun*)
+
+super-class := 상속할 상위 클래스를 지정하며, 맨 처음에 와야 한다. 상위 클래스가
+               지정되지 않으면 java.lang.Objcet를 상속하게 된다.
+interface := 구현하고자 하는 자바의 인터페이스 또는 클로저의 프로토콜
+super-class-constructor-argument := 상위 클래스 생성자의 인수
+fun := 상위 클래스의 재정의하고자 하는 함수 또는 구현하고자 하는 인터페이스의 함수
+       (name [params*] body) |
+       (name ([params*] body) ([params+] body) ...)
+
+fun은 closure를 형성할 수 있다.</pre>
+</div>
+</div>
 <div class="paragraph">
-<p>따라서 super class를 subclassing할 일이 없으면, <code>reify</code>를 사용하는 것이 좋다.</p>
-</div>
-<div class="listingblock">
-<div class="title">proxy</div>
-<div class="content">
-<pre>(proxy [super-class? interface-or-protocol*] [super-class-constructor-argument*]
-  fn*)
-
-fn =&gt; (name [params*] body) |
-      (name ([params*] body) ([params+] body) ...)
-
-fn은 closure를 형성할 수 있다.</pre>
-</div>
+<p>다음은 <code>java.lang.Object</code>의 <code>toString</code> 메소드를 재정의하고, 클로저의 프로토콜
+<code>clojure.lang.IDeref</code>을 구현한 예이다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">lru-cache</span>
-  [max-size]
-  (<span class="keyword">proxy</span> [java.util.LinkedHashMap] [<span class="integer">16</span> <span class="float">0.75</span> <span class="predefined-constant">true</span>]
-    (removeEldestEntry [entry]
-      (<span class="keyword">&gt;</span> (<span class="keyword">count</span> this) max-size))))</code></pre>
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">make-some-example</span>
+  [msg]
+  (<span class="keyword">let</span> [state (<span class="keyword">atom</span> msg)]
+    (<span class="keyword">proxy</span> [clojure.lang.IDeref] []   <span class="comment">; </span><i class="conum" data-value="1"></i><b>(1)</b>
+      (toString [] @state)            <span class="comment">; </span><i class="conum" data-value="2"></i><b>(2)</b>
+      (<span class="keyword">deref</span> [] state))))
+
+(<span class="keyword">def</span> <span class="function">o</span> (make-some-example <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello, there!</span><span class="delimiter">&quot;</span></span>))
+
+(<span class="keyword">.</span>toString o)   <span class="comment">;=&gt; &quot;Hello, there!&quot;</span>
+
+(<span class="keyword">reset!</span> @o <span class="string"><span class="delimiter">&quot;</span><span class="content">Hi, everyone!</span><span class="delimiter">&quot;</span></span>)
+
+(<span class="keyword">.</span>toString o)   <span class="comment">;=&gt; &quot;Hi, everyone!&quot;</span></code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>clojure.lang.IDeref 프로토콜을 구현하므로, deref(또는 <code>@</code>)를 사용할 수 있다.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>proxy 내부에서 지역 심볼 state를 closure로 참조할 수 있다.</td>
+</tr>
+</table>
 </div>
 <div class="admonitionblock caution">
 <table>
@@ -957,59 +1001,38 @@ fn은 closure를 형성할 수 있다.</pre>
 <i class="fa icon-caution" title="Caution"></i>
 </td>
 <td class="content">
-<code>proxy</code> 내에서 overloading하는 함수들 안에는 <code>(removeEldestEntry [this entry]
-&#8230;&#8203;)</code>와 같이 <code>this</code>를 명시적으로 넣어줄 필요가 없다. 반면에, <code>proxy</code>를 제외한 다른
-함수들(<code>reify</code>, <code>defrecord</code>, <code>deftype</code>, <code>gen-class</code>)의 경우에는 모두 메소드의 첫번째
-인수에 <code>this</code>(반드시 <code>this</code>일 필요는 없다)를 명시적으로 넣어주어야 한다.
+<code>proxy</code> 내에서 overloading하는 함수들 안에는 <code>(toString [this] &#8230;&#8203;)</code>와 같이
+<code>this</code>를 명시적으로 넣어줄 필요가 없다. 반면에, <code>proxy</code>를 제외한 다른 <code>reify</code>,
+<code>defrecord</code>, <code>deftype</code>, <code>gen-class</code>의 경우에는 모두 메소드의 첫번째 인수에
+<code>this</code><sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup>를 명시적으로 넣어주어야 한다.
 </td>
 </tr>
 </table>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">def</span> <span class="function">cache</span> (<span class="keyword">doto</span> (lru-cache <span class="integer">5</span>)
-             (<span class="keyword">.</span>put <span class="symbol">:a</span> <span class="symbol">:b</span>)))
-
-cache
-<span class="comment">;=&gt; #&lt;LinkedHashMap$0 {:a=:b}&gt;</span>
-
-(<span class="keyword">doseq</span> [[k v] (<span class="keyword">partition</span> <span class="integer">2</span> (<span class="keyword">range</span> <span class="integer">500</span>))]
-  (<span class="keyword">get</span> cache <span class="symbol">:a</span>)
-  (<span class="keyword">.</span>put cache k v))
-
-cache
-<span class="comment">;=&gt; #&lt;LinkedHashMap$0 {492=493, 494=495, 496=497, :a=:b, 498=499}&gt;</span></code></pre>
-</div>
-</div>
 </div>
 <div class="sect2">
-<h3 id="_defining_named_classes">6.2. Defining Named Classes</h3>
+<h3 id="_이름_있는_클래스_named_classes_정의하기_code_gen_class_code">6.2. 이름 있는 클래스(Named Classes) 정의하기: <code>gen-class</code></h3>
 <div class="paragraph">
-<p><code>proxy</code>는 컴파일-타임에 컴파일한 후, 그 결과를 클래스 파일(*.class)에 저장하지는
-않는다. 반면에 <code>gen-class</code>는 컴파일-타임에 클래스 파일을 직접 생성해
-준다<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup>. 이것은, 예를 들어 클로저로 작성된 함수를 자바에서 직접 호출해 사용할 수
-있게 하거나, 외부의 자바 라이브러리를 사용하고자 할 때, 그 라이브러리를 위한 설정 파일에
-정적 클래스 파일의 이름을 지정해 줘야 할 때 필요하다.</p>
+<p><code>proxy</code>는 컴파일 타임에 컴파일한 후, 그 결과를 클래스 파일(*.class)에 저장하지는
+않는다. 반면에 <code>gen-class</code>는 컴파일 타임에 클래스 파일을 디스크 상에 직접 생성해
+준다<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</sup>. 따라서 클로저로 작성된 함수를 자바에서 직접 호출해 사용할 필요가 있을
+때 유용하다. 예를 들어, 핵심 로직은 클로저로 작성하고 클래스 파일의 형태로 컴파일 한 후에,
+자바 프로그래머에게 건네주면, 그 자바 프로그래머는 클로저에 대한 지식이 없어도 원하는
+작업을 수행할 수 있게 된다.</p>
 </div>
 <div class="paragraph">
-<p><code>gen-class</code>로 할 수 있는 일은 다음과 같다.</p>
+<p><code>gen-class</code>로 할 수 있는 일은 <code>proxy</code>가 할 수 있는 일에 더해 다음과 같은 일을 할 수 있다.</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>자바의 모든 클래스를 subclassing할 수 있다.</p>
-</li>
-<li>
-<p>부모 클래스의 protected 필드에 접근할 수 있다.</p>
+<p>상위 클래스의 protected 필드에 접근할 수 있다.</p>
 </li>
 <li>
 <p>여러 개의 생성자를 정의할 수 있다.</p>
 </li>
 <li>
-<p>부모 클래스에는 없는 새로운 정적(static) 메소드와 인스턴스 메소드를 정의할 수 있다.</p>
-</li>
-<li>
-<p>자바의 모든 인터페이스를 구현할 수 있다.</p>
+<p>상위 클래스에는 없는 새로운 정적(static) 메소드와 인스턴스 메소드를 정의할 수 있다.</p>
 </li>
 <li>
 <p>static main 메소드를 정의할 수 있다.</p>
@@ -1018,433 +1041,280 @@ cache
 </div>
 <div class="paragraph">
 <p>하지만 <code>gen-class</code>는 가교 역할만을 담당하고, 실제 일은 클로저 함수가 하게 된다는 점에서,
-일반적인 자바 클래스와는 차이가 있다.</p>
+일반적인 자바 클래스와는 차이가 있다. 그리고 반드시 AOT 컴파일을 수행한 후, 해당 클래스를
+import해야만 그 효력이 발생한다는 점도 기억하자.</p>
+</div>
+<div class="listingblock">
+<div class="title">gen-class API</div>
+<div class="content">
+<pre>(gen-class
+  :name class-name
+  :prefix prefix
+  :extends super-class
+  :implements [interface+]
+  :constructors {[param-type*] [super-param-type*] ...}
+  :state state-name
+  :init init-name
+  :methods [[method-name [method-argument-type*] return-type]+]
+  :main boolean
+  ...)
+
+class-name := 생성할 클래스명을 지정해 준다.
+prefix := 메소드명 앞에 붙일 문자열을 지정한다. default는 "-"이다.
+super-class := 상속할 상위 클래스를 지정한다. 지정하지 않으면
+               java.lang.Object를 상속한다.
+interface := 자바의 인터페이스 또는 클로저의 프로토콜
+param-type := 이 클래스의 생성자 인수들의 타입을 지정한다.
+super-param-type* := 상속할 상위 클래스의 생성자 인수들의 타입을 지정한다.
+state-name := public final 속성을 가진 멤버 변수 한 개만 지정 가능하다.
+              여기에 atom을 지정하면 해당 값을 변경할 수 있다.
+init-name := [[superclass-constructor-argument*] state]
+             constructor가 호출될 때 이 함수를 호출한다.
+:main := true이면 static public main 함수가 생성된다.</pre>
+</div>
 </div>
 <div class="sect3">
-<h4 id="_example_1_providing_static_methods_and_a_command_line_utility_via_code_gen_class_code">6.2.1. Example 1: Providing static methods and a command-line utility via <code>gen-class</code></h4>
+<h4 id="__code_gen_class_code_이용_절차">6.2.1. <code>gen-class</code> 이용 절차</h4>
+<div class="paragraph">
+<p>먼저 간단한 예제로 시작해 보자.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>다음 예에서는 <code>:extends</code>를 지정하지 않았으므로 <code>java.lang.Object</code> 클래스를
+상속한다. 그리고 <code>:prefix</code>가 지정되지 않았으므로, 메소드 이름에는 default prefix인 "-"이
+붙어야 한다.</p>
 <div class="listingblock">
-<div class="title">ResizeImage 클래스 정의</div>
+<div class="title">java-interop.example1.clj</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">com.clojurebook.imaging</span>
-  (<span class="symbol">:use</span> [clojure.java.io <span class="symbol">:only</span> (file)])
-  (<span class="symbol">:import</span> (java.awt Image Graphics2D)
-           javax.imageio.ImageIO
-           java.awt.image.BufferedImage
-           java.awt.geom.AffineTransform))
-
-(<span class="keyword">defn</span> <span class="function">load-image</span>
-  [file-or-path]
-  (<span class="keyword">-&gt;</span> file-or-path file ImageIO/read))
-
-(<span class="keyword">defn</span> <span class="function">resize-image</span>
-  ^BufferedImage [^Image original factor]
-  (<span class="keyword">let</span> [scaled (BufferedImage. (<span class="keyword">*</span> factor (<span class="keyword">.</span>getWidth original))
-                               (<span class="keyword">*</span> factor (<span class="keyword">.</span>getHeight original))
-                               (<span class="keyword">.</span>getType original))]
-    (<span class="keyword">.</span>drawImage ^Graphics2D (<span class="keyword">.</span>getGraphics scaled)
-                original
-                (AffineTransform/getScaleInstance factor factor)
-                <span class="predefined-constant">nil</span>)
-    scaled))
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">java-interop.example1</span>)
 
 (<span class="keyword">gen-class</span>
-  <span class="symbol">:name</span> ResizeImage
-  <span class="symbol">:main</span> <span class="predefined-constant">true</span>
-  <span class="symbol">:methods</span> [^<span class="symbol">:static</span> [resizeFile [String String <span class="keyword">double</span>] void]
-            ^<span class="symbol">:static</span> [resize [java.awt.Image <span class="keyword">double</span>] java.awt.image.BufferedImage]])
+  <span class="symbol">:name</span> java_interop.example1.MyClass)
 
-(<span class="keyword">def</span> ^<span class="symbol">:private</span> -resize resize-image)
-
-(<span class="keyword">defn-</span> <span class="function">-resizeFile</span>
-  [path outpath factor]
-  (ImageIO/write (<span class="keyword">-&gt;</span> path load-image (resize-image factor))
-                 <span class="string"><span class="delimiter">&quot;</span><span class="content">png</span><span class="delimiter">&quot;</span></span>
-                 (file outpath)))
-
-(<span class="keyword">defn</span> <span class="function">-main</span>
-  [&amp; [path outpath factor]]
-  (<span class="keyword">when-not</span> (<span class="keyword">and</span> path outpath factor)
-    (<span class="keyword">println</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">Usage: java -jar example-uberjar.jar ResizeImage [INFILE] [OUTFILE] [SCALE]</span><span class="delimiter">&quot;</span></span>)
-    (System/exit <span class="integer">1</span>))
-  (-resizeFile path outpath (Double/parseDouble factor)))</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">명령창에서 호출하는 예</div>
-<div class="content">
-<pre>java -cp gen-class-1.0.0-standalone.jar ResizeImage clojure.png resized.png 0.5</pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">자바에서 호출하는 예</div>
-<div class="content">
-<pre>ResizeImage.resizeFile("clojure.png", "resized.png", 0.5);</pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_example_2_defining_a_custom_exception_type_using_code_gen_class_code">6.2.2. Example 2: Defining a custom exception type using <code>gen-class</code></h4>
-<div class="paragraph">
-<p>이번 예에서는 인스턴스 메소드와 상태를 갖는 클래스를 구현한다.</p>
-</div>
-<div class="paragraph">
-<p><code>gen-class</code>에서 <code>:constructors</code>를 지정하면, <code>:init</code>과 <code>:state</code>도 함께 지정해
-주어야 한다.</p>
-</div>
-<div class="listingblock">
-<div class="title">CustomException 클래스 정의</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">com.clojurebook.CustomException</span>
-  (<span class="symbol">:gen-class</span> <span class="symbol">:extends</span> RuntimeException
-              <span class="symbol">:implements</span> [clojure.lang.IDeref]
-              <span class="symbol">:constructors</span> {[java.util.Map String] [String]
-                             [java.util.Map String Throwable] [String Throwable]}
-              <span class="symbol">:init</span> init
-              <span class="symbol">:state</span> info
-              <span class="symbol">:methods</span> [[getInfo [] java.util.Map]
-                        [addInfo [Object Object] void]]))
-
-(<span class="keyword">import</span> 'com.clojurebook.CustomException)
-
-(<span class="keyword">defn-</span> <span class="function">-init</span>
-  ([info message]
-    [[message] (<span class="keyword">atom</span> (<span class="keyword">into</span> {} info))])
-  ([info message ex]
-    [[message ex] (<span class="keyword">atom</span> (<span class="keyword">into</span> {} info))]))
-
-(<span class="keyword">defn-</span> <span class="function">-deref</span>
-  [^CustomException this]
-  @(<span class="keyword">.</span>info this))
-
-(<span class="keyword">defn-</span> <span class="function">-getInfo</span>
+(<span class="keyword">defn</span> <span class="function">-toString</span>
   [this]
-  @this)
+  <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello, World!</span><span class="delimiter">&quot;</span></span>)</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>project.clj 파일의 <code>:aot</code> 옵션에 <code>gen-class</code>가 정의되어 있는 이름공간을 다음과 같이
+추가해 준다.</p>
+<div class="listingblock">
+<div class="title">project.clj</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(defproject java-interop <span class="string"><span class="delimiter">&quot;</span><span class="content">0.1.0-SNAPSHOT</span><span class="delimiter">&quot;</span></span>
+  <span class="symbol">:dependencies</span> [[org.clojure/clojure <span class="string"><span class="delimiter">&quot;</span><span class="content">1.7.0</span><span class="delimiter">&quot;</span></span>]]
+  <span class="symbol">:aot</span> [java-interop.example1])</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>프로젝트의 루트 디렉토리에서 다음과 같이 컴파일해 준다.</p>
+<div class="listingblock">
+<div class="title">lein compile 실행</div>
+<div class="content">
+<pre>$ lein compile
+Compiling java-interop.example1</pre>
+</div>
+</div>
+</li>
+<li>
+<p>그러면 target/classes/java_interop/example1 디렉토리 아래에 MyClass.class로 컴파일되어
+있는 것을 확인할 수 있다.</p>
+</li>
+<li>
+<p>다음은 이 클래스 파일을 다른 이름공간에서 읽어들여 실행한 결과이다. 여기에서는 클로저에서
+읽어 들여 실행했지만, 실제로는 자바 언어로 읽어 들이게 될 것이다.</p>
+<div class="listingblock">
+<div class="title">java-interop.test1.clj</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">java-interop.test1</span>
+  (<span class="symbol">:import</span> java_interop.example1.MyClass))
 
-(<span class="keyword">defn-</span> <span class="function">-addInfo</span>
-  [^CustomException this <span class="keyword">key</span> value]
-  (<span class="keyword">swap!</span> (<span class="keyword">.</span>info this) <span class="keyword">assoc</span> <span class="keyword">key</span> value))</code></pre>
+(<span class="keyword">.</span>toString (MyClass.))   <span class="comment">;=&gt; &quot;Hello, World!&quot;</span></code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="__code_prefix_code_옵션_지정하기">6.2.2. <code>:prefix</code> 옵션 지정하기</h4>
+<div class="paragraph">
+<p><code>:prefix</code> 옵션에 다음과 같이 자신이 원하는 prefix를 지정할 수도 있다. 그리고 하나의 이름
+공간에 <code>gen-class</code>를 여러 번 정의할 수도 있다.</p>
+</div>
+<div class="listingblock">
+<div class="title">java_interop.example2.clj</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">java-interop.example2</span>)
+
+(<span class="keyword">gen-class</span>
+  <span class="symbol">:name</span>   java_interop.example1.MyClassA
+  <span class="symbol">:prefix</span> classA-)
+
+(<span class="keyword">gen-class</span>
+  <span class="symbol">:name</span>   java_interop.example1.MyClassB
+  <span class="symbol">:prefix</span> classB-)
+
+(<span class="keyword">defn</span> <span class="function">classA-toString</span>
+  [this]
+  <span class="string"><span class="delimiter">&quot;</span><span class="content">I'm an A.</span><span class="delimiter">&quot;</span></span>)</code></pre>
 </div>
 </div>
 <div class="listingblock">
-<div class="title">실행 예</div>
+<div class="title">java-interop.test2.clj</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">import</span> 'com.clojurebook.CustomException)
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">java-interop.test2</span>
+  (<span class="symbol">:import</span> (java_interop.example1 MyClassA MyClassB)))
 
-(<span class="keyword">defn</span> <span class="function">perform-operation</span>
-  [&amp; [job priority <span class="symbol">:as</span> args]]
-  (<span class="keyword">throw</span> (CustomException. {<span class="symbol">:arguments</span> args} <span class="string"><span class="delimiter">&quot;</span><span class="content">Operation failed</span><span class="delimiter">&quot;</span></span>)))
-
-(<span class="keyword">defn</span> <span class="function">run-batch-job</span>
-  [customer-id]
-  (<span class="keyword">doseq</span> [[job priority] {<span class="symbol">:send-newsletter</span> <span class="symbol">:low</span>
-                          <span class="symbol">:verify-billings</span> <span class="symbol">:critical</span>
-                          <span class="symbol">:run-payroll</span> <span class="symbol">:medium</span>}]
-    (<span class="keyword">try</span>
-      (perform-operation job priority)
-      (<span class="keyword">catch</span> CustomException e
-        (<span class="keyword">swap!</span> (<span class="keyword">.</span>info e) <span class="keyword">merge</span> {<span class="symbol">:customer-id</span> customer-id
-                                <span class="symbol">:timestamp</span> (System/currentTimeMillis)})
-        (<span class="keyword">throw</span> e)))))
-
-(<span class="keyword">try</span>
-  (run-batch-job <span class="integer">89045</span>)
-  (<span class="keyword">catch</span> CustomException e
-    (<span class="keyword">println</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">Error!</span><span class="delimiter">&quot;</span></span> (<span class="keyword">.</span>getMessage) @e)))
-<span class="comment">;&gt;&gt; Error! Operation failed {:timestamp 1309935234556, :customer-id 89045,</span>
-<span class="comment">;&gt;&gt;                          :arguments (:verify-billings :critical)}</span>
-<span class="comment">;=&gt; nil</span></code></pre>
+(<span class="keyword">.</span>toString (MyClassA.))   <span class="comment">;=&gt; &quot;I'm an A.&quot;</span>
+(<span class="keyword">.</span>toString (MyClassB.))   <span class="comment">;=&gt; &quot;I'm an B.&quot;</span></code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_example_3_using_junit_annotations_to_mark_code_gen_class_code_methods_as_tests">6.2.3. Example 3: Using JUnit annotations to mark <code>gen-class</code> methods as tests</h4>
+<h4 id="_인터페이스_구현하기">6.2.3. 인터페이스 구현하기</h4>
 <div class="paragraph">
-<p>클로저에서 클래스를 생성하는 형식들(<code>deftype</code>, <code>defrecord</code>, <code>gen-class</code>)에서 클래스나
-메소드, 필드를 정의할 때 메타 데이터를 제공하면, 그 메타 데이터가 자바의 annotation 역할을
-수행한다.</p>
+<p><code>gen-class</code>는 <code>ns</code> 안에서도 정의할 수 있다. 이 때 <code>:name</code> 옵션을 지정해 주지 않으면, ns
+이름공간이 곧 클래스명이 된다.</p>
 </div>
 <div class="listingblock">
+<div class="title">java_interop.Example3.clj</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">com.clojurebook.annotations.junit</span>
-  (<span class="symbol">:import</span> (org.junit Test Assert))
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">java-interop.Example3</span>
   (<span class="symbol">:gen-class</span>
-    <span class="symbol">:name</span> com.clojurebook.annotations.JUnitTest
-    <span class="symbol">:methods</span> [[^{org.junit.Test <span class="predefined-constant">true</span>} simpleTest [] void]
-              [^{org.junit.Test {<span class="symbol">:timeout</span> <span class="integer">2000</span>}} timeoutTest [] void]
-              [^{org.junit.Test {<span class="symbol">:expected</span> NullPointerException}}
-                badException [] void]]))
+   <span class="symbol">:implements</span> [clojure.lang.IDeref]))
 
-(<span class="keyword">defn</span> <span class="function">-simpleTest</span>
+(<span class="keyword">defn</span> <span class="function">-deref</span>
   [this]
-  (Assert/assertEquals (<span class="keyword">class</span> this) com.clojurebook.annotations.JUnitTest))
-
-(<span class="keyword">defn</span> <span class="function">-badException</span>
-  [this]
-  (Integer/parseInt (System/getProperty <span class="string"><span class="delimiter">&quot;</span><span class="content">nonexistent</span><span class="delimiter">&quot;</span></span>)))
-
-(<span class="keyword">defn</span> <span class="function">-timeoutTest</span>
-  [this]
-  (Thread/sleep <span class="integer">10000</span>))</code></pre>
+  <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello, World!</span><span class="delimiter">&quot;</span></span>)</code></pre>
 </div>
 </div>
-<table class="tableblock frame-all grid-all spread">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
+<div class="listingblock">
+<div class="title">java-interop.test3.clj</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">java-interop.test3</span>
+  (<span class="symbol">:import</span> (java_interop.Example3)))
+
+@(Example3.)   <span class="comment">;=&gt; &quot;Hello, World!&quot;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_클래스_확장하기">6.2.4. 클래스 확장하기</h4>
+<div class="paragraph">
+<p><code>:extends</code> 옵션에 확장하고자 하는 상위 클래스를 지정할 수 있다. 앞에서 정의한 <code>Example3</code>
+클래스를 그대로 상속해 보자.</p>
+</div>
+<div class="listingblock">
+<div class="title">java_interop.Example4.clj</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">java-interop.Example4</span>
+  (<span class="symbol">:gen-class</span>
+   <span class="symbol">:extends</span> java_interop.Example3))</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">java-interop.test4.clj</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">java-interop.test4</span>
+  (<span class="symbol">:import</span> java_interop.Example4))
+
+@(Example4.)   <span class="comment">;=&gt; &quot;Hello, World!&quot;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="__code_state_code_옵션_지정하기">6.2.5. <code>:state</code> 옵션 지정하기</h4>
+<div class="paragraph">
+<p><code>:constructors</code> 옵션을 지정하게 되면 <code>:init</code> 옵션과 <code>:state</code> 옵션도 함께 지정해 주어야
+한다. 이때 <code>:state</code> 옵션에는 public final 속성을 가진 멤버 변수 한 개만 지정 가능하지만,
+여기에 atom을 지정하면 해당 값을 변경할 수도 있다.</p>
+</div>
+<div class="listingblock">
+<div class="title">java_interop.Example5.clj</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">java-interop.Example5</span>
+  (<span class="symbol">:gen-class</span>
+   <span class="symbol">:implements</span>   [clojure.lang.IDeref]
+   <span class="symbol">:state</span>        state
+   <span class="symbol">:init</span>         init
+   <span class="symbol">:constructors</span> {[String] []}))
+
+(<span class="keyword">defn</span> <span class="function">-init</span>
+  [message]
+  [[] (<span class="keyword">atom</span> message)])   <span class="comment">; </span><i class="conum" data-value="1"></i><b>(1)</b>
+
+(<span class="keyword">defn</span> <span class="function">-deref</span>
+  [this]
+  @(<span class="keyword">.</span>state this))</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
 <tr>
-<th class="tableblock halign-left valign-top">Clojure metadata</th>
-<th class="tableblock halign-left valign-top">Java annotation</th>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>-init</code> 함수 안에서 <code>:state</code> 옵션에 지정된 <code>state</code> 필드를 <code>(atom message)</code>으로
+초기화하고 있다. 따라서 이 필드의 값을 다음과 같이 변경할 수 있게 된다.</td>
 </tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="literal"><pre>^{org.junit.Test true}</pre></div></td>
-<td class="tableblock halign-left valign-top"><div class="literal"><pre>@org.junit.Test</pre></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="literal"><pre>^{org.junit.Test {:timeout 2000}}</pre></div></td>
-<td class="tableblock halign-left valign-top"><div class="literal"><pre>@org.junit.Test(timeout=2000)</pre></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="literal"><pre>^{org.junit.Test {:expected NullPointerException}}</pre></div></td>
-<td class="tableblock halign-left valign-top"><div class="literal"><pre>@org.junit.Test(expected=NullPointerException)</pre></div></td>
-</tr>
-</tbody>
 </table>
-<div class="listingblock">
-<div class="title">실행 예</div>
-<div class="content">
-<pre>There were 2 failures:
-1) timeoutTest(com.clojurebook.annotations.JUnitTest)
-java.lang.Exception: test timed out after 2000 milliseconds
-2) throwsWrongException(com.clojurebook.annotations.JUnitTest)
-java.lang.Exception: Unexpected exception,
-expected&lt;java.lang.NullPointerException&gt; but was&lt;java.lang.NumberFormatException&gt;</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_using_clojure_from_java">7. Using Clojure from Java</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_클로저에서_자바_클래스를_제공하지_않는_경우">7.1. 클로저에서 자바 클래스를 제공하지 않는 경우</h3>
-<div class="paragraph">
-<p>클로저에서 <code>defprotocol</code>,<code>deftype</code>, <code>defrecord</code>, <code>gen-class</code>는 자바
-클래스<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</sup>를 만든다. 이를 통해 사용자 정의 클래스를
-제공하는 않는 경우에는, 다음과 같은 방식으로 직접 클로저 함수에 접근해야 한다.</p>
 </div>
 <div class="listingblock">
-<div class="title">자바에서 호출</div>
+<div class="title">java-interop.test5.clj</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.clojurebook</span>;
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">java-interop.test5</span>
+  (<span class="symbol">:import</span> java_interop.Example5))
 
-<span class="keyword">import</span> <span class="include">java.util.ArrayList</span>;
-<span class="keyword">import</span> <span class="include">java.util.Map</span>;
+(<span class="keyword">def</span> <span class="function">o</span> (Example5. <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello, there!</span><span class="delimiter">&quot;</span></span>))
 
-<span class="keyword">import</span> <span class="include">clojure.lang.IFn</span>;
-<span class="keyword">import</span> <span class="include">clojure.lang.Keyword</span>;
-<span class="keyword">import</span> <span class="include">clojure.lang.RT</span>;
-<span class="keyword">import</span> <span class="include">clojure.lang.Symbol</span>;
-<span class="keyword">import</span> <span class="include">clojure.lang.Var</span>;
+@o   <span class="comment">;=&gt; &quot;Hallo, there!&quot;</span>
 
-<span class="directive">public</span> <span class="type">class</span> <span class="class">JavaClojureInterop</span> {
-    <span class="directive">private</span> <span class="directive">static</span> IFn requireFn = RT.var(<span class="string"><span class="delimiter">&quot;</span><span class="content">clojure.core</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">require</span><span class="delimiter">&quot;</span></span>).fn();
-    <span class="directive">private</span> <span class="directive">static</span> IFn randIntFn = RT.var(<span class="string"><span class="delimiter">&quot;</span><span class="content">clojure.core</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">rand-int</span><span class="delimiter">&quot;</span></span>).fn();
-    <span class="directive">static</span> {
-        requireFn.invoke(Symbol.intern(<span class="string"><span class="delimiter">&quot;</span><span class="content">com.clojurebook.histogram</span><span class="delimiter">&quot;</span></span>));
-    }
+(<span class="keyword">reset!</span> (<span class="keyword">.</span>state o) <span class="string"><span class="delimiter">&quot;</span><span class="content">Good morning, everybody!</span><span class="delimiter">&quot;</span></span>)
 
-    <span class="directive">private</span> <span class="directive">static</span> IFn frequencies = RT.var(<span class="string"><span class="delimiter">&quot;</span><span class="content">clojure.core</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">frequencies</span><span class="delimiter">&quot;</span></span>).fn();
-    <span class="directive">private</span> <span class="directive">static</span> <span class="predefined-type">Object</span> keywords = RT.var(<span class="string"><span class="delimiter">&quot;</span><span class="content">com.clojurebook.histogram</span><span class="delimiter">&quot;</span></span>,
-            <span class="string"><span class="delimiter">&quot;</span><span class="content">keywords</span><span class="delimiter">&quot;</span></span>).deref();
-
-    <span class="annotation">@SuppressWarnings</span>({ <span class="string"><span class="delimiter">&quot;</span><span class="content">unchecked</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">rawtypes</span><span class="delimiter">&quot;</span></span> })
-    <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) {
-        <span class="predefined-type">Map</span>&lt;Keyword, <span class="predefined-type">Integer</span>&gt; sampleHistogram =
-            (<span class="predefined-type">Map</span>&lt;Keyword, <span class="predefined-type">Integer</span>&gt;)frequencies.invoke(keywords);
-        <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">Number of :a keywords in sample histogram: </span><span class="delimiter">&quot;</span></span> +
-                sampleHistogram.get(Keyword.intern(<span class="string"><span class="delimiter">&quot;</span><span class="content">a</span><span class="delimiter">&quot;</span></span>)));
-        <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">Complete sample histogram: </span><span class="delimiter">&quot;</span></span> + sampleHistogram);
-        <span class="predefined-type">System</span>.out.println();
-
-        <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">Histogram of chars in 'I left my heart in san fransisco': </span><span class="delimiter">&quot;</span></span> +
-                frequencies.invoke(<span class="string"><span class="delimiter">&quot;</span><span class="content">I left my heart in San Fransisco</span><span class="delimiter">&quot;</span></span>.toLowerCase()));
-        <span class="predefined-type">System</span>.out.println();
-
-        <span class="predefined-type">ArrayList</span> randomInts = <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>();
-        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="integer">0</span>; i &lt; <span class="integer">500</span>; i++) randomInts.add(randIntFn.invoke(<span class="integer">10</span>));
-        <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">Histogram of 500 random ints [0,10): </span><span class="delimiter">&quot;</span></span> +
-                frequencies.invoke(randomInts));
-    }
-}</code></pre>
+@o   <span class="comment">;=&gt; &quot;Good morning, everybody!&quot;</span></code></pre>
 </div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_새로운_메소드_추가하기">6.2.6. 새로운 메소드 추가하기</h4>
+<div class="listingblock">
+<div class="title">java_interop.Example6.clj</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">java-interop.Example6</span>
+  (<span class="symbol">:gen-class</span>
+   <span class="symbol">:methods</span> [^<span class="symbol">:static</span> [greet [] String]   <span class="comment">; </span><i class="conum" data-value="1"></i><b>(1)</b>
+                      [greetMessage [String] String]]))
+
+(<span class="keyword">defn</span> <span class="function">-greet</span>
+  []
+  <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello, World!</span><span class="delimiter">&quot;</span></span>)
+
+(<span class="keyword">defn</span> <span class="function">-greetMessage</span>
+  [this msg]
+  msg)</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>metadata <code>^:static</code>를 추가하면 정적 메소드가 된다.</td>
+</tr>
+</table>
 </div>
 <div class="listingblock">
-<div class="title">실행 예</div>
+<div class="title">java-interop.test6.clj</div>
 <div class="content">
-<pre>$ java -cp target/java-clojure-interop-1.0.0-jar-with-dependencies.jar
-       com.clojurebook.JavaClojureInterop
-Number of :a keywords in sample histogram: 8
-Complete sample histogram: {:a 8, :c 4, :d 5, :b 4, :k 1, :e 3, :f 1}
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">java-interop.test6</span>
+  (<span class="symbol">:import</span> java_interop.Example6))
 
-Frequences of chars in 'I left my heart in san fransisco':
-{\space 6, \a 3, \c 1, \e 2, \f 2, \h 1, \i 3, \l 1, \m 1,
- \n 3, \o 1, \r 2, \s 3, \t 2, \y 1}
+(Example6/greet)   <span class="comment">;=&gt; &quot;Hello, World!&quot;</span>
 
-Frequences of 500 random ints [0,10):
-{0 60, 1 61, 2 55, 3 46, 4 37, 5 45, 6 47, 7 52, 8 49, 9 48}</pre>
+(<span class="keyword">.</span>greetMessage (Example6.) <span class="string"><span class="delimiter">&quot;</span><span class="content">Good night!</span><span class="delimiter">&quot;</span></span>)   <span class="comment">;=&gt;  &quot;Good night!&quot;</span></code></pre>
 </div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_using_deftype_and_defrecord_classes">7.2. Using deftype and defrecord Classes</h3>
-<div class="listingblock">
-<div class="title">클로저에서 deftype 및 defrecord 정의</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">com.clojurebook.classes</span>)
-
-(<span class="keyword">deftype</span> Range
-  [start end]
-  Iterable
-  (iterator [this]
-    (<span class="keyword">.</span>iterator (<span class="keyword">range</span> start end))))
-
-(<span class="keyword">defn</span> <span class="function">string-range</span>
-  <span class="string"><span class="delimiter">&quot;</span><span class="content">Returns a Range instance based on start and end values provided as Strings
-   in a list / vector / array.</span><span class="delimiter">&quot;</span></span>
-  [[start end]]
-  (Range. (Long/parseLong start) (Long/parseLong end)))
-
-(<span class="keyword">defrecord</span> <span class="class">OrderSummary</span>
-  [order-number total])</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">자바에서 호출</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">com.clojurebook</span>;
-
-<span class="keyword">import</span> <span class="include">clojure.lang.IFn</span>;
-<span class="keyword">import</span> <span class="include">clojure.lang.RT</span>;
-<span class="keyword">import</span> <span class="include">clojure.lang.Symbol</span>;
-<span class="keyword">import</span> <span class="include">com.clojurebook.classes.OrderSummary</span>;
-<span class="keyword">import</span> <span class="include">com.clojurebook.classes.Range</span>;
-
-<span class="directive">public</span> <span class="type">class</span> <span class="class">ClojureClassesInJava</span> {
-    <span class="directive">private</span> <span class="directive">static</span> IFn requireFn = RT.var(<span class="string"><span class="delimiter">&quot;</span><span class="content">clojure.core</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">require</span><span class="delimiter">&quot;</span></span>).fn();
-    <span class="directive">static</span> {
-        requireFn.invoke(Symbol.intern(<span class="string"><span class="delimiter">&quot;</span><span class="content">com.clojurebook.classes</span><span class="delimiter">&quot;</span></span>));
-    }
-
-    <span class="directive">private</span> <span class="directive">static</span> IFn stringRangeFn = RT.var(<span class="string"><span class="delimiter">&quot;</span><span class="content">com.clojurebook.classes</span><span class="delimiter">&quot;</span></span>,
-            <span class="string"><span class="delimiter">&quot;</span><span class="content">string-range</span><span class="delimiter">&quot;</span></span>).fn();
-
-    <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) {
-        Range range = <span class="keyword">new</span> Range(<span class="integer">0</span>, <span class="integer">5</span>);
-        <span class="predefined-type">System</span>.out.print(range.start + <span class="string"><span class="delimiter">&quot;</span><span class="content">-</span><span class="delimiter">&quot;</span></span> + range.end + <span class="string"><span class="delimiter">&quot;</span><span class="content">: </span><span class="delimiter">&quot;</span></span>);
-        <span class="keyword">for</span> (<span class="predefined-type">Object</span> i : range) <span class="predefined-type">System</span>.out.print(i + <span class="string"><span class="delimiter">&quot;</span><span class="content"> </span><span class="delimiter">&quot;</span></span>);
-        <span class="predefined-type">System</span>.out.println();
-
-        <span class="keyword">for</span> (<span class="predefined-type">Object</span> i : (Range)stringRangeFn.invoke(args))
-            <span class="predefined-type">System</span>.out.print(i + <span class="string"><span class="delimiter">&quot;</span><span class="content"> </span><span class="delimiter">&quot;</span></span>);
-        <span class="predefined-type">System</span>.out.println();
-
-        OrderSummary summary = <span class="keyword">new</span> OrderSummary(<span class="integer">12345</span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">$19.45</span><span class="delimiter">&quot;</span></span>);
-        <span class="predefined-type">System</span>.out.println(<span class="predefined-type">String</span>.format(<span class="string"><span class="delimiter">&quot;</span><span class="content">order number: %s; order total: %s</span><span class="delimiter">&quot;</span></span>,
-                summary.order_number, summary.total));
-        <span class="predefined-type">System</span>.out.println(summary.keySet());
-        <span class="predefined-type">System</span>.out.println(summary.values());
-    }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">실행 예</div>
-<div class="content">
-<pre>$ java -cp target/java-clojure-interop-1.0.0-jar-with-dependencies.jar
-     com.clojurebook.ClojureClassesInJava 5 10
-0-5: 0 1 2 3 4
-5 6 7 8 9
-order number: 12345; order total: $19.45
-#{:order-number :total}
-(12345 "$19.45")</pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_implementing_protocol_interfaces">7.3. Implementing Protocol Interfaces</h3>
-<div class="paragraph">
-<p>클로저에서 정의한 프로토콜을 역으로 자바에서 가져다 쓸 수도 있다.</p>
-</div>
-<div class="listingblock">
-<div class="title">클로저에서 프로토콜 정의 및 구현</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">com.clojurebook.protocol</span>)
-
-(<span class="keyword">defprotocol</span> <span class="class">Talkable</span>
-  (speak [this]))
-
-(<span class="keyword">extend-protocol</span> Talkable
-  String
-  (speak [s] s)
-  Object
-  (speak [this]
-    (<span class="keyword">str</span> (<span class="keyword">-&gt;</span> this <span class="keyword">class</span> <span class="keyword">.</span>getName) <span class="string"><span class="delimiter">&quot;</span><span class="content">s can't talk!</span><span class="delimiter">&quot;</span></span>)))</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">자바에서 프로토콜 구현 및 호출</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">package com.clojurebook<span class="comment">;</span>
-
-<span class="keyword">import</span> clojure.lang.IFn<span class="comment">;</span>
-<span class="keyword">import</span> clojure.lang.RT<span class="comment">;</span>
-<span class="keyword">import</span> clojure.lang.Symbol<span class="comment">;</span>
-<span class="keyword">import</span> com.clojurebook.protocol.Talkable<span class="comment">;</span>
-
-public <span class="keyword">class</span> BitterTalkingDog implements Talkable {
-
-    public Object speak() {
-        return <span class="string"><span class="delimiter">&quot;</span><span class="content">You probably expect me to say 'woof!', don't you? Typical.</span><span class="delimiter">&quot;</span></span><span class="comment">;</span>
-    }
-
-    Talkable mellow () {
-        return <span class="keyword">new</span> Talkable () {
-            public Object speak() {
-                return <span class="string"><span class="delimiter">&quot;</span><span class="content">It's a wonderful day, don't you think?</span><span class="delimiter">&quot;</span></span><span class="comment">;</span>
-            }
-        }<span class="comment">;</span>
-    }
-
-    public static void main(String[] args) {
-        RT.var(<span class="string"><span class="delimiter">&quot;</span><span class="content">clojure.core</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">require</span><span class="delimiter">&quot;</span></span>)<span class="keyword">.</span>invoke(
-            Symbol.intern(<span class="string"><span class="delimiter">&quot;</span><span class="content">com.clojurebook.protocol</span><span class="delimiter">&quot;</span></span>))<span class="comment">;</span>
-        IFn speakFn <span class="keyword">=</span> RT.var(<span class="string"><span class="delimiter">&quot;</span><span class="content">com.clojurebook.protocol</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">speak</span><span class="delimiter">&quot;</span></span>)<span class="keyword">.</span><span class="keyword">fn</span>()<span class="comment">;</span>
-
-        BitterTalkingDog dog <span class="keyword">=</span> <span class="keyword">new</span> BitterTalkingDog()<span class="comment">;</span>
-
-        System.out.println(speakFn.invoke(<span class="integer">5</span>))<span class="comment">;</span>
-        System.out.println(speakFn.invoke(
-            <span class="string"><span class="delimiter">&quot;</span><span class="content">A man may die, nations may rise and fall, but an idea lives on.</span><span class="delimiter">&quot;</span></span>))<span class="comment">;</span>
-        System.out.println(dog.speak())<span class="comment">;</span>
-        System.out.println(speakFn.invoke(dog.mellow()))<span class="comment">;</span>
-    }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">실행 예</div>
-<div class="content">
-<pre>$ java com.clojurebook.BitterTalkingDog
-java.lang.Integers can't talk!
-A man may die, nations may rise and fall, but an idea lives on.
-You probably expect me to say 'woof!', don't you? Typical.
-It's a wonderful day, don't you think?</pre>
 </div>
 </div>
 </div>
@@ -1457,15 +1327,15 @@ It's a wonderful day, don't you think?</pre>
 <a href="#_footnoteref_1">1</a>. 컴파일 타임에 check하는 데서 이런 이름이 붙었다. 이에 대비되는 용어로 unchecked exception이 있는데, 이 예외들은 컴파일 타임에 check되지 않고 런 타임에 예외가 체크된다. 대부분의 예외는 unchecked exception이다.
 </div>
 <div class="footnote" id="_footnote_2">
-<a href="#_footnoteref_2">2</a>. project.clj 파일의 :aot 부분에 해당 이름 공간을 명시해 주어야 비로소 클래스 파일이 생성된다.
+<a href="#_footnoteref_2">2</a>. 반드시 <code>this</code>일 필요는 없다.
 </div>
 <div class="footnote" id="_footnote_3">
-<a href="#_footnoteref_3">3</a>. 이들을 통해 만들어진 클래스를 자바에서 호출하려면, 이 형식들을 담고 있는 이름공간을 미리 AOT 컴파일해 주어야 한다.
+<a href="#_footnoteref_3">3</a>. project.clj 파일의 :aot 부분에 해당 이름 공간을 명시해 주어야 비로소 클래스 파일이 생성된다.
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-12-07 19:47:50 KST
+Last updated 2015-12-08 16:12:48 KST
 </div>
 </div>
 </body>

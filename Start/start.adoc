@@ -1,5 +1,8 @@
 :sectnums:
 :source-language: clojure
+:linkcss:
+:stylesdir: ../
+:stylesheet: my-asciidoctor.css
 
 = Start
 
