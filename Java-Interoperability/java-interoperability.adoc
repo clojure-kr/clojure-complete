@@ -727,7 +727,7 @@ link:../Numerics-and-Mathematics.html#[Numerics and Mathematics]에서 다룬다
 
 === 무명 클래스의 인스턴스 만들기: `proxy`
 
-``reifiy``와 `proxy` 둘 다 무명 클래스의 인스턴스를 생성한다. 그리고 둘 다 top level
+``reify``와 `proxy` 둘 다 무명 클래스의 인스턴스를 생성한다. 그리고 둘 다 top level
 form으로 쓰여서는 안된다. 이 무명 클래스는 컴파일할 때 한 번만 생성되고, 이 무명 클래스의
 인스턴스는 ``reify``와 ``proxy``를 감싸고 있는 함수가 호출될 때마다 매번 생성된다.
 
