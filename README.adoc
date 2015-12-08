@@ -6,6 +6,10 @@
 //:stem: latexmath
 :icons: font
 :imagesdir: ./img
+:linkcss:
+:stylesdir: ../
+:stylesheet: my-asciidoctor.css
+
 
 === Version: &nbsp; 2015-11-27
 
@@ -42,7 +46,7 @@ commit은 수시로 이루어지지만, 버전 번호는 큰 변화가 있다고
 
 //* link:Transducers/transducers.adoc[Transducers]
 
-//* link:Java-Interoperability/java-interoperability.adoc[Java Interoperability]
+* link:Java-Interoperability/java-interoperability.adoc[Java Interoperability]
 
 //* link:Metadata/metadata.adoc[Metadata]
 
