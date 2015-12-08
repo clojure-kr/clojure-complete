@@ -324,7 +324,7 @@ date.getTime().toString();</code></pre>
 <div class="paragraph">
 <p>위의 코드는 <code>-></code> 매크로를 통해서도 표현할 수 있다. 차이점은 <code>-></code> 매크로를
 사용할 떄에는, 자바 메소드 호출시 매번 <code>.</code>을 붙여 주어야 한다는 것이다. 그래서
-<code>-></code> 매크로는 자바 메소드와 클로저 함수를 혼합해 사용해마만 하는 경우에
+<code>-></code> 매크로는 자바 메소드와 클로저 함수를 혼합해 사용해마야만 하는 경우에
 유용하다(참고로, <code>..</code> 매크로 안에서는 클로저 함수를 호출할 수 없다). 개인적인
 취향의 문제이겠지만, 본인은 자바 메소드 호출만으로 이루어진 경우에는 코드의 간결성을 위해
 <code>..</code> 매크로를, 그 이외의 경우에는 <code>-></code> 매크로를 사용한다.</p>
@@ -379,8 +379,8 @@ list.add(<span class="integer">3</span>)<span class="comment">;</span></code></p
 </div>
 </div>
 <div class="paragraph">
-<p>하지만 <code>doto</code> 매크로를 이용하면 다음과 같이 간결하게 표현할 수 있다. `doto`는 설정을 마친
-인스턴스 객체를 반환한다.</p>
+<p>하지만 <code>doto</code> 매크로를 이용하면 다음과 같이 간결하게 표현할 수 있다. <code>doto</code>는 설정을
+마친 인스턴스 객체를 반환한다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -576,7 +576,7 @@ list.add(<span class="integer">3</span>)<span class="comment">;</span></code></p
 </div>
 </div>
 <div class="paragraph">
-<p>반면에 Java Interop 호출이 있는 경우에는, type hint 정보가 있는 경웅는, 컴파일시 그 정보가
+<p>반면에 Java Interop 호출이 있는 경우에는, type hint 정보가 있으면 컴파일시 그 정보가
 반영되어, 런타임시 reflection으로 인한 실행 시간 지연을 막을 수 있다.</p>
 </div>
 <div class="listingblock">
@@ -911,9 +911,9 @@ list.add(<span class="integer">3</span>)<span class="comment">;</span></code></p
 <div class="sect2">
 <h3 id="_무명_클래스의_인스턴스_만들기_code_proxy_code">6.1. 무명 클래스의 인스턴스 만들기: <code>proxy</code></h3>
 <div class="paragraph">
-<p><code>refiy</code>와 <code>proxy</code> 둘 다 무명 클래스의 인스턴스를 생성한다. 그리고 둘 다 top level
+<p><code>reifiy</code>와 <code>proxy</code> 둘 다 무명 클래스의 인스턴스를 생성한다. 그리고 둘 다 top level
 form으로 쓰여서는 안된다. 이 무명 클래스는 컴파일할 때 한 번만 생성되고, 이 무명 클래스의
-인스턴스는 <code>refiy</code>와 <code>proxy</code>를 감싸고 있는 함수가 호출될 때마다 매번 생성된다.</p>
+인스턴스는 <code>reify</code>와 <code>proxy</code>를 감싸고 있는 함수가 호출될 때마다 매번 생성된다.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -924,7 +924,7 @@ form으로 쓰여서는 안된다. 이 무명 클래스는 컴파일할 때 한 
 구현(implement)할 때 주로 사용한다.</p>
 </li>
 <li>
-<p><code>proxy</code>는 <code>refiy</code>가 할 수 있는 일에 더해, 모든 자바의 클래스들을 확장할 수
+<p><code>proxy</code>는 <code>reify</code>가 할 수 있는 일에 더해, 모든 자바의 클래스들을 확장할 수
 있다. 따라서 상위 클래스의 메소드를 재정의(overriding)할 필요가 있을 때 주로
 사용한다. 하지만 상위 클래스에는 없는 새로운 메소드를 정의할 수는 없다. 이 일을
 하려먼 <code>gen-class</code>를 사용해야 한다.</p>
@@ -1335,7 +1335,7 @@ Compiling java-interop.example1</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-12-08 16:34:55 KST
+Last updated 2015-12-08 19:20:45 KST
 </div>
 </div>
 </body>
