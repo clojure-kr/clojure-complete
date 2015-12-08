@@ -207,7 +207,7 @@ Double/MAX_VALUE   ;=> 1.7976931348623157E308
 
 == 유용한 Interop 관련 함수들
 
-=== `class` 함수
+=== `class`
 
 `class` 함수는 인수로 주어진 객체의 class를 반환한다.
 
@@ -216,7 +216,7 @@ Double/MAX_VALUE   ;=> 1.7976931348623157E308
 (class "foo")   ;=> java.lang.String
 ....
 
-=== `instance?` 함수
+=== `instance?`
 
 `instance?` 함수는 두 번째 인수가 첫 번째 인수로 주어진 클래스의 인스턴스인지 여부를
 반환한다.
@@ -226,7 +226,7 @@ Double/MAX_VALUE   ;=> 1.7976931348623157E308
 (instance? String "foo")   ;=> true
 ....
 
-=== `..` 매크로
+=== `..`
 
 다음과 같은 연속 호출(chained calls) 형태의 자바 코드를, 클로저에서는 `..` 매크로를 이용할
 수 있다.
@@ -282,7 +282,7 @@ pass:q[`->`] 매크로는 자바 메소드와 클로저 함수를 혼합해 사�
 ....
 ====
 
-=== doto
+=== `doto`
 
 `doto` 매크로는 자바의 '동일한' 인스턴스 객체를 대상으로 여러 번의 설정 작업을 반복적으로
 수행할 때 이용하면 편리하다.
@@ -724,491 +724,104 @@ link:../Numerics-and-Mathematics.html#[Numerics and Mathematics]에서 다룬다
 * reify, defrecord, deftype: Clojure 내부에서 사용 
 * proxy, gen-class: Java Interop을 위해 사용
 
-=== Instances of Anonymous Classes: proxy
 
-``refiy``와 `proxy` 둘 다 무명 클래스의 인스턴스를 생성한다. 그리고 둘다 top level
+=== 무명 클래스의 인스턴스 만들기: `proxy`
+
+``refiy``와 `proxy` 둘 다 무명 클래스의 인스턴스를 생성한다. 그리고 둘 다 top level
 form으로 쓰여서는 안된다. 이 무명 클래스는 컴파일할 때 한 번만 생성되고, 이 무명 클래스의
 인스턴스는 ``refiy``와 ``proxy``를 감싸고 있는 함수가 호출될 때마다 매번 생성된다.
 
 * ``reify``는 클로저의 프로토콜과 자바의 인터페이스를 구현(implement)하고, 자바의 클래스들
-  중 `Object` 클래스만을 확장(extend)할 수 있다.
+  중 `java.lang.Object` 클래스만을 확장(extend)할 수 있다. 실제로 `java.lang.Object`
+  클래스를 확장하는 일은 거의 없으므로, 주로 클로저의 프로토콜과 자바의 인터페이스를
+  구현(implement)할 때 주로 사용한다.
 
-* ``proxy``는 ``refiy``가 할 수 있는 일에 더해, 모든 자바의 클래스들을 확장할 수 있다.
+* ``proxy``는 ``refiy``가 할 수 있는 일에 더해, 모든 자바의 클래스들을 확장할 수
+  있다. 따라서 상위 클래스의 메소드를 재정의(overriding)할 필요가 있을 때 주로
+  사용한다. 하지만 상위 클래스에는 없는 새로운 메소드를 정의할 수는 없다. 이 일을
+  하려먼 ``gen-class``를 사용해야 한다.
 
-따라서 super class를 subclassing할 일이 없으면, ``reify``를 사용하는 것이 좋다.
+NOTE: 상위 클래스를 subclassing할 일이 없으면, ``reify``를 사용하는 것이 좋다.
 
 .proxy 
 [listing]
 ----
-(proxy [super-class? interface-or-protocol*] [super-class-constructor-argument*]
-  fn*)
+(proxy [super-class? interface*] [super-class-constructor-argument*]
+  fun*)
 
-fn => (name [params*] body) |
-      (name ([params*] body) ([params+] body) ...)
+super-class := 상속할 상위 클래스를 지정하며, 맨 처음에 와야 한다. 상위 클래스가
+               지정되지 않으면 java.lang.Objcet를 상속하게 된다.
+interface := 구현하고자 하는 자바의 인터페이스 또는 클로저의 프로토콜
+super-class-constructor-argument := 상위 클래스 생성자의 인수
+fun := 상위 클래스의 재정의하고자 하는 함수 또는 구현하고자 하는 인터페이스의 함수  
+       (name [params*] body) |
+       (name ([params*] body) ([params+] body) ...)
 
-fn은 closure를 형성할 수 있다.
+fun은 closure를 형성할 수 있다.
 ----
 
-[source]
-....
-(defn lru-cache
-  [max-size]
-  (proxy [java.util.LinkedHashMap] [16 0.75 true]
-    (removeEldestEntry [entry]
-      (> (count this) max-size))))
-....
-
-CAUTION: `proxy` 내에서 overloading하는 함수들 안에는 ``(removeEldestEntry [this entry]
-...)``와 같이 ``this``를 명시적으로 넣어줄 필요가 없다. 반면에, ``proxy``를 제외한 다른
-함수들(`reify`, `defrecord`, `deftype`, `gen-class`)의 경우에는 모두 메소드의 첫번째
-인수에 `this`(반드시 ``this``일 필요는 없다)를 명시적으로 넣어주어야 한다.
+다음은 ``java.lang.Object``의 `toString` 메소드를 재정의하고, 클로저의 프로토콜
+``clojure.lang.IDeref``을 구현한 예이다.
 
 [source]
 ....
-(def cache (doto (lru-cache 5)
-             (.put :a :b)))
+(defn make-some-example
+  [msg]
+  (let [state (atom msg)]
+    (proxy [clojure.lang.IDeref] []   ; <1>
+      (toString [] @state)            ; <2>
+      (deref [] state))))             
 
-cache
-;=> #<LinkedHashMap$0 {:a=:b}>
+(def o (make-some-example "Hello, there!"))
 
-(doseq [[k v] (partition 2 (range 500))]
-  (get cache :a)
-  (.put cache k v))
+(.toString o)   ;=> "Hello, there!"
 
-cache
-;=> #<LinkedHashMap$0 {492=493, 494=495, 496=497, :a=:b, 498=499}>
+(reset! @o "Hi, everyone!")
+
+(.toString o)   ;=> "Hi, everyone!"
 ....
+<1> clojure.lang.IDeref 프로토콜을 구현하므로, deref(또는 `@`)를 사용할 수 있다. 
+<2> proxy 내부에서 지역 심볼 state를 closure로 참조할 수 있다.
+
+CAUTION: `proxy` 내에서 overloading하는 함수들 안에는 ``(toString [this] ...)``와 같이
+``this``를 명시적으로 넣어줄 필요가 없다. 반면에, ``proxy``를 제외한 다른 `reify`,
+`defrecord`, `deftype`, ``gen-class``의 경우에는 모두 메소드의 첫번째 인수에
+``this``(반드시 ``this``일 필요는 없다)를 명시적으로 넣어주어야 한다.
 
 
-=== Defining Named Classes
+=== 이름 있는 클래스(Named Classes) 정의하기: `gen-class`
 
-``proxy``는 컴파일-타임에 컴파일한 후, 그 결과를 클래스 파일(*.class)에 저장하지는
-않는다. 반면에 ``gen-class``는 컴파일-타임에 클래스 파일을 직접 생성해
+``proxy``는 컴파일 타임에 컴파일한 후, 그 결과를 클래스 파일(*.class)에 저장하지는
+않는다. 반면에 ``gen-class``는 컴파일 타임에 클래스 파일을 디스크 상에 직접 생성해
 준다footnote:[project.clj 파일의 :aot 부분에 해당 이름 공간을 명시해 주어야 비로소 클래스
-파일이 생성된다.]. 이것은, 예를 들어 클로저로 작성된 함수를 자바에서 직접 호출해 사용할 수
-있게 하거나, 외부의 자바 라이브러리를 사용하고자 할 때, 그 라이브러리를 위한 설정 파일에
-정적 클래스 파일의 이름을 지정해 줘야 할 때 필요하다.
+파일이 생성된다.]. 따라서 클로저로 작성된 함수를 자바에서 직접 호출해 사용할 필요가 있을
+때 유용하다. 예를 들어, 핵심 로직은 클로저로 작성하고 클래스 파일의 형태로 컴파일 한 후에,
+자바 프로그래머에게 건네주면, 그 자바 프로그래머는 클로저에 대한 지식이 없어도 원하는
+작업을 수행할 수 있게 된다.
 
-``gen-class``로 할 수 있는 일은 다음과 같다.
+``gen-class``로 할 수 있는 일은 ``proxy``가 할 수 있는 일에 더해 다음과 같은 일을 할 수 있다.
 
-* 자바의 모든 클래스를 subclassing할 수 있다.
-* 부모 클래스의 protected 필드에 접근할 수 있다.
+* 상위 클래스의 protected 필드에 접근할 수 있다.
 * 여러 개의 생성자를 정의할 수 있다.
-* 부모 클래스에는 없는 새로운 정적(static) 메소드와 인스턴스 메소드를 정의할 수 있다.
-* 자바의 모든 인터페이스를 구현할 수 있다.
+* 상위 클래스에는 없는 새로운 정적(static) 메소드와 인스턴스 메소드를 정의할 수 있다.
 * static main 메소드를 정의할 수 있다. 
 
 하지만 ``gen-class``는 가교 역할만을 담당하고, 실제 일은 클로저 함수가 하게 된다는 점에서,
 일반적인 자바 클래스와는 차이가 있다.
 
-==== Example 1: Providing static methods and a command-line utility via `gen-class`
+==== 간단한 예
 
-.ResizeImage 클래스 정의
 [source]
 ....
-(ns com.clojurebook.imaging
-  (:use [clojure.java.io :only (file)])
-  (:import (java.awt Image Graphics2D)
-           javax.imageio.ImageIO
-           java.awt.image.BufferedImage
-           java.awt.geom.AffineTransform))
-
-(defn load-image
-  [file-or-path]
-  (-> file-or-path file ImageIO/read))
-
-(defn resize-image
-  ^BufferedImage [^Image original factor]
-  (let [scaled (BufferedImage. (* factor (.getWidth original))
-                               (* factor (.getHeight original))
-                               (.getType original))]
-    (.drawImage ^Graphics2D (.getGraphics scaled)
-                original
-                (AffineTransform/getScaleInstance factor factor)
-                nil)
-    scaled))
+(ns example)
 
 (gen-class
-  :name ResizeImage
-  :main true
-  :methods [^:static [resizeFile [String String double] void]
-            ^:static [resize [java.awt.Image double] java.awt.image.BufferedImage]])
+  :name example.ClassA)
 
-(def ^:private -resize resize-image)
-
-(defn- -resizeFile
-  [path outpath factor]
-  (ImageIO/write (-> path load-image (resize-image factor))
-                 "png"
-                 (file outpath)))
-
-(defn -main
-  [& [path outpath factor]]
-  (when-not (and path outpath factor)
-    (println "Usage: java -jar example-uberjar.jar ResizeImage [INFILE] [OUTFILE] [SCALE]")
-    (System/exit 1))
-  (-resizeFile path outpath (Double/parseDouble factor)))
-....
-
-.명령창에서 호출하는 예
-[listing]
-----
-java -cp gen-class-1.0.0-standalone.jar ResizeImage clojure.png resized.png 0.5
-----
-
-.자바에서 호출하는 예
-[listing]
-----
-ResizeImage.resizeFile("clojure.png", "resized.png", 0.5);
-----
-
-==== Example 2: Defining a custom exception type using `gen-class`
-
-이번 예에서는 인스턴스 메소드와 상태를 갖는 클래스를 구현한다.
-
-``gen-class``에서 ``:constructors``를 지정하면, ``:init``과 ``:state``도 함께 지정해
-주어야 한다.
-
-.CustomException 클래스 정의
-[source]
-....
-(ns com.clojurebook.CustomException
-  (:gen-class :extends RuntimeException
-              :implements [clojure.lang.IDeref]
-              :constructors {[java.util.Map String] [String]
-                             [java.util.Map String Throwable] [String Throwable]}
-              :init init                                                          
-              :state info
-              :methods [[getInfo [] java.util.Map]
-                        [addInfo [Object Object] void]]))
-
-(import 'com.clojurebook.CustomException)
-
-(defn- -init
-  ([info message]
-    [[message] (atom (into {} info))])
-  ([info message ex]
-    [[message ex] (atom (into {} info))]))
-
-(defn- -deref
-  [^CustomException this]
-  @(.info this))
-
-(defn- -getInfo
+(defn -toString
   [this]
-  @this)
+  "Hello, World!")
 
-(defn- -addInfo
-  [^CustomException this key value]
-  (swap! (.info this) assoc key value))
+(.toString (example.ClassA.))
 ....
-
-.실행 예
-[source]
-....
-(import 'com.clojurebook.CustomException)
-
-(defn perform-operation
-  [& [job priority :as args]]
-  (throw (CustomException. {:arguments args} "Operation failed")))
-
-(defn run-batch-job
-  [customer-id]
-  (doseq [[job priority] {:send-newsletter :low
-                          :verify-billings :critical
-                          :run-payroll :medium}]
-    (try
-      (perform-operation job priority)
-      (catch CustomException e
-        (swap! (.info e) merge {:customer-id customer-id
-                                :timestamp (System/currentTimeMillis)})
-        (throw e)))))
-
-(try
-  (run-batch-job 89045)
-  (catch CustomException e
-    (println "Error!" (.getMessage) @e)))
-;>> Error! Operation failed {:timestamp 1309935234556, :customer-id 89045,
-;>>                          :arguments (:verify-billings :critical)}
-;=> nil
-....
-
- 
-==== Example 3: Using JUnit annotations to mark `gen-class` methods as tests
-
-클로저에서 클래스를 생성하는 형식들(`deftype`, `defrecord`, `gen-class`)에서 클래스나
-메소드, 필드를 정의할 때 메타 데이터를 제공하면, 그 메타 데이터가 자바의 annotation 역할을
-수행한다.
-
-[source]
-....
-(ns com.clojurebook.annotations.junit
-  (:import (org.junit Test Assert))
-  (:gen-class
-    :name com.clojurebook.annotations.JUnitTest
-    :methods [[^{org.junit.Test true} simpleTest [] void]
-              [^{org.junit.Test {:timeout 2000}} timeoutTest [] void]
-              [^{org.junit.Test {:expected NullPointerException}}
-                badException [] void]]))
-
-(defn -simpleTest
-  [this]
-  (Assert/assertEquals (class this) com.clojurebook.annotations.JUnitTest))
-
-(defn -badException
-  [this]
-  (Integer/parseInt (System/getProperty "nonexistent")))
-
-(defn -timeoutTest
-  [this]  
-  (Thread/sleep 10000))
-....
-
-[cols="2*l",options="header"]
-|===
-
-| Clojure metadata | Java annotation
-
-| ^{org.junit.Test true} | @org.junit.Test
-
-| ^{org.junit.Test {:timeout 2000}} | @org.junit.Test(timeout=2000)
-
-| ^{org.junit.Test {:expected NullPointerException}} | @org.junit.Test(expected=NullPointerException)
-
-|===
-
-
-
-.실행 예
-[listing]
-----
-There were 2 failures:
-1) timeoutTest(com.clojurebook.annotations.JUnitTest)
-java.lang.Exception: test timed out after 2000 milliseconds
-2) throwsWrongException(com.clojurebook.annotations.JUnitTest)
-java.lang.Exception: Unexpected exception,
-expected<java.lang.NullPointerException> but was<java.lang.NumberFormatException>
-----
-
-
-
-
-== Using Clojure from Java
-
-=== 클로저에서 자바 클래스를 제공하지 않는 경우
-
-클로저에서 `defprotocol`,`deftype`, `defrecord`, ``gen-class``는 자바
-클래스footnote:[이들을 통해 만들어진 클래스를 자바에서 호출하려면, 이 형식들을 담고 있는
-이름공간을 미리 AOT 컴파일해 주어야 한다.]를 만든다. 이를 통해 사용자 정의 클래스를
-제공하는 않는 경우에는, 다음과 같은 방식으로 직접 클로저 함수에 접근해야 한다.
-
-.자바에서 호출
-[source,java]
-....
-package com.clojurebook;
-
-import java.util.ArrayList;
-import java.util.Map;
-
-import clojure.lang.IFn;
-import clojure.lang.Keyword;
-import clojure.lang.RT;
-import clojure.lang.Symbol;
-import clojure.lang.Var;
-
-public class JavaClojureInterop {
-    private static IFn requireFn = RT.var("clojure.core", "require").fn();
-    private static IFn randIntFn = RT.var("clojure.core", "rand-int").fn();          
-    static {
-        requireFn.invoke(Symbol.intern("com.clojurebook.histogram"));
-    }
-    
-    private static IFn frequencies = RT.var("clojure.core", "frequencies").fn();
-    private static Object keywords = RT.var("com.clojurebook.histogram",
-            "keywords").deref();          
-    
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static void main(String[] args) {
-        Map<Keyword, Integer> sampleHistogram =          
-            (Map<Keyword, Integer>)frequencies.invoke(keywords);
-        System.out.println("Number of :a keywords in sample histogram: " +
-                sampleHistogram.get(Keyword.intern("a")));
-        System.out.println("Complete sample histogram: " + sampleHistogram);
-        System.out.println();
-        
-        System.out.println("Histogram of chars in 'I left my heart in san fransisco': " +
-                frequencies.invoke("I left my heart in San Fransisco".toLowerCase()));
-        System.out.println();
-        
-        ArrayList randomInts = new ArrayList();
-        for (int i = 0; i < 500; i++) randomInts.add(randIntFn.invoke(10));
-        System.out.println("Histogram of 500 random ints [0,10): " +
-                frequencies.invoke(randomInts));
-    }
-}
-....
-
-.실행 예
-[listing]
-----
-$ java -cp target/java-clojure-interop-1.0.0-jar-with-dependencies.jar
-       com.clojurebook.JavaClojureInterop
-Number of :a keywords in sample histogram: 8
-Complete sample histogram: {:a 8, :c 4, :d 5, :b 4, :k 1, :e 3, :f 1}
-
-Frequences of chars in 'I left my heart in san fransisco':
-{\space 6, \a 3, \c 1, \e 2, \f 2, \h 1, \i 3, \l 1, \m 1,
- \n 3, \o 1, \r 2, \s 3, \t 2, \y 1}
-
-Frequences of 500 random ints [0,10):
-{0 60, 1 61, 2 55, 3 46, 4 37, 5 45, 6 47, 7 52, 8 49, 9 48}
-
-----
-
-
-=== Using deftype and defrecord Classes
-
-.클로저에서 deftype 및 defrecord 정의 
-[source]
-....
-(ns com.clojurebook.classes)
-
-(deftype Range
-  [start end]
-  Iterable
-  (iterator [this]
-    (.iterator (range start end))))
-
-(defn string-range
-  "Returns a Range instance based on start and end values provided as Strings
-   in a list / vector / array."
-  [[start end]]
-  (Range. (Long/parseLong start) (Long/parseLong end)))
-
-(defrecord OrderSummary
-  [order-number total])
-....
-
-.자바에서 호출
-[source,java]
-....
-package com.clojurebook;
-
-import clojure.lang.IFn;
-import clojure.lang.RT;
-import clojure.lang.Symbol;
-import com.clojurebook.classes.OrderSummary;
-import com.clojurebook.classes.Range;
-
-public class ClojureClassesInJava {
-    private static IFn requireFn = RT.var("clojure.core", "require").fn();
-    static {
-        requireFn.invoke(Symbol.intern("com.clojurebook.classes"));
-    }
-    
-    private static IFn stringRangeFn = RT.var("com.clojurebook.classes",
-            "string-range").fn();
-    
-    public static void main(String[] args) {
-        Range range = new Range(0, 5);
-        System.out.print(range.start + "-" + range.end + ": ");
-        for (Object i : range) System.out.print(i + " ");
-        System.out.println();
-        
-        for (Object i : (Range)stringRangeFn.invoke(args))
-            System.out.print(i + " ");
-        System.out.println();
-        
-        OrderSummary summary = new OrderSummary(12345, "$19.45");
-        System.out.println(String.format("order number: %s; order total: %s",
-                summary.order_number, summary.total));
-        System.out.println(summary.keySet());
-        System.out.println(summary.values());
-    }
-}
-....
-
-.실행 예
-[listing]
-----
-$ java -cp target/java-clojure-interop-1.0.0-jar-with-dependencies.jar 
-     com.clojurebook.ClojureClassesInJava 5 10
-0-5: 0 1 2 3 4 
-5 6 7 8 9 
-order number: 12345; order total: $19.45
-#{:order-number :total}
-(12345 "$19.45")
-----
-
-=== Implementing Protocol Interfaces
-
-클로저에서 정의한 프로토콜을 역으로 자바에서 가져다 쓸 수도 있다.
-
-.클로저에서 프로토콜 정의 및 구현
-[source]
-....
-(ns com.clojurebook.protocol)
-
-(defprotocol Talkable
-  (speak [this]))
-
-(extend-protocol Talkable
-  String
-  (speak [s] s)
-  Object
-  (speak [this]
-    (str (-> this class .getName) "s can't talk!")))
-....
-
-.자바에서 프로토콜 구현 및 호출
-[source]
-....
-package com.clojurebook;
-
-import clojure.lang.IFn;
-import clojure.lang.RT;
-import clojure.lang.Symbol;
-import com.clojurebook.protocol.Talkable;
-
-public class BitterTalkingDog implements Talkable {
-
-    public Object speak() {
-        return "You probably expect me to say 'woof!', don't you? Typical.";
-    }
-    
-    Talkable mellow () {
-        return new Talkable () {
-            public Object speak() {
-                return "It's a wonderful day, don't you think?";
-            }
-        };
-    }
-    
-    public static void main(String[] args) {
-        RT.var("clojure.core", "require").invoke(
-            Symbol.intern("com.clojurebook.protocol"));
-        IFn speakFn = RT.var("com.clojurebook.protocol", "speak").fn();
-        
-        BitterTalkingDog dog = new BitterTalkingDog();
-        
-        System.out.println(speakFn.invoke(5));                                   
-        System.out.println(speakFn.invoke(                                      
-            "A man may die, nations may rise and fall, but an idea lives on."));
-        System.out.println(dog.speak());                                         
-        System.out.println(speakFn.invoke(dog.mellow()));                        
-    }
-}
-....
-
-.실행 예
-[listing]
-----
-$ java com.clojurebook.BitterTalkingDog
-java.lang.Integers can't talk!
-A man may die, nations may rise and fall, but an idea lives on.
-You probably expect me to say 'woof!', don't you? Typical.
-It's a wonderful day, don't you think?
-----
-
-    
 
