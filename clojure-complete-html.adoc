@@ -8,7 +8,7 @@
 :icons: font
 :imagesdir: ./img
 
-== [small]#Version: &nbsp; 2015-11-27#
+== [small]#Version: &nbsp; 2015-12-08#
 
 [sidebar]
 ****

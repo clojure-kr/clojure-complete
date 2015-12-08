@@ -228,8 +228,8 @@ Double/MAX_VALUE   ;=> 1.7976931348623157E308
 
 === `..`
 
-다음과 같은 연속 호출(chained calls) 형태의 자바 코드를, 클로저에서는 `..` 매크로를 이용할
-수 있다.
+다음과 같은 연속 호출(chained calls) 형태의 자바 코드를, 클로저에서는 `..` 매크로를 이용해
+표현할 수 있다.
 
 [source,java]
 ....
@@ -399,7 +399,7 @@ public static int parseInt(String s) throws NumberFormatException
 }
 ----
 
-자바에서는, 이와 같은 메소드를 '호출'하는 코드에서 `try/catch/finally` 구문르 통해 이
+자바에서는, 이와 같은 메소드를 '호출'하는 코드에서 `try/catch/finally` 구문을 통해 이
 예외를 반드시 명시적으로 처리해 주어야 한다. 그렇지 않으면 컴파일러시 에러가 발생한다.
 
 하지만 클로저에서는 그럴 필요가 없다. 그 이유는 checked exception을 강제하는 것은 자바
@@ -743,7 +743,7 @@ form으로 쓰여서는 안된다. 이 무명 클래스는 컴파일할 때 한 
 
 NOTE: 상위 클래스를 subclassing할 일이 없으면, ``reify``를 사용하는 것이 좋다.
 
-.proxy 
+.proxy API
 [listing]
 ----
 (proxy [super-class? interface*] [super-class-constructor-argument*]
@@ -786,7 +786,7 @@ fun은 closure를 형성할 수 있다.
 CAUTION: `proxy` 내에서 overloading하는 함수들 안에는 ``(toString [this] ...)``와 같이
 ``this``를 명시적으로 넣어줄 필요가 없다. 반면에, ``proxy``를 제외한 다른 `reify`,
 `defrecord`, `deftype`, ``gen-class``의 경우에는 모두 메소드의 첫번째 인수에
-``this``(반드시 ``this``일 필요는 없다)를 명시적으로 넣어주어야 한다.
+``this``footnote:[반드시 ``this``일 필요는 없다.]를 명시적으로 넣어주어야 한다.
 
 
 === 이름 있는 클래스(Named Classes) 정의하기: `gen-class`
@@ -807,21 +807,253 @@ CAUTION: `proxy` 내에서 overloading하는 함수들 안에는 ``(toString [th
 * static main 메소드를 정의할 수 있다. 
 
 하지만 ``gen-class``는 가교 역할만을 담당하고, 실제 일은 클로저 함수가 하게 된다는 점에서,
-일반적인 자바 클래스와는 차이가 있다.
+일반적인 자바 클래스와는 차이가 있다. 그리고 반드시 AOT 컴파일을 수행한 후, 해당 클래스를
+import해야만 그 효력이 발생한다는 점도 기억하자.
 
-==== 간단한 예
+.gen-class API
+[listing]
+----
+(gen-class
+  :name class-name
+  :prefix prefix
+  :extends super-class
+  :implements [interface+]
+  :constructors {[param-type*] [super-param-type*] ...}
+  :state state-name
+  :init init-name
+  :methods [[method-name [method-argument-type*] return-type]+]
+  :main boolean
+  ...)
 
+class-name := 생성할 클래스명을 지정해 준다.
+prefix := 메소드명 앞에 붙일 문자열을 지정한다. default는 "-"이다.
+super-class := 상속할 상위 클래스를 지정한다. 지정하지 않으면
+               java.lang.Object를 상속한다.
+interface := 자바의 인터페이스 또는 클로저의 프로토콜
+param-type := 이 클래스의 생성자 인수들의 타입을 지정한다.
+super-param-type* := 상속할 상위 클래스의 생성자 인수들의 타입을 지정한다.
+state-name := public final 속성을 가진 멤버 변수 한 개만 지정 가능하다.
+              여기에 atom을 지정하면 해당 값을 변경할 수 있다.  
+init-name := [[superclass-constructor-argument*] state]
+             constructor가 호출될 때 이 함수를 호출한다.
+:main := true이면 static public main 함수가 생성된다.
+----
+
+
+==== `gen-class` 이용 절차
+
+먼저 간단한 예제로 시작해 보자. 
+
+. 다음 예에서는 ``:extends``를 지정하지 않았으므로 `java.lang.Object` 클래스를
+상속한다. 그리고 ``:prefix``가 지정되지 않았으므로, 메소드 이름에는 default prefix인 "-"이
+붙어야 한다.
++
+.java-interop.example1.clj
 [source]
 ....
-(ns example)
+(ns java-interop.example1)
 
 (gen-class
-  :name example.ClassA)
+  :name java_interop.example1.MyClass)
 
 (defn -toString
   [this]
   "Hello, World!")
-
-(.toString (example.ClassA.))
 ....
+
+. project.clj 파일의 `:aot` 옵션에 ``gen-class``가 정의되어 있는 이름공간을 다음과 같이
+추가해 준다.
++
+.project.clj
+[source]
+....
+(defproject java-interop "0.1.0-SNAPSHOT"
+  :dependencies [[org.clojure/clojure "1.7.0"]]
+  :aot [java-interop.example1])
+....
+
+. 프로젝트의 루트 디렉토리에서 다음과 같이 컴파일해 준다.
++
+.lein compile 실행
+[listing]
+----
+$ lein compile
+Compiling java-interop.example1
+----
+
+. 그러면 target/classes/java_interop/example1 디렉토리 아래에 MyClass.class로 컴파일되어
+있는 것을 확인할 수 있다.
+ 
+. 다음은 이 클래스 파일을 다른 이름공간에서 읽어들여 실행한 결과이다. 여기에서는 클로저에서
+읽어 들여 실행했지만, 실제로는 자바 언어로 읽어 들이게 될 것이다.
++
+.java-interop.test1.clj
+[source]
+....
+(ns java-interop.test1
+  (:import java_interop.example1.MyClass))
+
+(.toString (MyClass.))   ;=> "Hello, World!"
+....
+
+==== `:prefix` 옵션 지정하기
+
+`:prefix` 옵션에 다음과 같이 자신이 원하는 prefix를 지정할 수도 있다. 그리고 하나의 이름
+공간에 ``gen-class``를 여러 번 정의할 수도 있다.
+
+.java_interop.example2.clj
+[source]
+....
+(ns java-interop.example2)
+
+(gen-class
+  :name   java_interop.example1.MyClassA
+  :prefix classA-)
+
+(gen-class
+  :name   java_interop.example1.MyClassB
+  :prefix classB-)
+
+(defn classA-toString
+  [this]
+  "I'm an A.")
+....
+
+.java-interop.test2.clj
+[source]
+....
+(ns java-interop.test2
+  (:import (java_interop.example1 MyClassA MyClassB)))
+
+(.toString (MyClassA.))   ;=> "I'm an A."
+(.toString (MyClassB.))   ;=> "I'm an B."
+....
+
+
+==== 인터페이스 구현하기
+
+``gen-class``는 `ns` 안에서도 정의할 수 있다. 이 때 `:name` 옵션을 지정해 주지 않으면, ns
+이름공간이 곧 클래스명이 된다.
+
+.java_interop.Example3.clj
+[source]
+....
+(ns java-interop.Example3
+  (:gen-class
+   :implements [clojure.lang.IDeref]))
+
+(defn -deref
+  [this]
+  "Hello, World!")
+....
+
+.java-interop.test3.clj
+[source]
+....
+(ns java-interop.test3
+  (:import (java_interop.Example3)))
+
+@(Example3.)   ;=> "Hello, World!"
+....
+
+
+==== 클래스 확장하기
+
+`:extends` 옵션에 확장하고자 하는 상위 클래스를 지정할 수 있다. 앞에서 정의한 `Example3`
+클래스를 그대로 상속해 보자.
+
+.java_interop.Example4.clj
+[source]
+....
+(ns java-interop.Example4
+  (:gen-class
+   :extends java_interop.Example3))
+....
+
+.java-interop.test4.clj
+[source]
+....
+(ns java-interop.test4
+  (:import java_interop.Example4))
+
+@(Example4.)   ;=> "Hello, World!"
+....
+
+
+==== `:state` 옵션 지정하기
+
+`:constructors` 옵션을 지정하게 되면 `:init` 옵션과 `:state` 옵션도 함께 지정해 주어야
+한다. 이때 `:state` 옵션에는 public final 속성을 가진 멤버 변수 한 개만 지정 가능하지만,
+여기에 atom을 지정하면 해당 값을 변경할 수도 있다.
+
+.java_interop.Example5.clj
+[source]
+....
+(ns java-interop.Example5
+  (:gen-class
+   :implements   [clojure.lang.IDeref]
+   :state        state
+   :init         init
+   :constructors {[String] []}))
+
+(defn -init
+  [message]
+  [[] (atom message)])   ; <1>
+
+(defn -deref
+  [this]
+  @(.state this))
+....
+<1> `-init` 함수 안에서 ``:state`` 옵션에 지정된 ``state`` 필드를 ``(atom message)``으로
+초기화하고 있다. 따라서 이 필드의 값을 다음과 같이 변경할 수 있게 된다.
+ 
+.java-interop.test5.clj
+[source]
+....
+(ns java-interop.test5
+  (:import java_interop.Example5))
+
+(def o (Example5. "Hello, there!"))
+
+@o   ;=> "Hallo, there!"
+
+(reset! (.state o) "Good morning, everybody!")
+
+@o   ;=> "Good morning, everybody!"
+....
+
+
+==== 새로운 메소드 추가하기
+
+.java_interop.Example6.clj
+[source]
+....
+(ns java-interop.Example6
+  (:gen-class
+   :methods [^:static [greet [] String]   ; <1>
+                      [greetMessage [String] String]]))
+
+(defn -greet
+  []
+  "Hello, World!")
+
+(defn -greetMessage
+  [this msg]
+  msg)
+....
+<1> metadata ``^:static``를 추가하면 정적 메소드가 된다.
+ 
+.java-interop.test6.clj
+[source]
+....
+(ns java-interop.test6
+  (:import java_interop.Example6))
+
+(Example6/greet)   ;=> "Hello, World!"
+
+(.greetMessage (Example6.) "Good night!")   ;=>  "Good night!"
+....
+
+
+
 

@@ -11,7 +11,7 @@
 :stylesheet: my-asciidoctor.css
 
 
-=== Version: &nbsp; 2015-11-27
+=== Version: &nbsp; 2015-12-08
 
 [sidebar]
 ****
