@@ -86,7 +86,7 @@ ClassName.staticMethod(arg1, arg2, ...)
 | (ClassName.)
 (ClassName. arg1 arg2 ...)
 | (new ClassName)
-(new ClassName arg1 arg2)
+(new ClassName arg1 arg2 ...)
 
 | 객체의 인스턴스 메소드 호출
 | (.methodName object)

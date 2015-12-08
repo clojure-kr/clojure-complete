@@ -8,6 +8,8 @@
 :icons: font
 :imagesdir: ./img
 
+* github 저장소: https://github.com/clojure-kr/clojure-complete[]
+
 == [small]#Version: &nbsp; 2015-12-08#
 
 [sidebar]
@@ -66,9 +68,10 @@ Copyright (C) 2015. All rights reserved.
 == [small]#Contributing#
 
 이 책의 집필에 함께 참여하고자 하는 분들을 환영합니다. 참여를 원하시는 분은
-https://github.com/[github]에 먼저 사용자 계정을 만드신 후, 이 repository를 자신의
-계정으로 fork합니다. 그리고 문서를 작성하신 후에 pull request를 보내 주십시오. 몇 차례의
-pull request가 받아들여지고, 문서의 집필에 기여하신 분의 이름이 Contributors 명단에 등록된
+https://github.com/[github]에 먼저 사용자 계정을 만드신 후, github의
+https://github.com/clojure-kr/clojure-complete[clojure-complete 저장소]를 자신의 계정으로
+fork합니다. 그리고 문서를 작성하신 후에 pull request를 보내 주십시오. 몇 차례의 pull
+request가 받아들여지고, 문서의 집필에 기여하신 분의 이름이 Contributors 명단에 등록된
 이후부터 자유로운 commit이 가능해집니다.
 
 이 책의 문서 형식은 asciidoc이고, http://asciidoctor.org/[asciidoctor]를 이용해
