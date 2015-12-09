@@ -10,3 +10,297 @@
 
 이번 장에서는 클로저의 제어 구문에 대해 알아본다.
 
+클로저는 여러가지 제어 구문을 제공하지만, `if` 특수 형식(special form)을 제외한 나머지
+모든 제어 구문은, `if` 특수 형식을 내부적으로 감싼 매크로로 구현되어 있다. 따라서 가장
+중요한 제어 구문은 ``if``이다.
+
+== 논리적 true와 논리적 false
+
+클로저의 제어 구문에서 참과 거짓을 판별할 때, ``false``와 ``nil``을 제외한 모든 값은
+'논리적으로 true'이다. 오로지 ``false``와 ``nil``만이 '논리적으로 false'인 것으로
+취급된다. 따라서 ``0``이나 빈 문자열 `""`, 빈 컬렉션인 `()`, `[]`, `{}`, `#{}` 모두
+논리적인 true로 평가된다는 점에 유의한다.
+
+indexterm:[if]
+ 
+== if
+
+`if` 구문은 기본적으로 다음과 같은 형태로 이루어져 있다.
+
+[listing]
+----
+(if test then-part else-part?)
+----
+
+위에서 `test` 부분을 평가한 결과가 논리적으로 참이면 ``then-part``를, 논리적으로 거짓이면
+``else-part``를 평가한다.
+
+[source]
+....
+(If (< 5 10) "yes" "no")
+;=> "yes"
+
+(If (> 5 10) "yes" "no")
+;=> "no"
+....
+
+`test` 부분을 평가한 결과가 논리적 거짓일 때, ``else-part``가 제공되지 않으면 ``nil``을
+반환한다.
+
+[source]
+....
+(if (> 5 10) "yes")
+;=> nil
+....
+
+``then-part``나 ``else-part``에서 여러 개의 식을 평가하고자 할 때에는 `do` 특수 형식으로
+감싸 주어야 한다.
+
+[source]
+....
+(if (< 5 10) 
+  (do
+    (println "5 is less than 10.")
+    "yes")
+  (do
+    (println "This will not be printed.")
+    "no"))
+;>> 5 is less than 10.
+;=> "yes"
+....
+
+
+[NOTE]
+====
+`do` 특수 형식(special form)은, 다른 C++이나 자바 언어에서의 ``{ ... }``와 같은 코드의
+'블럭'을 표시하는 기능을 수행한다. ``do``는 그 안의 모든 식들을 차례대로 평가한 후, 맨
+마지막에 평가된 식의 결과를 반환한다.
+
+[source]
+....
+(do 
+  (+ 1 2)
+  (+ 3 4)
+  (+ 5 6))
+;=> 11
+....
+
+맨 마지막 식을 제외한 그 앞에 있는 모든 식들은 결과적으로 부수 효과(side effect)를
+수행하게 된다.
+
+[source]
+....
+(do
+  (println "LOG: Computing...")   ; printed in stdout
+  (+ 1 1))
+;>> LOG: Computing...
+;=> 2
+....
+
+다음의 `fn`, `defn`, `let` 등도 클로저가 내부적으로 ``do``로 자동적으로 감싸주기 떄문에 그
+안에 여러 개의 식들을 나열할 수 있게 된다.
+
+[source]
+....
+((fn [name]
+  (println "Something")   ; printed in stdout
+  (str "Hello, " name "!"))
+ "Tom")
+;>> Something
+;=> "Hello, Tom"
+
+(defn hello [name]
+  (println "Something")     ; printed in stdout
+  (str "Hello, " name "!"))
+
+(hello "Becky")
+;>> Something
+;=> "Hello, Becky!"
+
+(let [name "John"]
+  (println "Something")     ; printed in stdout
+  (str "Hello, " name "!"))
+;>> Something
+;=> "Hello, John!"
+....
+====
+
+``if-not``은 ``if``와 정반대의 동작을 수행한다. indexterm:[if-not] 
+
+[source]
+....
+(if-not (zero? 0) "not zero" "zero")
+;=> "zero"
+....
+
+
+indexterm:[when]
+ 
+== when
+
+`when` 구문의 기본적인 형태는 다음과 같다.
+
+[listing]
+----
+(when test expression+)
+----
+
+`when` 구문은 `test` 부분이 논리적인 참으로 평가될 때, 그 뒤의 모든 식을 내부적으로
+``do``로 감싸 평가한다. 그래서 다음의 두 식은 완전히 동일하다.
+
+[source]
+....
+(when (= 1 1) 
+  (+ 1 2)
+  (+ 3 4)
+  (+ 5 6))
+;=> 11
+
+(if (= 1 1) 
+  (do
+    (+ 1 2)
+    (+ 3 4)
+    (+ 5 6)))
+;=> 11
+....
+
+그리고 `test` 부분이 논리적인 거짓으로 평가될 때에는 단순히 ``nil``을 반환한다.
+
+[source]
+....
+(when (= 1 2) 
+  (+ 1 2)
+  (+ 3 4)
+  (+ 5 6))
+;=> nil
+....
+
+그래서 ``when``은 ``if``의 ``then-part``가 여러 개의 식들로 이루어져 있고, ``else-part``는
+없을 때 사용된다.
+
+``when-not``은 ``when``과 정반대의 동작을 수행한다. indexterm:[when-not]
+
+[source]
+....
+(when-not (= 1 2) 
+  (+ 1 2)
+  (+ 3 4)
+  (+ 5 6))
+;=> 11
+
+(when-not (= 1 1) 
+  (+ 1 2)
+  (+ 3 4)
+  (+ 5 6))
+;=> nil
+....
+
+
+== if-let/when-let
+
+``if-let``의 기본 형태는 다음과 같다. indexterm:[if-let] 
+
+[listing]
+----
+(if-let [local-symbol expression] then-part else-part?)
+----
+
+``if-let``은 먼저 ``expression``을 평가한 결과를 ``local-symbol``에 바인딩한다. 그후에
+바인딩된 값이 논리적 참이면 ``then-part``를, 그렇지 않으면 ``else-part``를 실행한다.
+
+[source]
+....
+(defn demo [arg]
+  (if-let [a arg]
+    (str "arg: " a)
+    "no"))
+
+(demo 10)      ;=> "arg: 10"
+(demo nil)     ;=> "no"
+(demo false)   ;=> "no"
+....
+
+실제로 클로저로 코딩하다 보면 다음과 같은 패턴을 자주 접하게 된다.
+ 
+[source]
+....
+(defn drop-one [coll]
+  (let [s (seq coll)]
+    (if s
+      (rest s)
+      coll)))
+
+(drop-one [1 2 3])   ;=> (2 3)
+(drop-one [])        ;=> []
+....
+
+이럴 때 다음과 같이 ``if-let``을 사용하면 코드가 간결해진다.
+
+[source]
+....
+(defn drop-one [coll]
+  (if-let [s (seq coll)]
+    (rest s)
+    coll))
+
+(drop-one [1 2 3])   ;=> (2 3)
+(drop-one [])        ;=> []
+....
+
+``if-let``을 사용할 때 주의할 점은 다음과 같다.
+
+* ``let``과는 달리, ``if-let``은 지역 심볼을 한 개만 바인딩할 수 있다. 두 개 이상 바인딩하면
+다음과 같이 예외가 발생한다.
++
+[source]
+....
+(if-let [a 10
+         b 20]
+  (+ a b)
+  "no")
+:>> IllegalArgumentException if-let requires exactly 2 forms in binding vector
+....
++
+이 문제를 우회하려면 ``if-let``을 중첩해 사용해야 한다.
++
+[source]
+....
+(if-let [a 10]
+  (if-let [b 20]
+    (+ a b)
+    "no"))
+;=> 30
+....
+
+* 바인딩된 지역 심볼을 ``else-part``에서 참조해서는 안된다. 사용하면 다음과 같은 예외가 발생한다.
++
+[source]
+....
+(if-let [a 10]
+  (+ a 20)
+  (str "arg: " a))
+;>> CompilerException java.lang.RuntimeException: Unable to resolve symbol: a in this context
+....
+
+``when-let``과 ``if-let``의 관계는 ``when``과 ``if``의 관계와 같다. indexterm:[when-let] 
+
+[source]
+....
+(defn drop-one [coll]
+  (when-let [s (seq coll)]
+    (println s)
+    (rest s)))
+
+(drop-one [1 2 3])
+;>> (1 2 3)
+;=> (2 3)
+
+(drop-one [])
+;=> nil
+....
+
+
+== cond
+
+
+
