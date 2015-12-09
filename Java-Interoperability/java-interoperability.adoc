@@ -11,10 +11,11 @@
 
 
 클로저가 다른 리습 계열 언어들(Common Lisp, Scheme, Racket, ...)에 비해 갖는 장점들 중의
-하나는 풍부한 라이브러리들을 이용할 수 있다는 것이다. 리습 언어가 자체적으로는 아무리
-뛰어나다 하더라도, 이용할 수 있는 라이브러리가 제한적이라면 그 활용 가능성은 현저히 떨어질
-수 밖에 없다. 하지만 클로저의 경우에는, 자바(더 정확히는, JVM 상)의 방대한 라이브러리들을
-아주 쉽게 그대로 가져다 쓸 수 있다는 점에서 다른 리습 계열 언어들과는 차별화된다.
+하나는 풍부한 라이브러리들을 이용할 수 있다는 것이다. 리습 계열 언어가 자체적으로는 아무리
+뛰어나다 하더라도 이용할 수 있는 라이브러리가 제한적이어서 그 활용 가능성은 현저히 떨어질
+수 밖에 없었다. 하지만 클로저의 경우에는, 자바(더 정확히는, JVM 상)의 모든 방대한
+라이브러리들을 그대로 아주 쉽게 가져다 쓸 수 있다는 점에서 다른 리습 계열 언어들과는
+차별화된다.
 
 이 장에서는 클로저에서 자바 코드를 어떻게 불러다 쓸 수 있는지 살펴본다. 
 
@@ -48,7 +49,8 @@ object.methodName(arg1, arg2, ...)
 | object.field
 
 | 객체의 인스턴스 필드 쓰기
-| (set! (.fieldName object) 5)
+| (set! (.-fieldName object) 5)
+(set! (.fieldName object) 5)
 | object.fieldName = 5
 
 | 정적 메소드 호출
@@ -67,12 +69,12 @@ ClassName.staticMethod(arg1, arg2, ...)
 제공되는데, 가급적이면 ``.-field``의 형태를 쓰기를 권한다. 그 이유는 ``(.field object)``의
 호출 형태가 객체의 인스턴스 메소드 호출 형태인 ``(.methodName object)``와 겉모습이
 동일해서, 실제 사용될 떄 인스턴스 필드 읽기인지 아니면 인스턴스 메소드 호출인지 구분이
-가지 않기 때문이다. ``.-`` 형태는 클로저스크립트에서 먼저 도입되었고, 나중에 클로저에서도
-이 표기법을 수용한 결과로, 현재는 두 가지 표기법이 혼재한다.
+가지 않기 때문이다. ``.-`` 형태는 클로저스크립트에서 먼저 도입되었는데 나중에 클로저에서도
+이 표기법을 수용한 결과로 현재는 두 가지 표기법이 혼재한다.
  
 위의 여러가지 Java Interp 형태는 일종의 syntactic sugar(구문 단축형)로, 내부적으로는 모두
 클로저의 특수 형식(special form)인``.``과 `new` 두 개로 구현되어 있다. 이 구문 단축형은
-특수 형식을 이용하는 것보다 짧고 편리하므로, 굳이 특수 형식을 이용할 필요는 없겠지만,
+특수 형식을 이용하는 것보다 짧고 편리하므로 굳이 특수 형식을 이용할 필요는 없겠지만,
 참고로 이 두 형태를 서로 비교해 보면 아래와 같다.
 
 [cols="1l,2l,2l"mwidth="90"]
@@ -100,7 +102,8 @@ ClassName.staticMethod(arg1, arg2, ...)
 | (. object field)
 
 | 객체의 인스턴스 필드 쓰기
-| (set! (.fieldName object) 5)
+| (set! (.-fieldName object) 5)
+(set! (.fieldName object) 5)
 | (set! (. object fieldName) 5)
 
 | 정적 메소드 호출
@@ -166,7 +169,7 @@ Libraries: import] 부분을 참조하기 바란다.
 
 === 정적 필드 및 정적 메소드 호출
 
-정적 필드는 클래스명 뒤에 슬래시 기호를 붙인 후 필드명을 써 준다.
+정적 필드는 클래스명 뒤에 슬래시(`/`) 기호를 붙인 후 필드명을 써 준다.
 
 [source]
 ....
@@ -182,10 +185,11 @@ Double/MAX_VALUE   ;=> 1.7976931348623157E308
 ....
 
 
-
+indexterm:[set!]
+ 
 === 객체의 필드 읽고 쓰기 
 
-자바에서 필드를 public으로 노출하는 경우는 드물고, 그 값의 변경을 허용하는 예는 더
+자바에서 필드를 public으로 노출하는 경우는 드물고, 그 값의 변경을 허용하는 예는 더욱
 드물지만, 클로저에서는 객체의 public 필드를 읽고 쓰는 방법을 제공한다. 객체의 필드에 값을
 설정할 때는 클로저의 특수 형식(special form)인 ``set!``를 이용해야 한다.
 
@@ -207,6 +211,8 @@ Double/MAX_VALUE   ;=> 1.7976931348623157E308
 
 == 유용한 Interop 관련 함수들
 
+indexterm:[class]
+ 
 === `class`
 
 `class` 함수는 인수로 주어진 객체의 class를 반환한다.
@@ -216,6 +222,8 @@ Double/MAX_VALUE   ;=> 1.7976931348623157E308
 (class "foo")   ;=> java.lang.String
 ....
 
+indexterm:[instance?]
+ 
 === `instance?`
 
 `instance?` 함수는 두 번째 인수가 첫 번째 인수로 주어진 클래스의 인스턴스인지 여부를
@@ -226,6 +234,8 @@ Double/MAX_VALUE   ;=> 1.7976931348623157E308
 (instance? String "foo")   ;=> true
 ....
 
+indexterm:[..]
+ 
 === `..`
 
 다음과 같은 연속 호출(chained calls) 형태의 자바 코드를, 클로저에서는 `..` 매크로를 이용해
@@ -259,7 +269,8 @@ date.getTime().toString();
 (.. "fooBAR" toLowerCase (contains "ooba"))     ;=> true
 ....
 
-
+indexterm:[->]
+ 
 [NOTE]
 ====
 위의 코드는 pass:q[`->`] 매크로를 통해서도 표현할 수 있다. 차이점은 pass:q[`->`] 매크로를
@@ -281,7 +292,8 @@ pass:q[`->`] 매크로는 자바 메소드와 클로저 함수를 혼합해 사�
 ....
 ====
 
-
+indexterm:[doto]
+ 
 === `doto` 
 
 `doto` 매크로는 자바의 '동일한' 인스턴스 객체를 대상으로 여러 번의 설정 작업을 반복적으로
@@ -340,6 +352,9 @@ list.add(3);
 ....
 
 
+
+indexterm:[try] indexterm:[catch] indexterm:[finally] indexterm:[throw]
+
 == Exceptions and Error Handling
 
 클로저의 예외 처리는 자바의 예외 처리 방식을 그대로 이용한다. `catch` 절은 여러 개 나열될
@@ -374,7 +389,7 @@ public static Integer asInt (String s) {
 ....
 
 CAUTION: 자바에서는 ``catch``와 `finally` 절이 `try` 절과 병렬로 배치되어 있는 반면에,
-클로저에서는 ``catch``와 `finally` 절이 ``try`` 절의 내부에 속해 있다는 차이점이 있다.
+클로저에서는 ``catch``와 `finally` 절이 ``try`` 절의 내부에 속해 있다는 차이점에 주의하자.
 
 예외를 던질 때에는 자바에서와 마찬가지로 ``throw``를 이용한다. 이때 ``throw``의 인수는
 반드시 예외 클래스의 인스턴스이어야 한다.
@@ -407,6 +422,8 @@ public static int parseInt(String s) throws NumberFormatException
 컴파일러가 직접 컴파일을 수행하므로 자바 컴파일러의 요구 사항을 무시할 수 있다.
 
 
+indexterm:[type hinting]
+ 
 == Type Hinting for Performance
 
 클로저에서는 `^ClassName` 형식으로 type hinting 정보를 줄 수 있다.
@@ -418,8 +435,8 @@ public static int parseInt(String s) throws NumberFormatException
   (.length text))
 ....
 
-위와 같이 타입 힌팅 정보를 주면 ``^{:tag String} text``의 형식으로 text 인수의 metadata에
-`:tag` 키에 type 정보가 들어간다.
+위와 같이 타입 힌팅 정보를 주면 ``^{:tag String} text``의 형식으로 text 인수의 metadata
+맵의 `:tag` 키에 type 정보가 들어간다.
 
 그런데 타입 힌팅 정보를 주더라도, Java Interop 호출을 하지 않으면 그 정보는 쓰이지 않고
 컴파일러에 의해 무시된다.
@@ -437,8 +454,8 @@ public static int parseInt(String s) throws NumberFormatException
   x)
 ....
 
-위의 두 함수를 컴파일 한 후에, 컴파일된 `.class` 파일을 다시 decompile해 보면, 그 결과에
-차이가 전혀 발견되지 않는 것을 확인할 수 있다.
+위의 두 함수를 컴파일 한 후에, 컴파일된 `.class` 파일을 다시 decompile해 보면, 다음과 같이
+그 결과에 차이가 전혀 없다는 것을 확인할 수 있다.
 
 .accepts_anything_hint 함수의 decompile 결과 
 [source,java]
@@ -486,7 +503,7 @@ public final class java_interop$accepts_anything_no_hint extends AFunction {
 }
 ....
 
-반면에 Java Interop 호출이 있는 경우에는, type hint 정보가 있으면 컴파일시 그 정보가
+반면에 Java Interop 호출이 있는 경우에는, type hinting 정보가 있으면 컴파일시 그 정보가
 반영되어, 런타임시 reflection으로 인한 실행 시간 지연을 막을 수 있다.
 
 [source]
@@ -579,13 +596,13 @@ public final class java_interop$length_of_no_hint extends AFunction {
 
 위의 실행 결과를 보면, 타입 힌팅 정보가 주어졌을 때 실행 시간이 단축되는 것을 확인할 수
 있다. 하지만, 실행 속도를 향상시킬 수 있다고 해서 타입 힌팅 정보를 남발하는 것은
-바람직하지 못하다. 프로파일링(profiling)을 실시해서 병목 지점을 확인한 후, 그 부분만을
+바람직하지 못하다. 프로파일링(profiling)을 실시해서 병목 지점을 확인한 후, 그 부분을
 최적화할 때 타입 힌팅 정보를 주는 것이 바람직하다.
 
 그런데 클로저 컴파일러가 코드의 어느 부분에서 reflection 기능을 호출하고 있는지 확인할 수
 있으면 코드의 어느 부분에 타입 힌팅 정보를 주어야 할지 판단하는 데 도움이 될 것이다. 이런
 경우에 `\*warn-on-reflection*` 값을 ``true``로 설정해 주면, 컴파일시 클로저 컴파일러가
-코드의 어느 부분에서 reflection 기능을 호출하고 있는지 확인할 수 있다.
+코드의 어느 부분에서 reflection 기능을 호출하고 있는지 출력해 준다.
 
 [source]
 ....
@@ -602,9 +619,9 @@ public final class java_interop$length_of_no_hint extends AFunction {
 ;>> Reflection warning, NO_SOURCE_PATH:29 - call to substring can't be resolved.
 ....
 
-project.clj 파일에서 ``:warn-on-reflectio true``로 설정해도 같은 결과를 얻을 수 있다.
+project.clj 파일에서 ``:warn-on-reflection true``로 설정해도 같은 결과를 얻을 수 있다.
 
-타입 힌팅 정보는 아무 식(expression)에나 붙일 수 있다. 다음과 같이 함수의 반환값에도
+타입 힌팅 정보는 어느 식(expression)에나 붙일 수 있다. 다음과 같이 함수의 반환값에도
 표시할 수 있다.
 
 [source]
@@ -645,6 +662,8 @@ var에도 표시할 수 있다.
 ....
 
 
+indexterm:[array]
+ 
 == Arrays
 
 클로저에서는 자바의 기본(primitive) 자료형의 배열도 직접 다룰 수 있는 방법을
@@ -725,21 +744,23 @@ link:../Numerics-and-Mathematics.html#[Numerics and Mathematics]에서 다룬다
 * proxy, gen-class: Java Interop을 위해 사용
 
 
+indexterm:[proxy] indexterm:[reify]
+
 === 무명 클래스의 인스턴스 만들기: `proxy`
 
 ``reify``와 `proxy` 둘 다 무명 클래스의 인스턴스를 생성한다. 그리고 둘 다 top level
-form으로 쓰여서는 안된다. 이 무명 클래스는 컴파일할 때 한 번만 생성되고, 이 무명 클래스의
-인스턴스는 ``reify``와 ``proxy``를 감싸고 있는 함수가 호출될 때마다 매번 생성된다.
+form으로 쓰여서는 안된다. 이 무명 클래스는 컴파일할 때 한 번만 생성되고, ``reify``와
+``proxy``를 감싸고 있는 함수가 호출될 때마다 이 무명 클래스의 인스턴스가 매번 생성된다.
 
-* ``reify``는 클로저의 프로토콜과 자바의 인터페이스를 구현(implement)하고, 자바의 클래스들
-  중 `java.lang.Object` 클래스만을 확장(extend)할 수 있다. 실제로 `java.lang.Object`
-  클래스를 확장하는 일은 거의 없으므로, 주로 클로저의 프로토콜과 자바의 인터페이스를
-  구현(implement)할 때 주로 사용한다.
+* ``reify``는 자바의 인터페이스나 클로저의 프로토콜을 구현(implement)하고, 자바의 클래스들
+  중 오직 `java.lang.Object` 클래스만을 확장(extend)할 수 있다. 그런데 실제로
+  `java.lang.Object` 클래스를 확장하는 일은 거의 없으므로, 자바의 인터페이스나 클로저의
+  프로토콜을 구현(implement)할 때 주로 사용된다고 보면 된다.
 
-* ``proxy``는 ``reify``가 할 수 있는 일에 더해, 모든 자바의 클래스들을 확장할 수
+* ``proxy``는 ``reify``가 할 수 있는 일에 더해, 모든 자바의 클래스를 확장할 수
   있다. 따라서 상위 클래스의 메소드를 재정의(overriding)할 필요가 있을 때 주로
-  사용한다. 하지만 상위 클래스에는 없는 새로운 메소드를 정의할 수는 없다. 이 일을
-  하려먼 ``gen-class``를 사용해야 한다.
+  사용된다. 하지만 상위 클래스에는 없는 새로운 메소드를 정의할 수는 없다. 이 일을
+  하려면 ``gen-class``를 사용해야 한다.
 
 NOTE: 상위 클래스를 subclassing할 일이 없으면, ``reify``를 사용하는 것이 좋다.
 
@@ -785,18 +806,20 @@ fun은 closure를 형성할 수 있다.
 
 CAUTION: `proxy` 내에서 overloading하는 함수들 안에는 ``(toString [this] ...)``와 같이
 ``this``를 명시적으로 넣어줄 필요가 없다. 반면에, ``proxy``를 제외한 다른 `reify`,
-`defrecord`, `deftype`, ``gen-class``의 경우에는 모두 메소드의 첫번째 인수에
-``this``footnote:[반드시 ``this``일 필요는 없다.]를 명시적으로 넣어주어야 한다.
+`defrecord`, `deftype`, ``gen-class``의 경우에는 모두 메소드의 첫 번째 인수에
+``this``footnote:[반드시 ``this``일 필요는 없다.]를 명시적으로 넣어 주어야 한다.
 
 
+indexterm:[gen-class]
+ 
 === 이름 있는 클래스(Named Classes) 정의하기: `gen-class`
 
 ``proxy``는 컴파일 타임에 컴파일한 후, 그 결과를 클래스 파일(*.class)에 저장하지는
 않는다. 반면에 ``gen-class``는 컴파일 타임에 클래스 파일을 디스크 상에 직접 생성해
 준다footnote:[project.clj 파일의 :aot 부분에 해당 이름 공간을 명시해 주어야 비로소 클래스
-파일이 생성된다.]. 따라서 클로저로 작성된 함수를 자바에서 직접 호출해 사용할 필요가 있을
-때 유용하다. 예를 들어, 핵심 로직은 클로저로 작성하고 클래스 파일의 형태로 컴파일 한 후에,
-자바 프로그래머에게 건네주면, 그 자바 프로그래머는 클로저에 대한 지식이 없어도 원하는
+파일이 생성된다.]. 따라서 클로저로 작성된 함수를 자바 언어에서 직접 호출해 사용할 필요가
+있을 때 유용하다. 예를 들어, 핵심 로직은 클로저로 작성하고 클래스 파일의 형태로 컴파일한
+후 자바 프로그래머에게 건네주면, 그 자바 프로그래머는 클로저에 대한 지식이 없어도 원하는
 작업을 수행할 수 있게 된다.
 
 ``gen-class``로 할 수 있는 일은 ``proxy``가 할 수 있는 일에 더해 다음과 같은 일을 할 수 있다.
@@ -806,9 +829,9 @@ CAUTION: `proxy` 내에서 overloading하는 함수들 안에는 ``(toString [th
 * 상위 클래스에는 없는 새로운 정적(static) 메소드와 인스턴스 메소드를 정의할 수 있다.
 * static main 메소드를 정의할 수 있다. 
 
-하지만 ``gen-class``는 가교 역할만을 담당하고, 실제 일은 클로저 함수가 하게 된다는 점에서,
-일반적인 자바 클래스와는 차이가 있다. 그리고 반드시 AOT 컴파일을 수행한 후, 해당 클래스를
-import해야만 그 효력이 발생한다는 점도 기억하자.
+하지만 ``gen-class``는 가교 역할만을 담당하고 실제 일은 클로저 함수가 하게 된다는 점에서,
+일반적인 자바 클래스와는 차이가 있다. 그리고 반드시 AOT(Ahead of Time) 컴파일을 수행한 후,
+해당 클래스를 import해야만 그 효력이 발생한다는 점도 기억하자.
 
 .gen-class API
 [listing]
@@ -826,16 +849,17 @@ import해야만 그 효력이 발생한다는 점도 기억하자.
   ...)
 
 class-name := 생성할 클래스명을 지정해 준다.
-prefix := 메소드명 앞에 붙일 문자열을 지정한다. default는 "-"이다.
-super-class := 상속할 상위 클래스를 지정한다. 지정하지 않으면
-               java.lang.Object를 상속한다.
+prefix := 메소드명 앞에 붙일 문자열 또는 심볼을 지정한다. default는 "-"이다.
+super-class := 상속할 상위 클래스를 지정한다. 지정하지 않으면 java.lang.Object를 상속한다.
 interface := 자바의 인터페이스 또는 클로저의 프로토콜
 param-type := 이 클래스의 생성자 인수들의 타입을 지정한다.
-super-param-type* := 상속할 상위 클래스의 생성자 인수들의 타입을 지정한다.
+super-param-type := 상속할 상위 클래스의 생성자 인수들의 타입을 지정한다.
 state-name := public final 속성을 가진 멤버 변수 한 개만 지정 가능하다.
               여기에 atom을 지정하면 해당 값을 변경할 수 있다.  
 init-name := [[superclass-constructor-argument*] state]
              constructor가 호출될 때 이 함수를 호출한다.
+:methods := [[method-name [arguemnt-type*] return-type]+]
+             새로 추가하고자 하는 메소드를 선언한다. 
 :main := true이면 static public main 함수가 생성된다.
 ----
 
@@ -1024,6 +1048,8 @@ Compiling java-interop.example1
 
 
 ==== 새로운 메소드 추가하기
+
+``gen-class``는 상위 클래스에는 없는 정적 메소드나 인스턴스 메소드를 추가할 수 있다.
 
 .java_interop.Example6.clj
 [source]

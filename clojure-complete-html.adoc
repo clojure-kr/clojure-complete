@@ -28,7 +28,7 @@ commit은 수시로 이루어지지만, 버전 번호는 큰 변화가 있다고
 //. <<Leiningen/leiningen.html#, Leiningen>>
 //. <<Start/start.html#, Start>>
 . <<Simple-Values/simple-values.html#, Simple Values>>
-//. <<Flow-Controls/flow-controls.html#, Flow Controls>>
+. <<Flow-Controls/flow-controls.html#, Flow Controls>>
 //. <<Collections-and-Sequences/collections-and-sequences.html#, Collections and Sequences>>
 //. <<Functions-and-Functional-Programming/functions-and-functional-programming.html#, Functions and Functional Programming>>
 //. <<Destructuring/destructuring.html#, Destructuring>>

@@ -6,6 +6,8 @@
 
 클로저에서 문자열 역시 자기 자신으로 평가되는 값(value)으로, 쌍따옴표(`"`)로 둘러싸 표현한다.
 
+indexterm:[string?] 
+
 [source]
 ....
 "Welcome to Clojure!"          ;=> "Welcome to Clojure!"
@@ -32,7 +34,7 @@ are allowed too."
 ....
 
 `str` 함수는 주어진 인수들을 문자열로 변환한 후, 공백 없이 연결된 문자열을 반환한다. 단,
-``nil``은 빈 문자열(`""`)로 변환된다.
+``nil``은 빈 문자열(`""`)로 변환된다. indexterm:[str] 
 
 [source]
 ....
@@ -48,6 +50,8 @@ are allowed too."
 (str "Hello, " "World!")   ;=> "Hello, World!"
 ....
 
+indexterm:[format]
+ 
 `format` 함수는 `java.lang.String.format` 함수를 그대로 이용한다. 자세한 포맷 서식은
 `java.util.Formatter`
 http://docs.oracle.com/javase/1.5.0/docs/api/java/util/Formatter.html[관련 문서]를
@@ -68,6 +72,8 @@ http://docs.oracle.com/javase/1.5.0/docs/api/java/util/Formatter.html[관련 문
 ;=> "Left justified :5432   :"
 ....
 
+indexterm:[subs]
+ 
 `subs` 함수는 주어진 문자열의 '시작 index(포함)'에서 '종료 index(불포함)'까지의 부분
 문자열(substring)을 반환한다. index는 0부터 시작하고, '종료 index'가 주어지지 않으면,
 문자열의 마지막까지 반환한다.
@@ -79,6 +85,9 @@ http://docs.oracle.com/javase/1.5.0/docs/api/java/util/Formatter.html[관련 문
 ....
 
 == println-str/print-str/prn-str/pr-str 함수
+
+indexterm:[println-str] indexterm:[print-str] indexterm:[prn-str] indexterm:[pr-str]
+indexterm:[println] indexterm:[print] indexterm:[prn] indexterm:[pr]
 
 이 함수들은 `println`/`print`/`prn`/`pr` 함수들과 관계가 있다. 함수명에 `-str`이 붙지 않은
 이 함수들은, 문자열을 '반환'하는 함수가 아니라, 문자열을 stdout(표준 출력, 일반적으로
@@ -190,6 +199,8 @@ effect(부수 효과)를 수행하는 함수이다. 그리고 클로저에서 �
 `clojure.string` 이름 공간에는 문자열 처리시 유용한 함수들이 많다. 그 중 몇 개만
 소개한다.
 
+indexterm:[upper-case] indexterm:[lower-case]
+
 ``upper-case``와 `lower-case` 함수는 각각 주어진 문자열을 대문자와 소문자로 바꾼다.
 
 [source]
@@ -203,6 +214,7 @@ effect(부수 효과)를 수행하는 함수이다. 그리고 클로저에서 �
 ;=> "clojure user groups"
 ....
 
+indexterm:[split] 
 
 `split` 함수는 문자열과 정규식 패턴을 받아, 분할된 문자열의 벡터를 반환한다. 클로저에서
 정규식은 문자열 앞에 `#` 기호를 붙여 표시하는데, 자바의 정규식 표현을 따른다.
@@ -224,6 +236,8 @@ effect(부수 효과)를 수행하는 함수이다. 그리고 클로저에서 �
 ;=> ["q" "w" "e" "r" "t5y6u7i8o9p0"]
 ....
 
+indexterm:[join]
+ 
 ``join`` 함수는 인수로 주어진 컬렉션을, 문자열로 변환환 후 연결해 반환한다.
 
 [source]
@@ -246,6 +260,8 @@ effect(부수 효과)를 수행하는 함수이다. 그리고 클로저에서 �
 ;=> "The\nQuick\nBrown\nFox"
 ....
 
+indexterm:[trim] indexterm:[triml] indexterm:[trimr]
+ 
 `trim` 함수는 주어진 문자열의 좌우 끝에 있는 공백 문자들을 모두 제거한 문자열을
 반환한다. ``triml``과 `trimr` 함수는 각각 주어진 문자열의 좌측과 우측 끝에 있는 공백
 문자들을 제거한 문자열을 반환한다.

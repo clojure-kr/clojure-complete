@@ -5,10 +5,8 @@
 
 (defn -greet
   []
-  (println "show called.")
   "Hello, World!")
 
 (defn -greetMessage
   [this msg]
-  (println "showMessage called.")
   (str "Hello, " msg "!"))

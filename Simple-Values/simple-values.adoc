@@ -86,6 +86,8 @@ include::sub/numbers.adoc[]
 :leveloffset: 0
 
 
+indexterm:[nil] 
+
 == nil
 
 클로저의 ``nil``은 자기 자신으로 평가되는 값이다. 자바의 `null`, 루비의 `nil`, 파이썬의
@@ -112,7 +114,7 @@ nil          ;=> nil
 (if [] 10 20)      ;=> 10
 ....
 
-`nil?` 함수는 주어진 인수가 ``nil``인지 판별한다.
+`nil?` 함수는 주어진 인수가 ``nil``인지 판별한다. indexterm:[nil?] 
 
 [source]
 ....
@@ -138,6 +140,8 @@ false   ;=> false
 (type false)   ;=> java.lang.Boolean
 ....
 
+indexterm:[true?] indexterm:[false?]
+ 
 `true?` 함수는 주어진 인수가 '실제로 ``true``'footnote:[논리적 참(logically true)과는
 다르다는 점에 주의하자.]인지 판별한다.  즉, 주어진 인자가 ``true``로 평가될 때에만
 ``true``를 반환한다. 그리고 `false?` 함수는 주어진 인수가 실제로 ``false``인지
@@ -165,6 +169,8 @@ false   ;=> false
 키워드는 임의의 식별자 앞에 콜론(`:`) 기호를 붙여 만든다. 자기 자신으로 평가되는 값으로
 클로저에서 아주 많이 사용된다.
 
+indexterm:[keyword?] indexterm:[keyword]
+ 
 [source]
 ....
 :city              ;=> :city
@@ -195,15 +201,17 @@ false   ;=> false
              :city "Portland, ME"})
 ....
 
-식별자 앞에 콜론을 두 개 붙이면 해당 이름공간을 가진 키워드로 확장된다. 예를 들어, 현재의 이름공간이
-``user``일 때 다음을 실행하면, ``user`` 이름공간이 붙은 키워드로 확장되는 것을 볼 수 있다.
+식별자 앞에 콜론을 두 개 붙이면 해당 이름공간을 가진 키워드로 확장된다. 예를 들어, 현재의
+이름공간이 ``user``일 때 다음을 실행하면, ``user`` 이름공간이 붙은 키워드로 확장되는 것을
+볼 수 있다.
 
 [source]
 ....
 ::address   ;=> :user/address
 ....
 
-이때 `namespace` 함수와 `name` 함수로, 이름공간과 키워드명 부분만을 알아낼 수 있다.
+이때 `namespace` 함수와 `name` 함수로, 이름공간과 키워드명 부분만을 알아낼 수
+있다. indexterm:[namespce] indexterm:[name]
 
 [source]
 ....
@@ -220,8 +228,8 @@ false   ;=> false
 == 심볼(Symbols)
 
 클로저의 심볼은 다른 언어들에서의 식별자(identifiers)와 유사한 개념이다. 심볼은 숫자가
-아닌 문자로 시작해야 하고, 그 뒤에 `*`, `+`, `-`, `=`, `?`, `!`, `$`, `%`, `&`, `_`, `|`, `<`, `>` 같은 기호와 문자들이 올 수
-있다.
+아닌 문자로 시작해야 하고, 그 뒤에 `*`, `+`, `-`, `=`, `?`, `!`, `$`, `%`, `&`, `_`, `|`,
+`<`, `>` 같은 기호와 문자들이 올 수 있다.
 
 [source]
 ....
@@ -258,8 +266,7 @@ a   ;=> 10
 ....
 
 
-`name` 함수는 심볼을 문자열로 바꾼다.
-
+`name` 함수는 심볼을 문자열로 바꾼다. indexterm:[name] 
 
 [source]
 ....
@@ -267,7 +274,7 @@ a   ;=> 10
 ....
 
 
-`symbol` 함수는 문자열을 심볼로 만든다.
+`symbol` 함수는 문자열을 심볼로 만든다. indexterm:[symbol] 
 
 
 [source]
@@ -277,7 +284,7 @@ a   ;=> 10
 ....
 
 
-`symbol?` 함수는 심볼인지 여부를 확인한다.
+`symbol?` 함수는 심볼인지 여부를 확인한다. indexterm:[symbol?] 
 
 
 [source]
@@ -325,7 +332,7 @@ a   ;=> 10
 * `\tab`
 
 
-`char`함수는 정수를 문자로 바꾼다.
+`char`함수는 정수를 문자로 바꾼다. indexterm:[char]
 
 [source]
 ....
@@ -333,8 +340,7 @@ a   ;=> 10
 ....
 
 
-`char?`는 문자인지를 판별한다.
-
+`char?`는 문자인지를 판별한다. indexterm:[char?]
 
 [source]
 ....

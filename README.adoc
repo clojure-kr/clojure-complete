@@ -34,7 +34,7 @@ commit은 수시로 이루어지지만, 버전 번호는 큰 변화가 있다고
 
 * link:Simple-Values/simple-values.adoc[Simple Values]
 
-//* link:Flow-Controls/flow-controls.adoc[Flow Controls]
+* link:Flow-Controls/flow-controls.adoc[Flow Controls]
 
 //* link:Collections-and-Sequences/collections-and-sequences.adoc[Collections and Sequences]
 
