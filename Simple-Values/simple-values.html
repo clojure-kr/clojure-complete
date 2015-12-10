@@ -140,6 +140,9 @@ sorted-set: clojure.lang.PersistentTreeSet</div></td>
 </div>
 </div>
 <div class="paragraph">
+<p></p>
+</div>
+<div class="paragraph">
 <p><code>type</code> 함수를 이용하면, 해당 값이 어떤 자료형으로 구현되어 있는지를 직접 확인해 볼 수 있다.</p>
 </div>
 <div class="listingblock">
@@ -179,6 +182,9 @@ sorted-set: clojure.lang.PersistentTreeSet</div></td>
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p> </p>
 </div>
 <div class="paragraph">
 <p>정수 맨앞에 숫자 <code>0</code>이 있으면 8진수를 표시하고, <code>0x</code> 또는 <code>0X</code>가 있으면 16진수를
@@ -229,6 +235,9 @@ sorted-set: clojure.lang.PersistentTreeSet</div></td>
 </div>
 </div>
 <div class="paragraph">
+<p></p>
+</div>
+<div class="paragraph">
 <p>정수의 맨 뒤에 대문자 <code>N</code><sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup>을 붙이면,
 <code>Long</code>형보다 큰 임의의 길이의 정수(arbitrary-precision integer)도 표현할 수 있다.</p>
 </div>
@@ -257,7 +266,8 @@ sorted-set: clojure.lang.PersistentTreeSet</div></td>
 </div>
 </div>
 <div class="paragraph">
-<p>자동 승격 연산자(+', -', *', inc', and dec')들은 Long 계산이 오버플로우가 발생하면 자동으로 BigInt로 변환해 준다.</p>
+<p>자동 승격 연산자(+', -', *', inc', and dec')들은 Long 계산이 오버플로우가 발생하면
+자동으로 BigInt로 변환해 준다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -275,7 +285,7 @@ sorted-set: clojure.lang.PersistentTreeSet</div></td>
 </div>
 </div>
 <div class="paragraph">
-<p><code>bigint</code> 함수는 BigInt를 만든다.</p>
+<p><code>bigint</code> 함수는 BigInt를 만든다. </p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -283,15 +293,7 @@ sorted-set: clojure.lang.PersistentTreeSet</div></td>
 </div>
 </div>
 <div class="paragraph">
-<p><code>bigdec</code> 함수는 BigDecimal을 만든다.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">bigdec</span> <span class="float">3.0</span>)    <span class="comment">;=&gt; 3.0M</span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><code>biginteger</code> 함수는 java.math.BigInteger를 만든다.</p>
+<p><code>biginteger</code> 함수는 java.math.BigInteger를 만든다. </p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -338,6 +340,9 @@ sorted-set: clojure.lang.PersistentTreeSet</div></td>
 </div>
 </div>
 <div class="paragraph">
+<p></p>
+</div>
+<div class="paragraph">
 <p>실수 뒤에 대문자 <code>M</code><sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</sup>을 붙이면, 정확도가 보장되는 임의의 길이의 실수(arbitrary-precision signed
 floating point decimal)를 표현할 수 있다.</p>
 </div>
@@ -351,7 +356,7 @@ floating point decimal)를 표현할 수 있다.</p>
 </div>
 </div>
 <div class="paragraph">
-<p><code>decimal?</code> 함수는 주어진 숫자가 <code>BigDecimal</code>형인지 판별한다.</p>
+<p><code>decimal?</code> 함수는 주어진 숫자가 <code>BigDecimal</code>형인지 판별한다. </p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -359,6 +364,14 @@ floating point decimal)를 표현할 수 있다.</p>
 
 (<span class="keyword">decimal?</span> <span class="float">0.1</span>)    <span class="comment">;=&gt; false</span>
 (<span class="keyword">decimal?</span> <span class="integer">1</span>)      <span class="comment">;=&gt; false</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>bigdec</code> 함수는 BigDecimal을 만든다. </p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">bigdec</span> <span class="float">3.0</span>)    <span class="comment">;=&gt; 3.0M</span></code></pre>
 </div>
 </div>
 </div>
@@ -377,7 +390,7 @@ floating point decimal)를 표현할 수 있다.</p>
 </div>
 </div>
 <div class="paragraph">
-<p><code>ratio?</code> 함수는 주어진 숫자가 <code>clojure.lang.Ratio</code>형인지를 판별한다.</p>
+<p><code>ratio?</code> 함수는 주어진 숫자가 <code>clojure.lang.Ratio</code>형인지를 판별한다. </p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -404,7 +417,7 @@ floating point decimal)를 표현할 수 있다.</p>
 </div>
 <div class="paragraph">
 <p><code>denominator</code> 함수와 <code>numerator</code> 함수는 인수로 주어진 분수의 분자와 분모 부분만을
-반환한다.</p>
+반환한다.  </p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -433,7 +446,7 @@ floating point decimal)를 표현할 수 있다.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>분수를 실수로 강제로 형변환하고 싶을 때에는 <code>double</code>이나 <code>float</code> 함수를 사용한다.</p>
+<p>분수를 실수로 강제로 형변환하고 싶을 때에는 <code>double</code>이나 <code>float</code> 함수를 사용한다.  </p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -443,7 +456,7 @@ floating point decimal)를 표현할 수 있다.</p>
 </div>
 <div class="paragraph">
 <p><code>rational?</code> 함수는 유리수인지를 판별한다. 즉, 정수나 분수이면 <code>true</code>를 반환하고, 그렇지
-않으면 <code>false</code>를 반환한다.</p>
+않으면 <code>false</code>를 반환한다. </p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -470,7 +483,7 @@ floating point decimal)를 표현할 수 있다.</p>
 </div>
 <div class="paragraph">
 <p><code>rationalize</code> 함수는 주어진 숫자를 유리수(rational number), 즉 정수나 분수로
-변환한다. 무리수가 인수로 주어진 경우에는 가장 근접한 분수로 변환한다.</p>
+변환한다. 무리수가 인수로 주어진 경우에는 가장 근접한 분수로 변환한다. </p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -489,7 +502,7 @@ floating point decimal)를 표현할 수 있다.</p>
 <h3 id="_산술_연산_함수">2.4. 산술 연산 함수</h3>
 <div class="paragraph">
 <p>숫자 자료형을 모두 다루었으니 이제 산술 연산 함수들을 소개한다. 그에 앞서, 숫자들의 종류에
-관계 없이 숫자인지의 여부를 판별해주는 함수 <code>number?</code>가 있다.</p>
+관계 없이 숫자인지의 여부를 판별해주는 함수 <code>number?</code>가 있다. </p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -504,6 +517,9 @@ floating point decimal)를 표현할 수 있다.</p>
 (<span class="keyword">number?</span> <span class="predefined-constant">nil</span>)    <span class="comment">;=&gt; false</span>
 (<span class="keyword">number?</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">23</span><span class="delimiter">&quot;</span></span>)   <span class="comment">;=&gt; false</span></code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>   </p>
 </div>
 <div class="paragraph">
 <p>사칙 연산 함수부터 다루어 보자. 이 함수들은 숫자의 자료형에 관계 없이 동작한다.</p>
@@ -568,7 +584,7 @@ floating point decimal)를 표현할 수 있다.</p>
 </div>
 <div class="paragraph">
 <p>몫(quotient)과 나머지(remainder)를 구하려면, 각각 <code>quot</code>와 <code>rem</code> 함수를 이용한다. 이 두
-함수는 실수에도 적용된다.</p>
+함수는 실수에도 적용된다.  </p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -580,7 +596,7 @@ floating point decimal)를 표현할 수 있다.</p>
 </div>
 </div>
 <div class="paragraph">
-<p><code>inc</code>와 <code>dec</code> 함수는 1씩 증가 또는 감소 시킨다.</p>
+<p><code>inc</code>와 <code>dec</code> 함수는 1씩 증가 또는 감소 시킨다.  </p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -594,7 +610,8 @@ floating point decimal)를 표현할 수 있다.</p>
 </div>
 </div>
 <div class="paragraph">
-<p><code>max</code>과 <code>min</code> 함수는 각각 주어진 인수들 중 최대값과 최소값을 반환한다.</p>
+<p><code>max</code>과 <code>min</code> 함수는 각각 주어진 인수들 중 최대값과 최소값을 반환한다. 
+</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -606,7 +623,7 @@ floating point decimal)를 표현할 수 있다.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>`min-key`와 `max-key`는 주어진 인수들에 함수를 적용해서 나온 최대값과 최소값을 반환한다.</p>
+<p>`min-key`와 `max-key`는 주어진 인수들에 함수를 적용해서 나온 최대값과 최소값을 반환한다.  </p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -634,6 +651,9 @@ Math/E          <span class="comment">;=&gt; 2.718281828459045</span>
 </div>
 <div class="sect2">
 <h3 id="_등가_대소_비교_함수">2.5. 등가/대소 비교 함수</h3>
+<div class="paragraph">
+<p> </p>
+</div>
 <div class="paragraph">
 <p>숫자들의 등가를 비교할 떄에는 <code>=</code> 함수보다는 <code>==</code> 함수를 사용하는 것이 바람직하다. <code>=</code>
 함수는 숫자들이 인수로 올 경우 숫자들의 타입까지 같아야 <code>true</code>를 반환하기 때문이다.</p>
@@ -680,6 +700,9 @@ Math/E          <span class="comment">;=&gt; 2.718281828459045</span>
 </div>
 </div>
 <div class="paragraph">
+<p>   </p>
+</div>
+<div class="paragraph">
 <p>대소 비교 함수에는 <code>&lt;</code>, <code><=</code>, <code>&gt;</code>, <code>&gt;=</code>가 있다.</p>
 </div>
 <div class="listingblock">
@@ -703,6 +726,9 @@ Math/E          <span class="comment">;=&gt; 2.718281828459045</span>
 </div>
 <div class="sect2">
 <h3 id="_비트_연산">2.6. 비트 연산</h3>
+<div class="paragraph">
+<p>  </p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">bit-and</span> <span class="integer">2</span>r1100 <span class="integer">2</span>r1001)   <span class="comment">;=&gt; 8</span>
@@ -714,7 +740,7 @@ Math/E          <span class="comment">;=&gt; 2.718281828459045</span>
 <div class="sect2">
 <h3 id="_기타_유용한_함수들">2.7. 기타 유용한 함수들</h3>
 <div class="paragraph">
-<p><code>zero?</code> 함수는 <code>0</code>인지를 판별한다.</p>
+<p><code>zero?</code> 함수는 <code>0</code>인지를 판별한다. </p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -729,7 +755,7 @@ Math/E          <span class="comment">;=&gt; 2.718281828459045</span>
 </div>
 </div>
 <div class="paragraph">
-<p><code>pos?</code> 함수와 <code>neg?</code> 함수는, 각각 양수인지 음수인지를 판별한다.</p>
+<p><code>pos?</code> 함수와 <code>neg?</code> 함수는, 각각 양수인지 음수인지를 판별한다.  </p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -750,7 +776,7 @@ Math/E          <span class="comment">;=&gt; 2.718281828459045</span>
 </div>
 <div class="paragraph">
 <p><code>odd?</code> 함수와 <code>even?</code> 함수는, 각각 홀수인지 짝수인지를 판별한다. 인수가 정수가 아니면
-예외가 발생한다.</p>
+예외가 발생한다.  </p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -764,6 +790,9 @@ Math/E          <span class="comment">;=&gt; 2.718281828459045</span>
 (<span class="keyword">odd?</span> <span class="float">1.0</span>)
 <span class="comment">;&gt;&gt; IllegalArgumentException Argument must be an integer: 1.0</span></code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p></p>
 </div>
 </div>
 </div>
@@ -798,7 +827,7 @@ Math/E          <span class="comment">;=&gt; 2.718281828459045</span>
 </div>
 </div>
 <div class="paragraph">
-<p><code>nil?</code> 함수는 주어진 인수가 <code>nil</code>인지 판별한다.</p>
+<p><code>nil?</code> 함수는 주어진 인수가 <code>nil</code>인지 판별한다. </p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -826,6 +855,9 @@ Math/E          <span class="comment">;=&gt; 2.718281828459045</span>
 (<span class="keyword">type</span> <span class="predefined-constant">true</span>)    <span class="comment">;=&gt; java.lang.Boolean</span>
 (<span class="keyword">type</span> <span class="predefined-constant">false</span>)   <span class="comment">;=&gt; java.lang.Boolean</span></code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p> </p>
 </div>
 <div class="paragraph">
 <p><code>true?</code> 함수는 주어진 인수가 '실제로 <code>true</code>'<sup class="footnote">[<a id="_footnoteref_4" class="footnote" href="#_footnote_4" title="View footnote.">4</a>]</sup>인지 판별한다.  즉, 주어진 인자가 <code>true</code>로 평가될 때에만
@@ -856,6 +888,9 @@ Math/E          <span class="comment">;=&gt; 2.718281828459045</span>
 <div class="paragraph">
 <p>키워드는 임의의 식별자 앞에 콜론(<code>:</code>) 기호를 붙여 만든다. 자기 자신으로 평가되는 값으로
 클로저에서 아주 많이 사용된다.</p>
+</div>
+<div class="paragraph">
+<p> </p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -889,8 +924,9 @@ Math/E          <span class="comment">;=&gt; 2.718281828459045</span>
 </div>
 </div>
 <div class="paragraph">
-<p>식별자 앞에 콜론을 두 개 붙이면 해당 이름공간을 가진 키워드로 확장된다. 예를 들어, 현재의 이름공간이
-<code>user</code>일 때 다음을 실행하면, <code>user</code> 이름공간이 붙은 키워드로 확장되는 것을 볼 수 있다.</p>
+<p>식별자 앞에 콜론을 두 개 붙이면 해당 이름공간을 가진 키워드로 확장된다. 예를 들어, 현재의
+이름공간이 <code>user</code>일 때 다음을 실행하면, <code>user</code> 이름공간이 붙은 키워드로 확장되는 것을
+볼 수 있다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -898,7 +934,8 @@ Math/E          <span class="comment">;=&gt; 2.718281828459045</span>
 </div>
 </div>
 <div class="paragraph">
-<p>이때 <code>namespace</code> 함수와 <code>name</code> 함수로, 이름공간과 키워드명 부분만을 알아낼 수 있다.</p>
+<p>이때 <code>namespace</code> 함수와 <code>name</code> 함수로, 이름공간과 키워드명 부분만을 알아낼 수
+있다.  </p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -918,8 +955,8 @@ Math/E          <span class="comment">;=&gt; 2.718281828459045</span>
 <div class="sectionbody">
 <div class="paragraph">
 <p>클로저의 심볼은 다른 언어들에서의 식별자(identifiers)와 유사한 개념이다. 심볼은 숫자가
-아닌 문자로 시작해야 하고, 그 뒤에 <code>*</code>, <code>+</code>, <code>-</code>, <code>=</code>, <code>?</code>, <code>!</code>, <code>$</code>, <code>%</code>, <code>&amp;</code>, <code>_</code>, <code>|</code>, <code>&lt;</code>, <code>&gt;</code> 같은 기호와 문자들이 올 수
-있다.</p>
+아닌 문자로 시작해야 하고, 그 뒤에 <code>*</code>, <code>+</code>, <code>-</code>, <code>=</code>, <code>?</code>, <code>!</code>, <code>$</code>, <code>%</code>, <code>&amp;</code>, <code>_</code>, <code>|</code>,
+<code>&lt;</code>, <code>&gt;</code> 같은 기호와 문자들이 올 수 있다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -956,7 +993,7 @@ a   <span class="comment">;=&gt; 10</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><code>name</code> 함수는 심볼을 문자열로 바꾼다.</p>
+<p><code>name</code> 함수는 심볼을 문자열로 바꾼다. </p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -964,7 +1001,7 @@ a   <span class="comment">;=&gt; 10</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><code>symbol</code> 함수는 문자열을 심볼로 만든다.</p>
+<p><code>symbol</code> 함수는 문자열을 심볼로 만든다. </p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -973,7 +1010,7 @@ a   <span class="comment">;=&gt; 10</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><code>symbol?</code> 함수는 심볼인지 여부를 확인한다.</p>
+<p><code>symbol?</code> 함수는 심볼인지 여부를 확인한다. </p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1039,7 +1076,7 @@ a   <span class="comment">;=&gt; 10</span></code></pre>
 </ul>
 </div>
 <div class="paragraph">
-<p>`char`함수는 정수를 문자로 바꾼다.</p>
+<p>`char`함수는 정수를 문자로 바꾼다. </p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1047,7 +1084,7 @@ a   <span class="comment">;=&gt; 10</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>`char?`는 문자인지를 판별한다.</p>
+<p>`char?`는 문자인지를 판별한다. </p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1063,6 +1100,9 @@ a   <span class="comment">;=&gt; 10</span></code></pre>
 <div class="sectionbody">
 <div class="paragraph">
 <p>클로저에서 문자열 역시 자기 자신으로 평가되는 값(value)으로, 쌍따옴표(<code>"</code>)로 둘러싸 표현한다.</p>
+</div>
+<div class="paragraph">
+<p></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1093,7 +1133,7 @@ are allowed too.</span><span class="delimiter">&quot;</span></span>
 </div>
 <div class="paragraph">
 <p><code>str</code> 함수는 주어진 인수들을 문자열로 변환한 후, 공백 없이 연결된 문자열을 반환한다. 단,
-<code>nil</code>은 빈 문자열(<code>""</code>)로 변환된다.</p>
+<code>nil</code>은 빈 문자열(<code>""</code>)로 변환된다. </p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1108,6 +1148,9 @@ are allowed too.</span><span class="delimiter">&quot;</span></span>
 (<span class="keyword">str</span> <span class="integer">1</span> '<span class="keyword">symbol</span> <span class="symbol">:keyword</span>)   <span class="comment">;=&gt; &quot;1symbol:keyword&quot;</span>
 (<span class="keyword">str</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello, </span><span class="delimiter">&quot;</span></span> <span class="string"><span class="delimiter">&quot;</span><span class="content">World!</span><span class="delimiter">&quot;</span></span>)   <span class="comment">;=&gt; &quot;Hello, World!&quot;</span></code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p></p>
 </div>
 <div class="paragraph">
 <p><code>format</code> 함수는 <code>java.lang.String.format</code> 함수를 그대로 이용한다. 자세한 포맷 서식은
@@ -1131,6 +1174,9 @@ are allowed too.</span><span class="delimiter">&quot;</span></span>
 </div>
 </div>
 <div class="paragraph">
+<p></p>
+</div>
+<div class="paragraph">
 <p><code>subs</code> 함수는 주어진 문자열의 '시작 index(포함)'에서 '종료 index(불포함)'까지의 부분
 문자열(substring)을 반환한다. index는 0부터 시작하고, '종료 index&#8217;가 주어지지 않으면,
 문자열의 마지막까지 반환한다.</p>
@@ -1143,6 +1189,10 @@ are allowed too.</span><span class="delimiter">&quot;</span></span>
 </div>
 <div class="sect2">
 <h3 id="_println_str_print_str_prn_str_pr_str_함수">8.1. println-str/print-str/prn-str/pr-str 함수</h3>
+<div class="paragraph">
+<p>   
+   </p>
+</div>
 <div class="paragraph">
 <p>이 함수들은 <code>println</code>/<code>print</code>/<code>prn</code>/<code>pr</code> 함수들과 관계가 있다. 함수명에 `-str`이 붙지 않은
 이 함수들은, 문자열을 '반환&#8217;하는 함수가 아니라, 문자열을 stdout(표준 출력, 일반적으로
@@ -1264,6 +1314,9 @@ effect(부수 효과)를 수행하는 함수이다. 그리고 클로저에서 �
 소개한다.</p>
 </div>
 <div class="paragraph">
+<p> </p>
+</div>
+<div class="paragraph">
 <p><code>upper-case</code>와 <code>lower-case</code> 함수는 각각 주어진 문자열을 대문자와 소문자로 바꾼다.</p>
 </div>
 <div class="listingblock">
@@ -1276,6 +1329,9 @@ effect(부수 효과)를 수행하는 함수이다. 그리고 클로저에서 �
 (str/lower-case <span class="string"><span class="delimiter">&quot;</span><span class="content">Clojure User Groups</span><span class="delimiter">&quot;</span></span>)
 <span class="comment">;=&gt; &quot;clojure user groups&quot;</span></code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p></p>
 </div>
 <div class="paragraph">
 <p><code>split</code> 함수는 문자열과 정규식 패턴을 받아, 분할된 문자열의 벡터를 반환한다. 클로저에서
@@ -1300,6 +1356,9 @@ effect(부수 효과)를 수행하는 함수이다. 그리고 클로저에서 �
 </div>
 </div>
 <div class="paragraph">
+<p></p>
+</div>
+<div class="paragraph">
 <p><code>join</code> 함수는 인수로 주어진 컬렉션을, 문자열로 변환환 후 연결해 반환한다.</p>
 </div>
 <div class="listingblock">
@@ -1322,6 +1381,9 @@ effect(부수 효과)를 수행하는 함수이다. 그리고 클로저에서 �
 (str/join <span class="string"><span class="delimiter">&quot;</span><span class="content">\n</span><span class="delimiter">&quot;</span></span> (str/split <span class="string"><span class="delimiter">&quot;</span><span class="content">The Quick Brown Fox</span><span class="delimiter">&quot;</span></span> <span class="regexp"><span class="delimiter">#&quot;</span><span class="content">\s</span><span class="delimiter">&quot;</span></span>))
 <span class="comment">;=&gt; &quot;The\nQuick\nBrown\nFox&quot;</span></code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>  </p>
 </div>
 <div class="paragraph">
 <p><code>trim</code> 함수는 주어진 문자열의 좌우 끝에 있는 공백 문자들을 모두 제거한 문자열을
@@ -1367,7 +1429,7 @@ effect(부수 효과)를 수행하는 함수이다. 그리고 클로저에서 �
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-12-08 10:42:54 KST
+Last updated 2015-12-09 11:11:37 KST
 </div>
 </div>
 </body>

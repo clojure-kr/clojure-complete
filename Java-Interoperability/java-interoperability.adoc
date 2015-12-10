@@ -764,7 +764,7 @@ form으로 쓰여서는 안된다. 이 무명 클래스는 컴파일할 때 한 
 
 NOTE: 상위 클래스를 subclassing할 일이 없으면, ``reify``를 사용하는 것이 좋다.
 
-.proxy API
+.proxy 형식
 [listing]
 ----
 (proxy [super-class? interface*] [super-class-constructor-argument*]
@@ -833,7 +833,7 @@ indexterm:[gen-class]
 일반적인 자바 클래스와는 차이가 있다. 그리고 반드시 AOT(Ahead of Time) 컴파일을 수행한 후,
 해당 클래스를 import해야만 그 효력이 발생한다는 점도 기억하자.
 
-.gen-class API
+.gen-class 형식
 [listing]
 ----
 (gen-class
