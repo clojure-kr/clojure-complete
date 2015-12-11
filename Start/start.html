@@ -144,8 +144,8 @@ Programming Language라고 불리는 이유는 매크로를 통해 코드를 조
 <p>이해를 돕기 위해, C 언어에서의 삼항 연산자(? :)와 if 문을 예로 들어 보자.</p>
 </div>
 <div class="paragraph">
-<p>아래의 삼항 연산자는 식(expression)이어서, 이 연산자 자체가 `10`이나 `20`을 반환한 후 그
-결과값이 `result`에 저장된다.</p>
+<p>아래의 삼항 연산자는 식(expression)이어서, 이 연산자 자체가 <code>10</code>이나 <code>20</code>을 반환한 후
+그 결과값이 <code>result</code>에 저장된다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -153,8 +153,9 @@ Programming Language라고 불리는 이유는 매크로를 통해 코드를 조
 </div>
 </div>
 <div class="paragraph">
-<p>하지만 아래의 <code>if</code> 문은 식(expression)이 아니라 문(statement)이어서, <code>if</code> 문 자체가 <code>10`이나
-`20`을 반환하는 것이 아니라, `if</code> 문의 내부에서 <code>result</code> 변수의 상태를 변경하고 있다.</p>
+<p>하지만 아래의 <code>if</code> 문은 식(expression)이 아니라 문(statement)이어서, <code>if</code> 문 자체가
+<code>10</code>이나 <code>20</code>을 반환하는 것이 아니라, <code>if</code> 문의 내부에서 <code>result</code> 변수의 상태를
+변경하고 있다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -166,7 +167,8 @@ Programming Language라고 불리는 이유는 매크로를 통해 코드를 조
 </div>
 </div>
 <div class="paragraph">
-<p>만약 C의 `if`가 식이였다면 다음의 코드가 작동해야 한다(물론 다음의 코드는 적법한 C 코드가 아니다).</p>
+<p>만약 C의 <code>if</code>가 식이였다면 다음의 코드가 작동해야 한다(물론 다음의 코드는 적법한 C
+코드가 아니다).</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -174,18 +176,23 @@ Programming Language라고 불리는 이유는 매크로를 통해 코드를 조
 </div>
 </div>
 <div class="paragraph">
-<p>이와 같이 문은 주로 어떤 명령을 수행하고 부수효과를 낸다. 즉 문은 코드가 어떤 동작을 하고(상태를 변경하는 등)하는데 주안점이 있다면
- 식은 코드가 어떤 값을 나타내느냐 하는 것에 주안점이 있다.</p>
+<p>이와 같이 문은 주로 어떤 명령을 수행하고 부수효과를 낸다. 즉 문은 코드가 어떤 동작을
+하고(상태를 변경하는 등)하는데 주안점이 있다면 식은 코드가 어떤 값을 나타내느냐 하는 것에
+주안점이 있다.</p>
 </div>
 <div class="paragraph">
-<p>그러면 이것이 왜 중요한가? 모든 코드가 식으로 구성되면, 코드의 표현력이 늘어나고 아울러 코드의 조합력이 증가한다. 왜냐하면 코드가 부수효과 없이 어떤 값만을 나타낸다면, 코드는 참조 투명성이 보장되며, 또한 제 1급 시민이 될 수 있어서 함수의 파라미터로 사용될 수 있기 때문이다.</p>
+<p>그러면 이것이 왜 중요한가? 모든 코드가 식으로 구성되면, 코드의 표현력이 늘어나고 아울러
+코드의 조합력이 증가한다. 왜냐하면 코드가 부수효과 없이 어떤 값만을 나타낸다면, 코드는
+참조 투명성이 보장되며, 또한 제 1급 시민이 될 수 있어서 함수의 파라미터로 사용될 수 있기
+때문이다.</p>
 </div>
 <div class="paragraph">
-<p>`if`가 문이 아니라 식일 때, 코드의 표현력이 어떻게 증가하는지 다음의 실제 예제를 통해 살펴보자.</p>
+<p><code>if</code>가 문이 아니라 식일 때, 코드의 표현력이 어떻게 증가하는지 다음의 실제 예제를 통해
+살펴보자.</p>
 </div>
 <div class="paragraph">
-<p>다음의 버전 1은, 우리가 흔히 사용하는 <code>if</code> 문의 예이다. `n`이 참이면, `-n`만큼 이동하고,
-거짓이면 `-1`만큼 이동한다.</p>
+<p>다음의 버전 1은, 우리가 흔히 사용하는 <code>if</code> 문의 예이다. <code>n</code>이 참이면, <code>-n</code>만큼
+이동하고, 거짓이면 <code>-1</code>만큼 이동한다.</p>
 </div>
 <div class="listingblock">
 <div class="title">Version 1</div>
@@ -196,11 +203,11 @@ Programming Language라고 불리는 이유는 매크로를 통해 코드를 조
 </div>
 </div>
 <div class="paragraph">
-<p><code>if`가 식이 아니라 문인 언어에 익숙해져 있는 사람들에게는 위의 코드를 더 간결하게 표현할
+<p><code>if</code>가 식이 아니라 문인 언어에 익숙해져 있는 사람들에게는 위의 코드를 더 간결하게 표현할
 수 있다는 생각 자체가 떠오르지 않을 것이다. 하지만 리습 언어로 사고하는 사람들은 문제점을
-발견한다. 즉, 위 코드의 문제점은 `move</code> 호출이 두 번씩이나 중복되어 있다는 것이다. `if`가
-식인 언어에서는, 이를 수학에서 인수분해할 때 공통 인수 뽑아내듯이 더 간단하게 다음과 같이
-줄일 수 있다.</p>
+발견한다. 즉, 위 코드의 문제점은 <code>move</code> 호출이 두 번씩이나 중복되어 있다는
+것이다. <code>if</code>가 식인 언어에서는, 이를 수학에서 인수분해할 때 공통 인수 뽑아내듯이 더
+간단하게 다음과 같이 줄일 수 있다.</p>
 </div>
 <div class="listingblock">
 <div class="title">Version 2</div>
@@ -211,10 +218,10 @@ Programming Language라고 불리는 이유는 매크로를 통해 코드를 조
 <div class="paragraph">
 <p>위의 코드가 C 언어에서 동작할 수 없는 이유는, <code>move</code> 함수의 첫 번째 인수 자리에 놓인 <code>if</code>
 문이 어떤 값도 반환할 수 없기 때문이다. 하지만 리습 계열 언어에서는 모든 것이 식이이서,
-`if`조차도 값을 반환할 수 있어 위와 같은 표현이 가능해진다.</p>
+<code>if</code>조차도 값을 반환할 수 있어 위와 같은 표현이 가능해진다.</p>
 </div>
 <div class="paragraph">
-<p>한 걸음 더 나아가 `-`도 한 번 더 공통 인수로 뽑아낼 수 있다.</p>
+<p>한 걸음 더 나아가 <code>-</code>도 한 번 더 공통 인수로 뽑아낼 수 있다.</p>
 </div>
 <div class="listingblock">
 <div class="title">Version 3</div>
@@ -223,7 +230,7 @@ Programming Language라고 불리는 이유는 매크로를 통해 코드를 조
 </div>
 </div>
 <div class="paragraph">
-<p><code>if`를 `or</code> 로 대치하면 더 간결해 진다.</p>
+<p><code>if</code>를 <code>or</code> 로 대치하면 더 간결해 진다.</p>
 </div>
 <div class="listingblock">
 <div class="title">Version 4</div>
@@ -259,7 +266,7 @@ value(값)의 합성어로, 어떤 값을 내놓는다, 즉 평가한다는 의�
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-12-08 16:17:06 KST
+Last updated 2015-12-10 20:27:41 KST
 </div>
 </div>
 </body>

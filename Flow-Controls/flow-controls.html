@@ -58,7 +58,7 @@
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">if</span> (<span class="keyword">&lt;</span> <span class="integer">5</span> <span class="integer">10</span>) <span class="string"><span class="delimiter">&quot;</span><span class="content">yes</span><span class="delimiter">&quot;</span></span> <span class="string"><span class="delimiter">&quot;</span><span class="content">no</span><span class="delimiter">&quot;</span></span>)   <span class="comment">;=&gt; &quot;yes&quot;</span>
 
-(If (<span class="keyword">&gt;</span> <span class="integer">5</span> <span class="integer">10</span>) <span class="string"><span class="delimiter">&quot;</span><span class="content">yes</span><span class="delimiter">&quot;</span></span> <span class="string"><span class="delimiter">&quot;</span><span class="content">no</span><span class="delimiter">&quot;</span></span>)   <span class="comment">;=&gt; &quot;no&quot;</span></code></pre>
+(<span class="keyword">if</span> (<span class="keyword">&gt;</span> <span class="integer">5</span> <span class="integer">10</span>) <span class="string"><span class="delimiter">&quot;</span><span class="content">yes</span><span class="delimiter">&quot;</span></span> <span class="string"><span class="delimiter">&quot;</span><span class="content">no</span><span class="delimiter">&quot;</span></span>)   <span class="comment">;=&gt; &quot;no&quot;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -538,7 +538,7 @@ clause := test-constant result-expr |
 </div>
 </div>
 <div class="paragraph">
-<p><code>case</code> 구문<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup>은 <code>clause</code> 내의 <code>test-constannt</code> 부분에 나열된 값들이 컴파일 타임에 그 값을
+<p><code>case</code> 구문<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup>은 <code>clause</code> 내의 <code>test-constant</code> 부분에 나열된 값들이 컴파일 타임에 그 값을
 알 수 있어야 한다는 제약이 있다. 따라서 문자열이나 키워드 같은 자기 자신으로 평가되는
 값들이 주로 나열된다.</p>
 </div>
@@ -651,7 +651,7 @@ clause := test-constant result-expr |
     []          <span class="string"><span class="delimiter">&quot;</span><span class="content">empty vec</span><span class="delimiter">&quot;</span></span>
     (<span class="keyword">vec</span> (<span class="integer">1</span> <span class="integer">2</span>)) <span class="string"><span class="delimiter">&quot;</span><span class="content">my vec</span><span class="delimiter">&quot;</span></span>      <span class="comment">; </span><i class="conum" data-value="3"></i><b>(3)</b>
     <span class="string"><span class="delimiter">&quot;</span><span class="content">no match</span><span class="delimiter">&quot;</span></span>))
-<span class="comment">;;=&gt; &quot;my-vec&quot;</span></code></pre>
+<span class="comment">;;=&gt; &quot;my vec&quot;</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -668,7 +668,7 @@ clause := test-constant result-expr |
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td><code>(= [1 2] '(1 2))</code>의 결과는 <code>true</code>이므로, <code>"my-vec"</code>이 반환되었다.</td>
+<td><code>(= [1 2] '(1 2))</code>의 결과는 <code>true</code>이므로, <code>"my vec"</code>이 반환되었다.</td>
 </tr>
 </table>
 </div>
@@ -686,7 +686,7 @@ clause := test-constant result-expr |
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-12-10 16:13:26 KST
+Last updated 2015-12-10 19:48:10 KST
 </div>
 </div>
 </body>
