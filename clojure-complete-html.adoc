@@ -20,23 +20,46 @@ commit은 수시로 이루어지지만, 버전 번호는 큰 변화가 있다고
 
 :leveloffset: 1
 
+다음의 목차에서 링크가 아직 걸려 있지 않은 장은 앞으로 채워 나갈 예정입니다.
+ 
 .Table of Contents
 [sidebar]
 ****
 . <<Preface/preface.html#, Preface>>
 . <<Development-Environments/development-environments.html#, Development Environments>>
-//. <<Leiningen/leiningen.html#, Leiningen>>
-//. <<Start/start.html#, Start>>
+. Start
+. Leiningen
 . <<Simple-Values/simple-values.html#, Simple Values>>
 . <<Flow-Controls/flow-controls.html#, Flow Controls>>
+. Collections and Sequences
+. Functions and Functional Programming
+. Destructuring
+. Recursions
+. Transducers
+. <<Java-Interoperability/java-interoperability.html#, Java Interoperability>>
+. Metadata
+. <<Namespaces-and-Libraries/namespaces-and-libraries.html#, Namespaces and Libraries>>
+. State Management and Parallel Programming
+. core.async
+. Multimedthos and Hierarchies
+. Protocols, Records and Types
+. Macros
+. Numerics and Mathematics
+. Project Management
+. Testing
+. Type Checking
+. Database Programming
+. Web Programming
+****
+
+//. <<Start/start.html#, Start>>
+//. <<Leiningen/leiningen.html#, Leiningen>>
 //. <<Collections-and-Sequences/collections-and-sequences.html#, Collections and Sequences>>
 //. <<Functions-and-Functional-Programming/functions-and-functional-programming.html#, Functions and Functional Programming>>
 //. <<Destructuring/destructuring.html#, Destructuring>>
 //. <<Recursions/recursions.html#, Recursions>>
 //. <<Transducers/transducers.html#, Transducers>>
-. <<Java-Interoperability/java-interoperability.html#, Java Interoperability>>
 //. <<Metadata/metadata.html#, Metadata>>
-. <<Namespaces-and-Libraries/namespaces-and-libraries.html#, Namespaces and Libraries>>
 //. <<State-Management-and-Parallel-Programming/state-management-and-parallel-programming.html#, State Management and Parallel Programming>>
 //. <<Core-Async/core-async.html#, core//.async>>
 //. <<Multimedthos-and-Hierarchies/multimedthos-and-hierarchies.html#, Multimedthos and Hierarchies>>
@@ -48,7 +71,7 @@ commit은 수시로 이루어지지만, 버전 번호는 큰 변화가 있다고
 //. <<Type-Checking/type-checking.html#, Type Checking>>
 //. <<Database-Programming/database-programming.html#, Database Programming>>
 //. <<Web-Programming/web-programming.html#, Web Programming>>
-****
+
 
 :leveloffset: 0
 
