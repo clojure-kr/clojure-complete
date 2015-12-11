@@ -19,9 +19,16 @@ commit은 수시로 이루어지지만, 버전 번호는 큰 변화가 있다고
 장을 마쳤을 때)에만 올라 갑니다.
 ****
 
-다음의 목차에서 링크가 아직 걸려 있지 않은 장은 앞으로 채워 나갈 예정입니다.
+== [small]#문서 보기 안내#
+
+github가 asciidoc 형식의 문서 내용 중 일부를 html 형식으로 제대로 변환하지 못하는 문제가
+발견되었습니다. 따라서 앞으로 이곳은 문서를 보관하는 용도로만 사용하고, 실제 이 책의
+내용을 열람하실 떄에는 http://clojure.or.kr/books/clojure-complete[]에서 보시기를 권합니다.
+
 
 === Table of Contents
+
+다음의 목차에서 링크가 아직 걸려 있지 않은 장은 앞으로 채워 나갈 예정입니다.
 
 :leveloffset: 1
 . link:Preface/preface.adoc[Preface]
@@ -75,12 +82,6 @@ commit은 수시로 이루어지지만, 버전 번호는 큰 변화가 있다고
 
 
 :leveloffset: 0
-
-== [small]#문서 보기 안내#
-
-github가 asciidoc 형식의 문서 내용 중 일부를 html 형식으로 제대로 변환하지 못하는 문제가
-발견되었습니다. 따라서 앞으로 이곳은 문서를 보관하는 용도로만 사용하고, 실제 이 책의
-내용을 열람하실 떄에는 http://clojure.or.kr/books/clojure-complete[]에서 보시기를 권합니다.
 
 === Copyright
 
