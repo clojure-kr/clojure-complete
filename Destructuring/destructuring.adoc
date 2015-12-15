@@ -1,0 +1,435 @@
+= 구조분해(Destructuring)
+:source-language: clojure
+:source-highlighter: coderay
+:sectnums:
+:imagesdir: ../img
+:linkcss:
+:stylesdir: ../
+:stylesheet: my-asciidoctor.css
+
+
+클로저는 데이타를 직접 다룬다. 관련있는 데이타들은 주로 맵이나 벡터같은 컬렉션으로 구조화되어 사용되는데, 컬렉션들은 추상 인터페이스를 통해서 개별 데이타에 접근하는 방법을 제공한다. 예를 들어, 벡터의 경우 값을 가져올 때 다음과 같이 한다.
+
+[source]
+....
+(def v [42 "foo" 99.2 [5 12]])
+(first v)    ;=> 42
+(second v)   ;=> "foo"
+(last v)     ;=> [5 12]
+(nth v 2)    ;=> 99.2    ;; 1
+(v 2)        ;=> 99.2    ;; 2
+(.get v 2)   ;=> 99.2    ;; 3
+....
+
+first, second, last, nth 같은 이러한 함수들은 벡터나 맵같은 컬렉션들이 요소들을 읽기 위해 제공하는 추상 인터페이스이다. 개개의 컬렉션들의 구체적인 구현에 상관없이 이러한 추상 인터페이스를 기반으로 해서 컬렉션에 접근하는 것이 가능하기 때문에, 컬렉션을 처리하는 클로저의 모든 코어 함수들은 그 구현이 단순해지며, 또한 서로 레고 블럭처럼 구성가능하게 된다.
+
+하지만 추상 인터페이스가 제공하는 이러한 함수들을 이용해서 컬렉션의 여러 개의 요소에 접근할 때는 상당히 번거로워진다.
+
+[source]
+....
+(+ (first v) (v 2))              ;=> (+ 42 99.2) => 141.2
+(+ (first v) (first (last v)))   ;=> (+ 42 (first [5 12])) => (+ 42 5) => 47
+....
+
+
+클로저는 이러한 문제를 해결하기 위해 구조분해라는 매우 유용한 기능을 제공한다. 구조분해는 컬렉션과 같은 추상 데이타 구조에서 원하는 값만 손쉽게 뽑아서 바인딩하는 기법이다.
+
+구조분해는 기본적으로 let 바인딩 리스트에서 사용되지만, let 바인딩을 내부적으로 사용하는 fn, defn, loop 등에서도 사용될 수 있다. 구조분해에는 벡터 구조분해와 맵 구조분해가 있다.
+
+== 벡터 구조분해
+
+벡터 구조분해는 nth를 지원하는 모든 시퀀스들에 대해 적용된다.
+
+이러한 컬렉션은 아래와 같다.
+
+ - 클로저의 리스트, 벡터, seqs
+ - java.util.List 인터페이스를 구현한 컬렉션들. 즉 ArrayList, LinkedList 등
+ - java.util.RandomAccess 인터페이스를 구현한 클래스
+ - 자바 CharSequence
+ - 자바 java.util.regex.Matcher
+ - 자바 String
+
+=== 기본 시퀀스 인수분해
+
+다음은 간단한 시퀀스 인수분해이다.
+
+
+[source]
+....
+(def v [42 "foo" 99.2 [5 12]])
+;=> #'user/v
+
+(let [[x y z] v] (+ x z))
+;=> 141.2
+....
+
+
+let 바인딩 벡터는 이름-값 쌍의 나열이다. 위 코드에서는 이름이 [x y z]이고, 값은 v인 쌍 하나만 있다. 값 v는 하나의 심볼이 아닌 [x y z]라는 심볼 시퀀스로 바인딩되기 위해 인수분해 되어야 한다. 물론 v가 시퀀스 인수분해되기 위해서는 v 자체가 시퀀스여야 한다. 시퀀스 인수분해는 자리별로 바인딩된다. 즉 v의 첫 요소는 x, 둘째 요소는 y, 세째 요소는 z로 바인딩된다.
+
+
+사실 위의 코드는 아래 코드와 같은 일을 하는 것이다.
+
+[source]
+....
+(let [x (nth v 0)
+      y (nth v 1)
+      z (nth v 2)]
+  (+ x z))
+;=> 141.2
+....
+
+=== 내부 시퀀스 인수분해
+
+다음은 인수분해가 내부 벡터에 적용되는 예이다.
+
+
+[source]
+....
+(let [[x _ _ [y z]] v] (+ x y z))
+;=> 59
+....
+
+==== 시퀀스 인수분해는 자리별 분해
+
+인수분해는 자리별로 서로 매칭되어 분해되서 바인딩되는 것이다.
+
+[source]
+....
+       [x  y     z]
+       [42 "foo" 99.2 [5 12]]
+....
+
+
+
+위의 내부 시퀀스 인수분해는 다음과 같이 자리별 매칭이 된다.
+
+
+[source]
+....
+      [x  _     _    [y z ]]
+      [42 "foo" 99.2 [5 12]]
+....
+
+
+=== 나머지 인수분해
+
+&를 사용하면 나머지 요소들을 시퀀스로 인수분해할 수 있다.
+
+[source]
+....
+(let [[x & rest] v] rest)
+;=> ("foo" 99.2 [5 12])
+....
+
+이것은 전형적인 시퀀스 인수분해이다. 이런 인수분해는 특히 loop등 재귀 호출에서 많이 사용된다. 한가지 주의할 점은 rest가 벡터가 아니라 시퀀스라는 점이다.
+
+=== 원본 인수분해
+
+때로는 원래의 값을 그대로 유지하고 싶을 수도 있다. 그럴 때는 :as 키워드를 사용한다.
+
+[source]
+....
+(let [[x _ z :as org] v] (conj org (+ x z)))
+;=> [42 "foo" 99.2 [5 12] 141.2]
+....
+
+이것이 유용할 때는 v가 함수일 경우이다. 함수의 결과값을 인수분해하기 했지만 결과값 전체를 지시하는 심볼이 없어 함수를 다시 호출하지 않기 위해서이다. 다음 코드를 보자.
+
+
+[source]
+....
+(defn f [] [1 2 3])
+;=> #'user/f
+(let [[x y] (f)]
+  (conj (f) (+ x y)))     ;; f 함수가 2번 호출된다.
+;=> [1 2 3 3]
+(let [[x y :as all] (f)]
+  (conj all (+ x y)))     ;; f 함수의 결과값을 심볼 all로 받아 사용한다.
+;=> [1 2 3 3]
+....
+
+
+다음은 나머지 인수분해와 원본 인수분해를 같이 사용하는 예이다.
+
+[source]
+....
+(let [[a b c & more :as all] (range 10)]
+  (println "a b c are: " a b c)
+  (println "more is: " more)
+  (println "all is: " all))
+;>> a b c are: 0 1 2
+;>> more is: (3 4 5 6 7 8 9)
+;>> all is: (0 1 2 3 4 5 6 7 8 9)
+;=> nil
+....
+
+
+== 맵 구조분해
+
+=== 맵 인수분해의 대상
+맵 인수분해의 대상은 다음과 같다.
+
+  - 클로저 hash-map, array-map, record
+  - java.util.Map 인터페이스를 구현한 컬렉션
+  - 인덱스를 키로하는 get 함수를 지원하는 클래스
+    - 클로저 벡터
+    - 스트링
+    - Array
+
+
+=== 기본 맵 인수분해
+다음은 기본적인 맵 인수분해이다.
+
+
+[source]
+....
+(def m {:a 5 :b 6
+        :c [7 8 9]
+        :d {:e 10 :f 11}
+        "foo" 88
+        42 false})
+;=> #'user/m
+(let [{a :a b :b} m]
+  (+ a b))
+;=> 11
+....
+
+
+위 코드에서 let 바인딩 벡터는 인수분해를 위해 맵을 사용하여, m의 :a 값인 5를 a에 m의 :b 값인 6을 b에 바인딩한다.
+
+=== 맵 인수분해는 키별 분해
+맵은 키-값 쌍을 요소로 하기 때문에 다음과 같이 키에 따른 분해가 된다고 생각할 수 있다.
+
+
+[source]
+....
+{a  :a  b  :b}
+    {:a 5   :b 6}
+....
+
+맵의 키는 키워드외에 다른 것이 올 수도 있기 때문에 다음 코드도 가능하다.
+
+[source]
+....
+(let [{f "foo"} m]
+  (+ f 12))
+;=> 100
+....
+
+
+
+[source]
+....
+(let [{v 42} m]
+  (if v 1 0))
+;=> 0
+....
+
+
+=== 벡터에 대한 맵 인수분해
+맵 인수분해에서 벡터나 스트링의 인덱스는 키로 사용될 수 있다. 다음은 벡터를 맵 인수분해하는 예이다.
+
+[source]
+....
+(let [{x 3 y 8} [12 0 0 -18 44 6 0 0 1]]
+  (+ x y))
+;=> -17
+....
+
+벡터를 맵 인수분해하는 장점은 특정 자리만을 골라서 인수분해할 수 있다는 점이다.
+
+벡터는 위치 인덱스를 키로 하는 맵이다.
+
+=== 내부 맵 인수분해
+다음은 내부 맵에 대한 인수분해이다.
+
+다음은 내부 맵에 대한 인수분해이다.
+
+[source]
+....
+(let [{{e :e} :d} m]
+  (* 2 e))
+;=> 20
+....
+
+
+:d에 의해 m의 내부 맵 {:e 10 :f 11}이 선택되고, 다시 :e에 의해 10이 선택된다.
+
+
+=== 시퀀스 인수분해와 맵 인수분해 같이 사용하기
+
+맵 인수분해와 시퀀스 인수분해가 같이 사용되면 우아한 코드가 된다.
+
+[source]
+....
+(let [{[x _ y] :c} m]
+  (+ x y))
+;=> 16
+....
+
+
+
+
+[source]
+....
+(def map-in-vector ["James" {:birthday (java.util.Date. 73 1 6)}])
+;=> #'user/map-in-vector
+(let [[name {bd :birthday}] map-in-vector]
+(str name " was born on " bd))
+;=> "James was born on Thu Feb 06 00:00:00 EST 1973"
+....
+
+
+=== 원본 인수분해
+시퀀스 인수분해에서처럼 :as를 사용하면 인수분해되는 맵 자체를 바인딩할 수 있다.
+
+[source]
+....
+(let [{r1 :x r2 :y :as randoms}
+      (zipmap [:x :y :z] (repeatedly (partial rand-int 10)))]
+  (assoc randoms :sum (+ r1 r2)))
+;=> {:sum 17, :z 3, :y 8, :x 9}
+....
+
+
+=== 기본값 설정
+
+인수분해 문구에서 피인수분해 맵에는 없는 키를 사용했을 때, 기본맵을 제공하여 해당 키의 값을 설정할 수 있다.
+
+[source]
+....
+(let [{k :unknown x :a
+       :or {k 50}} m]
+  (+ k x))
+;=> 55
+....
+
+아래 코드는 같은 결과를 낸다.
+
+[source]
+....
+(let [{k :unknown x :a} m
+      k (or k 50)]
+ (+ k x))
+;=> 55
+....
+
+하지만 :or는 피인수분해의 해당 키 값이 false이거나 nil일 때도 동작한다.
+
+[source]
+....
+(let [{opt1 :option} {:option false}
+      opt1 (or opt1 true)
+      {opt2 :option :or {opt2 true}} {:option false}]
+  {:opt1 opt1 :opt2 opt2})
+;=> {:opt1 true, :opt2 false}
+....
+
+=== 맵키 이름 인수분해
+맵의 키는 그 자체로 데이타의 성격을 드러내는 경우, 맵 인수분해 이후에도 그 키의 이름을 그대로 사용하는 것이 좋은데, 다음과 같이 같은 이름들이 반복되게 된다.
+
+
+[source]
+....
+(def kildong {:name "KilDong" :age 24 :location "west"})
+;=> #'user/kildong
+(let [{name :name age :age location :location} kildong]
+  (format "%s is %s years old and lives in %s." name age location))
+;=> "KilDong is 24 old years and lives in west."
+....
+
+이런 반복을 하지 않기 위해 :keys를 사용하여 피인수분해 맵의 각 키의 이름으로 바인딩한다.
+
+[source]
+....
+(def kildong {:name "KilDong" :age 24 :location "west"})
+;=> #'user/kildong
+(let [{:keys [name age location]} kildong]
+  (format "%s is %s years old and lives in %s." name age location))
+;=> "KilDong is 24 old years and lives in west."
+....
+
+
+피인수분해 맵이 키로 스트링이나 심볼을 사용하는 경우는 :strs과 :syms를 사용한다.
+
+
+[source]
+....
+(def kildong {"name" "KilDong" "age" 24 "location" "west"})
+;=> #'user/kildong
+(let [{:strs [name age location]} kildong]
+  (format "%s is %s years old and lives in %s." name age location))
+;=> "KilDong is 24 old years and lives in west."
+....
+
+
+[source]
+....
+(def kildong {'name "KilDong" 'age 24 'location "west"})
+;=> #'user/kildong
+(let [{:syms [name age location]} kildong]
+  (format "%s is %s years old and lives in %s." name age location))
+;=> "KilDong is 24 old years and lives in west."
+....
+
+
+
+
+
+=== 나머지 시퀀스를 키-값 쌍으로 인수분해
+시퀀스 인수분해서는 &를 사용하여 나머지 요소를 시퀀스로 바인딩할 수 있었다. 키-값 쌍이 튜플로 있는 벡터에 대해서는 튜플들을 맵으로 인수분해할 수 있다.
+
+
+
+[source]
+....
+(def movie ["Les Miserables" 2012 :director "Tom Hooper" :rating 8.0])
+;= #'user/movie
+(let [[movie-name year & rest] movie
+      {:keys [director rating]} (apply hash-map rest)]
+  (format "%s is made by %s in %s, rating %.1f" movie-name year director rating))
+....
+
+
+
+
+이 코드에서는 시퀀스 인수분해에서 받은 rest를 맵 인수분해하기 위해 hash-map를 적용하고 있다. 이것은 다음과 같이 간단하게 처리될 수 있다.
+
+[source]
+....
+(let [[movie-name year & {:keys [director rating]}] movie]
+  (format "%s is made by %s in %s, rating %s" movie-name year director rating))
+....
+
+rest 자리에 직접 맵 인수분해 문구를 바로 적용할 수 있다.
+
+
+
+=== 맵을 시퀀스 인수분해 할 수는 없다
+위에서 시퀀스를 맵 인수분해 할 수 있음을 보았다. 그것은 시퀀스도 맵 인수분해가 요구하는 get 메소드를 지원하기 때문이다. 하지만 반대로 맵을 시퀀스 인수분해 할 수는 없는데, 맵은 시퀀스 인수분해가 요구하는 nth를 지원하지 않기 때문이다.
+
+특히 주의할 점은 집합은 값(Value)를 키(Key)로 하는 맵이기 때문에 시퀀스 인수분해가 되지 않는다.
+
+[source]
+....
+(let [[a & r] #{1 2 3}] a)
+; UnsupportedOperationException nth not supported on this type: PersistentHashSet...
+....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
