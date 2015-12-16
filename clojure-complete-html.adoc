@@ -28,13 +28,11 @@ commit은 수시로 이루어지지만, 버전 번호는 큰 변화가 있다고
 . <<Preface/preface.html#, Preface>>
 . <<Development-Environments/development-environments.html#, Development Environments>>
 . Start
-. Leiningen
 . <<Simple-Values/simple-values.html#, Simple Values>>
 . <<Flow-Controls/flow-controls.html#, Flow Controls>>
 . Collections and Sequences
 . Functions and Functional Programming
 . Destructuring
-. Recursions
 . Transducers
 . <<Java-Interoperability/java-interoperability.html#, Java Interoperability>>
 . Metadata
@@ -53,11 +51,9 @@ commit은 수시로 이루어지지만, 버전 번호는 큰 변화가 있다고
 ****
 
 //. <<Start/start.html#, Start>>
-//. <<Leiningen/leiningen.html#, Leiningen>>
 //. <<Collections-and-Sequences/collections-and-sequences.html#, Collections and Sequences>>
 //. <<Functions-and-Functional-Programming/functions-and-functional-programming.html#, Functions and Functional Programming>>
 //. <<Destructuring/destructuring.html#, Destructuring>>
-//. <<Recursions/recursions.html#, Recursions>>
 //. <<Transducers/transducers.html#, Transducers>>
 //. <<Metadata/metadata.html#, Metadata>>
 //. <<State-Management-and-Parallel-Programming/state-management-and-parallel-programming.html#, State Management and Parallel Programming>>
