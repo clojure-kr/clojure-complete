@@ -5,12 +5,12 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.3">
-<title>Start</title>
+<title>클로저 시작하기</title>
 <link rel="stylesheet" href="..//my-asciidoctor.css">
 </head>
 <body class="article">
 <div id="header">
-<h1>Start</h1>
+<h1>클로저 시작하기</h1>
 </div>
 <div id="content">
 <div class="sect1">
@@ -20,22 +20,22 @@
 <p>컴퓨터 언어의 역사에서 Lisp 계열 언어들(Common Lisp, Scheme, Racket, Clojure, &#8230;&#8203;)은 Algol
 계열 언어들과는 다른 계보를 형성해 왔다. 오늘날의 주류 언어들(C, C++, C#, Java,
 JavaScript, Python, Ruby, Perl, &#8230;&#8203;)이 모두 알골계 언어들인데 반해, 클로저는 리습 계열
-언어여서 실제 코드를 본 후 아마도 생소한 느낌을 갖는 사람들이 많을 것이다. 따라서 클로저
+언어여서 실제 코드를 본 후 아마도 생소한 느낌을 갖는 사람들이 많았을 것이다. 따라서 클로저
 언어를 본격적으로 익히기에 앞서, 다른 언어들과의 두드러진 차이점 몇 가지를 먼저 소개한다.</p>
 </div>
 <div class="sect2">
 <h3 id="_괄호의_사용">1.1. 괄호의 사용</h3>
 <div class="paragraph">
-<p>클로저 코드를 처음 접한 사람들은 아마도 그 많은 괄호에 놀라서 거부감도 들었을 것이다. 그런
-느낌은 이 글을 쓰고 있는 필자들의 경우도 예외는 아니었다. 하지만 그 형태가 아니라 괄호가
-있음으로 인해 가지게 되는 막강한 효용에 눈 뜨기 시작할 때부터, 거부감의 대상이던 그
-괄호들이 아릅답게 보이기 시작한다. 이것은 단순한 주관적인 느낌이 아니라, 리습 언어를 알아
-가는 사람들의 공통된 심리적 패턴이다.</p>
+<p>클로저 코드를 처음 접한 사람들은 아마도 그 많은 괄호에 놀라서 강한 거부감을 느꼈을
+것이다. 그런 느낌은 이 글을 쓰고 있는 필자들의 경우도 예외는 아니었다. 하지만 그 형태가
+아니라, 괄호가 있음으로 인해 가지게 되는 막강한 효용에 눈뜨기 시작할 때부터, 거부감의
+대상이던 그 괄호들이 아릅답게 보이기 시작한다. 이것은 단순한 주관적인 느낌이 아니라, 리습
+언어를 알아가는 사람들의 공통된 심리적 패턴이다.</p>
 </div>
 <div class="paragraph">
 <p>괄호가 있어서 얻을 수 있는 첫 번째 이점은, 코드의 의미가 명확해져 문맥에 의지할 필요가
 없다는 점과, 연산자 우선 순위를 따로 외울 필요가 없다는 점이다. 다음의 두 코드를 보면 어느
-것의 의미가 명확한 지는 자명하다.</p>
+것의 의미가 명확한지는 자명하다.</p>
 </div>
 <div class="listingblock">
 <div class="title">C</div>
@@ -56,8 +56,8 @@ Programming Language라고 불리는 이유는 매크로를 통해 코드를 조
 형태 자체가 구문 트리(Syntax Tree)의 형식이어서, 이 코드를 변형하기 위해 별도의
 파싱(parsing) 과정을 거칠 필요가 없기 때문이다. 지금 당장은 잘 이해가 안되더라도 매크로를
 작성하다 보면 그 가치를 깨닫게 된다. 그리고 바로 그 순간부터 괄호가 아름답게 보이기
-시작한다. 사실 괄호가 있음으로 해서 좀더 쉽고 간결한 프로그래밍이 가능해진다면, 괄호가
-많다는 것이 무슨 그리 큰 대수이겠는가?</p>
+시작한다. 사실 괄호가 있음으로 해서 좀더 강력하면서도 간결한 프로그래밍이 가능해진다면,
+괄호가 많다는 것이 무슨 그리 큰 대수이겠는가?</p>
 </div>
 </div>
 <div class="sect2">
@@ -102,10 +102,10 @@ Programming Language라고 불리는 이유는 매크로를 통해 코드를 조
 없다는 장점이 있다.</p>
 </div>
 <div class="paragraph">
-<p>리습 계열 언어에서는 연산자와 함수가 다른 취급을 받지 않는다. 수학에서 중위 표기법을 이미
-사용하고 있어 대부분의 언어가 그것을 답습하고 있을 뿐, 프로그래밍에서는 굳이 그것을 구분해
-처리하지 않는 것이 오히려 일관되고 편리하다. 연산자가 중간에 위치하게 되면 컴파일러에서는
-이를 따로 파싱해야하는 수고를 한 번 더 거쳐야 하기 때문이다.</p>
+<p>리습 계열 언어에서는 연산자와 함수가 다른 취급을 받지 않는다. 연산자의 경우, 수학에서 이미
+중위 표기법을 사용하고 있어 대부분의 언어가 그것을 답습하고 있을 뿐, 프로그래밍에서는 굳이
+그것을 구분해 처리하지 않는 것이 오히려 일관되고 편리하다. 연산자가 중간에 위치하게 되면
+컴파일러에서는 이를 따로 파싱해야하는 수고를 한 번 더 거쳐야 하기 때문이다.</p>
 </div>
 <div class="paragraph">
 <p>예를 들어, C 언어에서 <code>**</code> 연산자를 거듭제곱 연산자로 여러분이 언어에 추가하고 싶다고
@@ -167,7 +167,7 @@ Programming Language라고 불리는 이유는 매크로를 통해 코드를 조
 </div>
 </div>
 <div class="paragraph">
-<p>만약 C의 <code>if</code>가 식이였다면 다음의 코드가 작동해야 한다(물론 다음의 코드는 적법한 C
+<p>만약 C의 <code>if</code>가 식이였다면 다음의 코드가 작동해야 한다(물론, 다음의 코드는 적법한 C
 코드가 아니다).</p>
 </div>
 <div class="listingblock">
@@ -203,11 +203,11 @@ Programming Language라고 불리는 이유는 매크로를 통해 코드를 조
 </div>
 </div>
 <div class="paragraph">
-<p><code>if</code>가 식이 아니라 문인 언어에 익숙해져 있는 사람들에게는 위의 코드를 더 간결하게 표현할
-수 있다는 생각 자체가 떠오르지 않을 것이다. 하지만 리습 언어로 사고하는 사람들은 문제점을
-발견한다. 즉, 위 코드의 문제점은 <code>move</code> 호출이 두 번씩이나 중복되어 있다는
-것이다. <code>if</code>가 식인 언어에서는, 이를 수학에서 인수분해할 때 공통 인수 뽑아내듯이 더
-간단하게 다음과 같이 줄일 수 있다.</p>
+<p><code>if</code>가 식이 아니라 문인 언어에 익숙해져 있는 사람들에게는 위의 코드를 별도의 함수를
+사용하지 않고 더 간결하게 표현할 수 있다는 생각 자체가 떠오르지 않을 것이다. 하지만 리습
+언어로 사고하는 사람들은 문제점을 발견한다. 즉, 위 코드의 문제점은 <code>move</code> 호출이 두
+번씩이나 중복되어 있다는 것이다. <code>if</code>가 식인 언어에서는, 이를 수학에서 인수분해할 때
+공통 인수 뽑아내듯이 더 간단하게 다음과 같이 줄일 수 있다.</p>
 </div>
 <div class="listingblock">
 <div class="title">Version 2</div>
@@ -249,7 +249,7 @@ Programming Language라고 불리는 이유는 매크로를 통해 코드를 조
 </div>
 </div>
 <div class="paragraph">
-<p>stdout에 결과를 출력(이것도 일종의 부수 효과이다)하기 위한 를 위한 함수 <code>println</code>조자도
+<p>stdout에 결과를 출력(이것도 일종의 부수 효과이다)하기 위한 함수 <code>println</code>조자도
 <code>nil</code>이라는 값을 반환한다<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</sup>. 아래에서 <code>;&gt;&gt;</code> 기호는 stdout 출력 결과를, <code>;=></code>
 기호는 함수의 반환 결과를 표시한다.</p>
 </div>
@@ -270,14 +270,14 @@ value(값)의 합성어로, 어떤 값을 내놓는다, 즉 평가한다는 의�
 </div>
 <div class="paragraph">
 <p>아울러 모든 코드가 식이라는 사실은, 나중에 배우게 될 매크로(Macros)의 구현에도 대단히
-중요한 의미를 갖는다.</p>
+중요한 의미를 지닌다.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_return_문이_없다">1.4. return 문이 없다</h3>
 <div class="paragraph">
 <p>클로저에는 값을 반환하기 위한 <code>return</code> 문이 별도로 존재하지 않는다. 마지막에 위치해 있는
-식을 평가한 결과가 곧 반환값이 된다.</p>
+식이 평가된 결과가 곧 반환값이 된다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -289,6 +289,11 @@ value(값)의 합성어로, 어떤 값을 내놓는다, 즉 평가한다는 의�
 ;&gt;&gt; LOG: Computing...
 ;=&gt; 3</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>아울러 <code>return</code> 문이 아예 존재하지 않으므로, 함수 실행 도중에 함수의 실행을 종료할 수
+없다. 일단 함수가 실행되면 함수의 끝에 도달해야 함수가 종료된다. 이것은 함수형 언어의
+일반적인 특징이기도 하다.</p>
 </div>
 </div>
 </div>
@@ -302,7 +307,7 @@ value(값)의 합성어로, 어떤 값을 내놓는다, 즉 평가한다는 의�
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-12-16 10:13:19 KST
+Last updated 2015-12-16 11:00:09 KST
 </div>
 </div>
 </body>
