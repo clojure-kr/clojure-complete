@@ -14,7 +14,7 @@
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_클로저_언어의_특징들">1. 클로저 언어의 특징들</h2>
+<h2 id="_클로저_코드의_특징들">1. 클로저 코드의 특징들</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>컴퓨터 언어의 역사에서 Lisp 계열 언어들(Common Lisp, Scheme, Racket, Clojure, &#8230;&#8203;)은 Algol
@@ -26,8 +26,8 @@ JavaScript, Python, Ruby, Perl, &#8230;&#8203;)이 모두 알골계 언어들인
 <div class="sect2">
 <h3 id="_괄호의_사용">1.1. 괄호의 사용</h3>
 <div class="paragraph">
-<p>클로저 코드를 처음 접한 사람들은 아마도 그 많은 괄호에 놀라고 거부감도 들었을 것이다. 그런
-느낌들은 이 글을 쓰고 있는 필자들의 경우도 예외가 아니었다. 하지만 그 형태가 아니라 괄호가
+<p>클로저 코드를 처음 접한 사람들은 아마도 그 많은 괄호에 놀라서 거부감도 들었을 것이다. 그런
+느낌은 이 글을 쓰고 있는 필자들의 경우도 예외는 아니었다. 하지만 그 형태가 아니라 괄호가
 있음으로 인해 가지게 되는 막강한 효용에 눈 뜨기 시작할 때부터, 거부감의 대상이던 그
 괄호들이 아릅답게 보이기 시작한다. 이것은 단순한 주관적인 느낌이 아니라, 리습 언어를 알아
 가는 사람들의 공통된 심리적 패턴이다.</p>
@@ -53,10 +53,10 @@ JavaScript, Python, Ruby, Perl, &#8230;&#8203;)이 모두 알골계 언어들인
 <p>하지만, 괄호를 사용하는 진정한 위력은 매크로를 작성할 때 나온다. 리습 언어가 Programmable
 Programming Language라고 불리는 이유는 매크로를 통해 코드를 조작할 수 있기 때문인데, 이
 괄호가 있음으로 해서 코드 조작이 수월해진다. 위의 클로저 코드를 잘 살펴보면, 이미 코드
-형태 자체가 추상 구문 트리(Abstract Syntax Tree)의 형식이어서, 이 코드를 변형하기 위해
-별도의 파싱(parsing) 과정을 거칠 필요가 없기 때문이다. 지금 당장은 잘 이해가 안되더라도
-매크로를 작성하다 보면 그 가치를 깨닫게 된다. 그리고 바로 그 순간부터 괄호가 예뻐 보이기
-시작한다. 괄호가 있음으로 해서 좀더 쉽고 간결한 프로그래밍이 가능해진다면 괄호가
+형태 자체가 구문 트리(Syntax Tree)의 형식이어서, 이 코드를 변형하기 위해 별도의
+파싱(parsing) 과정을 거칠 필요가 없기 때문이다. 지금 당장은 잘 이해가 안되더라도 매크로를
+작성하다 보면 그 가치를 깨닫게 된다. 그리고 바로 그 순간부터 괄호가 아름답게 보이기
+시작한다. 사실 괄호가 있음으로 해서 좀더 쉽고 간결한 프로그래밍이 가능해진다면, 괄호가
 많다는 것이 무슨 그리 큰 대수이겠는가?</p>
 </div>
 </div>
@@ -103,18 +103,18 @@ Programming Language라고 불리는 이유는 매크로를 통해 코드를 조
 </div>
 <div class="paragraph">
 <p>리습 계열 언어에서는 연산자와 함수가 다른 취급을 받지 않는다. 수학에서 중위 표기법을 이미
-사용하고 있어 대부분의 언어가 그것을 답습하고 있을 뿐, 프로그래밍에서는 굳이 그것을 분리해
+사용하고 있어 대부분의 언어가 그것을 답습하고 있을 뿐, 프로그래밍에서는 굳이 그것을 구분해
 처리하지 않는 것이 오히려 일관되고 편리하다. 연산자가 중간에 위치하게 되면 컴파일러에서는
-이를 파싱해야하는 수고를 한 번 더 거쳐야 하기 때문이다.</p>
+이를 따로 파싱해야하는 수고를 한 번 더 거쳐야 하기 때문이다.</p>
 </div>
 <div class="paragraph">
-<p>예를 들어, C 언어에서 <code>**</code> 연산자를 거듭제곱 연산자로 언어에 추가하고 싶다고 가정해
-보자. 그러자면 우선 C 표준을 다루는 위원회에 제안을 해야 할 것이다. 물론 이 제안이
-받아들여진다는 보장도 없지만 이 위원회가 그 타당성을 인정해 새로운 C 언어 표준에
+<p>예를 들어, C 언어에서 <code>**</code> 연산자를 거듭제곱 연산자로 여러분이 언어에 추가하고 싶다고
+가정해 보자. 그러자면 우선 C 표준을 다루는 위원회에 제안을 해야 할 것이다. 물론 이 제안이
+받아들여진다는 보장도 없지만, 이 위원회가 그 타당성을 인정해 새로운 C 언어 표준에
 반영하기로 했다고 가정해 보자. 그러면 그 후에 모든 C 컴파일러를 이 새로운 표준에 맞춰 다시
 작성해야 할 것이고, 이 연산자를 이용해 작성한 C 소스는 구 버전의 컴파일러에서는 제대로
 컴파일이 되지도 않을 것이다. 이 상황을 클로저에 적용해 보면 일은 너무도 간단해진다. 클로저
-프로그래머는 다음과 같이 코드를 작성할 것이다.</p>
+프로그래머는 다음과 같이 코드를 작성하면 된다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -126,10 +126,10 @@ Programming Language라고 불리는 이유는 매크로를 통해 코드를 조
 </div>
 <div class="paragraph">
 <p>얼마나 간단한가? 연산자와 함수를 구별할 필요가 없는 데서 오는 편리함이다. 함수 추가하듯이
-연산자를 추가하면 된다. 사실 엄밀하게 말하자면 클로저에는 다른 언어들에서의 연산자라는
-개념이 없다. 함수의 이름으로 기호를 사용할 수 있어서 오직 함수만이 존재할 뿐이다. 연산자의
-중위 표기법을 과감하게 버림으로써, 다른 언어에서 언어의 표준 위원회에서나 결정할 수 있는
-일을 개발자가 직접 할 수 있게 된 것이다.</p>
+연산자를 추가하면 된다. 엄밀하게 말하자면, 클로저에는 다른 언어들에서의 연산자라는 개념이
+따로 없다. 함수의 이름으로 기호를 사용할 수 있어서 오직 함수만이 존재할 뿐이다. 연산자의 중위
+표기법을 과감하게 버림으로써, 다른 언어에서 언어의 표준 위원회에서나 결정할 수 있는 일을
+개발자가 직접 할 수 있게 된 것이다.</p>
 </div>
 </div>
 <div class="sect2">
@@ -141,7 +141,7 @@ Programming Language라고 불리는 이유는 매크로를 통해 코드를 조
 없다.</p>
 </div>
 <div class="paragraph">
-<p>이해를 돕기 위해, C 언어에서의 삼항 연산자(? :)와 if 문을 예로 들어 보자.</p>
+<p>이해를 돕기 위해, C 언어에서의 삼항 연산자(<code>? :</code>)와 <code>if</code> 문을 예로 들어 보자.</p>
 </div>
 <div class="paragraph">
 <p>아래의 삼항 연산자는 식(expression)이어서, 이 연산자 자체가 <code>10</code>이나 <code>20</code>을 반환한 후
@@ -176,15 +176,15 @@ Programming Language라고 불리는 이유는 매크로를 통해 코드를 조
 </div>
 </div>
 <div class="paragraph">
-<p>이와 같이 문은 주로 어떤 명령을 수행하고 부수효과를 낸다. 즉 문은 코드가 어떤 동작을
-하고(상태를 변경하는 등)하는데 주안점이 있다면 식은 코드가 어떤 값을 나타내느냐 하는 것에
-주안점이 있다.</p>
+<p>이와 같이 문(statement)은 주로 어떤 명령을 수행해서 부수 효과(side effect)를 내기 위한
+용도로 주로 쓰인다. 반면에 식(expression)은 코드가 어떤 값을 반환하느냐 하는 것에 관심이
+있을 때 쓰인다.</p>
 </div>
 <div class="paragraph">
 <p>그러면 이것이 왜 중요한가? 모든 코드가 식으로 구성되면, 코드의 표현력이 늘어나고 아울러
-코드의 조합력이 증가한다. 왜냐하면 코드가 부수효과 없이 어떤 값만을 나타낸다면, 코드는
-참조 투명성이 보장되며, 또한 제 1급 시민이 될 수 있어서 함수의 파라미터로 사용될 수 있기
-때문이다.</p>
+코드의 조합력이 증가한다. 왜냐하면 코드가 부수 효과 없이 어떤 값만을 반환하다면, 코드는
+참조 투명성(referential transparency)이 보장되며, 또한 일급 객체(first citizen)로 다루어질
+수 있어서 함수의 파라미터로 사용될 수 있기 때문이다.</p>
 </div>
 <div class="paragraph">
 <p><code>if</code>가 문이 아니라 식일 때, 코드의 표현력이 어떻게 증가하는지 다음의 실제 예제를 통해
@@ -249,6 +249,18 @@ Programming Language라고 불리는 이유는 매크로를 통해 코드를 조
 </div>
 </div>
 <div class="paragraph">
+<p>stdout에 결과를 출력(이것도 일종의 부수 효과이다)하기 위한 를 위한 함수 <code>println</code>조자도
+<code>nil</code>이라는 값을 반환한다<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</sup>. 아래에서 <code>;&gt;&gt;</code> 기호는 stdout 출력 결과를, <code>;=></code>
+기호는 함수의 반환 결과를 표시한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(println "Hello" "world!")
+;&gt;&gt; Hello world!
+;=&gt; nil</code></pre>
+</div>
+</div>
+<div class="paragraph">
 <p>위와 같이 클로저와 같은 리습 계열 언어에서는 코드의 일부 또는 전체가 모두 식으로 구성되어
 있다. 그래서 모든 리습 계열 언어에서는 코드를 '실행(execution)'한다고 하지 않고
 '평가(evaluation)'한다고 표현하는데, 그 이유는 evaluation이라는 말 자체가 접두어 e-(out)와
@@ -261,12 +273,36 @@ value(값)의 합성어로, 어떤 값을 내놓는다, 즉 평가한다는 의�
 중요한 의미를 갖는다.</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_return_문이_없다">1.4. return 문이 없다</h3>
+<div class="paragraph">
+<p>클로저에는 값을 반환하기 위한 <code>return</code> 문이 별도로 존재하지 않는다. 마지막에 위치해 있는
+식을 평가한 결과가 곧 반환값이 된다.</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(defn my-add [a b]
+  (println "LOG: Computing...")
+  (+ a b))
+
+(my-add 1 2)
+;&gt;&gt; LOG: Computing...
+;=&gt; 3</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnote_1">
+<a href="#_footnoteref_1">1</a>. 참고로, 클로저에서 부수 효과를 수행하는 대부분의 함수가 <code>nil</code>을 반환한다.
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-12-10 20:27:41 KST
+Last updated 2015-12-16 10:13:19 KST
 </div>
 </div>
 </body>
