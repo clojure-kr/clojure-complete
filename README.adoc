@@ -31,6 +31,7 @@ github가 asciidoc 형식의 문서 내용 중 일부를 html 형식으로 제�
 다음의 목차에서 링크가 아직 걸려 있지 않은 장은 앞으로 채워 나갈 예정입니다.
 
 :leveloffset: 1
+. Why Clojure?
 . link:Preface/preface.adoc[Preface]
 . link:Development-Environments/development-environments.adoc[Development Environments]
 . link:Start/start.adoc[클로저 시작하기]
@@ -43,7 +44,6 @@ github가 asciidoc 형식의 문서 내용 중 일부를 html 형식으로 제�
 . link:Java-Interoperability/java-interoperability.adoc[Java Interoperability]
 . Metadata
 . link:Namespaces-and-Libraries/namespaces-and-libraries.adoc[Namespace and Libraries]
-
 . State Management and Parallel Programming
 . core.async
 . Multimedthos and Hierarchies
@@ -56,7 +56,7 @@ github가 asciidoc 형식의 문서 내용 중 일부를 html 형식으로 제�
 . Database Programming
 . Web Programming
 
-
+//. link:Why-Clojure/why-clojure.adoc[Why Clojure?]
 //. link:Collections-and-Sequences/collections-and-sequences.adoc[Collections and Sequences]
 //. link:Functions-and-Functional-Programming/functions-and-functional-programming.adoc[Functions and Functional Programming]
 //. link:Transducers/transducers.adoc[Transducers]

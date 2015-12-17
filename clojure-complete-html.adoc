@@ -26,6 +26,7 @@ commit은 수시로 이루어지지만, 버전 번호는 큰 변화가 있다고
 [sidebar]
 ****
 . <<Preface/preface.html#, Preface>>
+. Why Clojure?
 . <<Development-Environments/development-environments.html#, Development Environments>>
 . <<Start/start.html#, 클로저 시작하기>>
 . <<Simple-Values/simple-values.html#, Simple Values>>
@@ -50,7 +51,7 @@ commit은 수시로 이루어지지만, 버전 번호는 큰 변화가 있다고
 . Web Programming
 ****
 
-
+//. <<Why-Clojure/why-clojure.html#, Why Clojure?>>
 //. <<Collections-and-Sequences/collections-and-sequences.html#, Collections and Sequences>>
 //. <<Functions-and-Functional-Programming/functions-and-functional-programming.html#, Functions and Functional Programming>>
 //. <<Transducers/transducers.html#, Transducers>>
