@@ -297,16 +297,167 @@ value(값)의 합성어로, 어떤 값을 내놓는다, 즉 평가한다는 의�
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_주석_comment_처리">2. 주석(Comment) 처리</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>클로저에서 주석을 표현하는 방식에는 세 가지가 있다.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>;</code> reader macro</p>
+</li>
+<li>
+<p><code>comment</code> macro</p>
+</li>
+<li>
+<p><code>#_</code> reader macro</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="__code_code_주석_문자">2.1. <code>;</code> 주석 문자</h3>
+<div class="paragraph">
+<p>클로저에서 라인 단위 주석 문자는 <code>;</code>이다. 이 주석 문자가 나온 부분부터 라인의 끝까지
+주석으로 처리된다. 참고로, 리습 계열 언어들은 일반적으로 <code>;</code> 문자를 라인 주석 문자로
+사용한다.</p>
+</div>
+<div class="paragraph">
+<p>리습 계열 언어에서는 주석을 달 때 일반적으로 다음과 같은 관행을 따른다. 반드시 따라야 하는
+것은 아니지만, 참고로 알아 두자.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>패키지 또는 이름공간 수준의 주석은 <code>;</code> 기호 4개를 사용한다.</p>
+</li>
+<li>
+<p>여러 개의 함수에 공통적으로 해당되는 주석은 <code>;</code> 기호 3개를 사용한다.</p>
+</li>
+<li>
+<p>함수 한 개에 대한 설명(예를 들면, 구현 알고리즘)이나, 함수 내 코드 블럭에 대한 주석은
+<code>;</code> 기호 2개를 사용한다. 함수 내 코드 블럭에 대한 주석인 경우에는, 주석을 코드 블럭 앞에
+두고, 코드 블럭에 맞게 indent를 맞춘다.</p>
+</li>
+<li>
+<p>코드 뒤에 주석을 달 때는 <code>;</code> 기호 1개를 사용한다.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>다음은 위의 관행을 따른 예제이다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">;;;; frob namespace
+(ns my-project.frob)
+
+;;; The next 20 functions do various sorts of frobbing
+
+;; frob1 function
+(defn frob1 [num]
+  ;; return double frob of num
+  (let [tmp (ran-int num)]   ; breaks if 0, fix!
+    (double-frob tmp num :with-good-luck true)))
+
+;; frob2 function
+(defn frob2 [lst]
+  (frob-aux (first lst)))</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="__code_comment_code_매크로">2.2. <code>comment</code> 매크로</h3>
+<div class="paragraph">
+<p><code>comment</code> 매크로는 여러 개의 최상위(top level) 코드들을 한꺼번에 모두 주석 처리하고 싶을
+때 주로 사용한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(comment
+  (def greeting "Hello, World!")
+
+  ;; The first version of main function.
+  ;; TODO: delete if a new version completes.
+  (defn -main []
+    "I can say 'Hello World'."
+    (println greeting))
+)
+
+(defn hello-world [] (println "Hello, World!"))
+
+(defn -main []
+  "I can call a function, which prints 'Hello World'."
+  (hello-world))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>comment</code> 매크로는 괄호로 둘러 싸인 부분을 주석으로 처리한 후, 반환값으로 항상 <code>nil</code>을
+반환한다. 따라서 다음과 같은 곳에서 이 매크로를 사용하면 안된다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">;; 다음의 코드는 결과적으로 (+ 10 20 nil 30)을 계산하게 된다.
+;; 이때 + 함수는 nil을 대상으로 연산을 수행할 수 없어 예외가 발생한다.
+(+ 10 20 (comment (* 2 3)) 30)
+;&gt;&gt; NullPointerException   clojure.lang.Numbers.ops</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>아울러 <code>comment</code> 매크로로 둘러싸인 코드는, 클로저 문법에 맞는 코드이어야 한다. 다음의
+코드는 클로저가 읽어 들일 수 없는 코드이므로 예외가 발행했다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">(comment
+  a : b
+)
+;&gt;&gt; RuntimeException Invalid token: :</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="__code_code_reader_매크로">2.3. <code>#_</code> reader 매크로</h3>
+<div class="paragraph">
+<p><code>#_</code> reader 매크로는 그 뒤에 나오는 형식(form) 한 개만을 주석 처리한다.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Caution</div>
+</td>
+<td class="content">
+<code>#_</code> reader 매크로는 그 다음에 나오는 형식의 소스 코드를 아예 읽어 들이지 않는다.
+반면에 <code>comment</code> 일반 매크로는 괄호로 둘러 싸인 소스 코드를 일단 읽어 들인 후 무시한다는
+점에서 서로 다르다.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">;; 아래의 코드는 (+ 10 20 30)과 동일하다.
+(+ 10 20 #_ (* 2 3) 30)      ;=&gt; 60
+
+;; 아래의 코드는 (+ 20 30)과 동일하다.
+(+ #_ 10 20 #_ (* 2 3) 30)   ;=&gt; 50</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footnotes">
 <hr>
 <div class="footnote" id="_footnote_1">
-<a href="#_footnoteref_1">1</a>. 참고로, 클로저에서 부수 효과를 수행하는 대부분의 함수가 <code>nil</code>을 반환한다.
+<a href="#_footnoteref_1">1</a>. 참고로, 클로저에서 부수 효과를 수행하는 함수들은 일반적으로 <code>nil</code>을 반환한다.
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-12-16 11:50:48 KST
+Last updated 2015-12-17 19:21:25 KST
 </div>
 </div>
 </body>

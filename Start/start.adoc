@@ -1,10 +1,11 @@
-sectnums:
+= 클로저 시작하기
+:sectnums:
 :source-language: clojure
 :linkcss:
 :stylesdir: ../
 :stylesheet: my-asciidoctor.css
 
-= 클로저 시작하기
+
 
 == 클로저 코드의 특징들
 
