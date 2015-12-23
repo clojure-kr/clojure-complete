@@ -210,7 +210,7 @@
 </div>
 <div class="paragraph">
 <p>그래서 <code>when</code>은 <code>if</code>의 <code>then-part</code>가 여러 개의 식들로 이루어져 있고, <code>else-part</code>는
-없을 때 사용된다.</p>
+필요 없을 때 사용된다.</p>
 </div>
 <div class="paragraph">
 <p><code>when-not</code>은 <code>when</code>과 정반대의 동작을 수행한다. </p>
@@ -250,14 +250,14 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">demo</span> [arg]
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">if-let-demo</span> [arg]
   (<span class="keyword">if-let</span> [a arg]
     (<span class="keyword">str</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">arg: </span><span class="delimiter">&quot;</span></span> a)
     <span class="string"><span class="delimiter">&quot;</span><span class="content">no</span><span class="delimiter">&quot;</span></span>))
 
-(demo <span class="integer">10</span>)      <span class="comment">;=&gt; &quot;arg: 10&quot;</span>
-(demo <span class="predefined-constant">nil</span>)     <span class="comment">;=&gt; &quot;no&quot;</span>
-(demo <span class="predefined-constant">false</span>)   <span class="comment">;=&gt; &quot;no&quot;</span></code></pre>
+(if-let-demo <span class="integer">10</span>)      <span class="comment">;=&gt; &quot;arg: 10&quot;</span>
+(if-let-demo <span class="predefined-constant">nil</span>)     <span class="comment">;=&gt; &quot;no&quot;</span>
+(if-let-demo <span class="predefined-constant">false</span>)   <span class="comment">;=&gt; &quot;no&quot;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -280,13 +280,13 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">drop-one</span> [coll]
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">drop-one2</span> [coll]
   (<span class="keyword">if-let</span> [s (<span class="keyword">seq</span> coll)]
     (<span class="keyword">rest</span> s)
     coll))
 
-(drop-one [<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>])   <span class="comment">;=&gt; (2 3)</span>
-(drop-one [])        <span class="comment">;=&gt; []</span></code></pre>
+(drop-one2 [<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>])   <span class="comment">;=&gt; (2 3)</span>
+(drop-one2 [])        <span class="comment">;=&gt; []</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -337,16 +337,16 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">drop-one</span> [coll]
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">drop-one3</span> [coll]
   (<span class="keyword">when-let</span> [s (<span class="keyword">seq</span> coll)]
     (<span class="keyword">println</span> s)
     (<span class="keyword">rest</span> s)))
 
-(drop-one [<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>])
+(drop-one3 [<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>])
 <span class="comment">;&gt;&gt; (1 2 3)</span>
 <span class="comment">;=&gt; (2 3)</span>
 
-(drop-one [])
+(drop-one3 [])
 <span class="comment">;=&gt; nil</span></code></pre>
 </div>
 </div>
@@ -389,19 +389,19 @@ clause := test expression</pre>
 </div>
 <div class="paragraph">
 <p>맨 마지막 <code>clause</code>의 <code>test</code> 부분은, 위의 코드에서처럼 관례적으로 <code>:else</code>라는
-키워드를 사용하지만, 논리적인 참값을 반환하는 어떤 표현도 가능하다. 예를 들어, 현실성은
-없지만 다음과 같이 할 수도 있다. 즉, <code>(= 5 5)</code>는 언제나 true를 반환하므로 default인
-경우의 처리가 가능하다.</p>
+키워드를 사용하지만, 논리적인 참값을 반환하는 어떤 식(expression)도 가능하다. 예를 들어,
+현실성은 없지만 다음과 같이 할 수도 있다. 즉, <code>(= 5 5)</code>는 언제나 <code>true</code>를 반환하므로
+default인 경우의 처리가 가능하다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">pos-neg-or-zero</span> [n]
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">pos-neg-or-zero2</span> [n]
   (<span class="keyword">cond</span>
     (<span class="keyword">&lt;</span> n <span class="integer">0</span>) <span class="string"><span class="delimiter">&quot;</span><span class="content">negative</span><span class="delimiter">&quot;</span></span>
     (<span class="keyword">&gt;</span> n <span class="integer">0</span>) <span class="string"><span class="delimiter">&quot;</span><span class="content">positive</span><span class="delimiter">&quot;</span></span>
     (<span class="keyword">=</span> <span class="integer">5</span> <span class="integer">5</span>) <span class="string"><span class="delimiter">&quot;</span><span class="content">zero</span><span class="delimiter">&quot;</span></span>))
 
-(pos-neg-or-zero <span class="integer">0</span>)   <span class="comment">;=&gt; &quot;zero&quot;</span></code></pre>
+(pos-neg-or-zero2 <span class="integer">0</span>)   <span class="comment">;=&gt; &quot;zero&quot;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -409,12 +409,12 @@ clause := test expression</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">pos-neg-or-zero</span> [n]
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">pos-neg-or-zero3</span> [n]
   (<span class="keyword">cond</span>
     (<span class="keyword">&lt;</span> n <span class="integer">0</span>) <span class="string"><span class="delimiter">&quot;</span><span class="content">negative</span><span class="delimiter">&quot;</span></span>
     (<span class="keyword">&gt;</span> n <span class="integer">0</span>) <span class="string"><span class="delimiter">&quot;</span><span class="content">positive</span><span class="delimiter">&quot;</span></span>))
 
-(pos-neg-or-zero <span class="integer">0</span>)   <span class="comment">;=&gt; nil</span></code></pre>
+(pos-neg-or-zero3 <span class="integer">0</span>)   <span class="comment">;=&gt; nil</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -433,8 +433,7 @@ clause := test expression</pre>
 clause := test-expr result-expr | test-expr :&gt;&gt; result-fn
 
 pred := 두 개의 인수를 받는 함수이어야 한다.
-        이 함수의 첫 번째 인자로 clause 부분의 test-expr이 들어가고,
-        두 번째 인자로 expr이 들어간다.
+        이 함수의 첫 번째 인자로 clause 부분의 test-expr이 들어가고, 두 번째 인자로 expr이 들어간다.
         결과적으로 (pred test-expr expr) 식이 실행된다.
 result-fn := 한 개의 인수를 받는 함수이어야 한다.
              (pred test-expr expr) 식을 평가한 결과가 이 함수의 인수로 들어간다.
@@ -446,7 +445,7 @@ default-expr := 디폴트 처리를 담당한다.</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">demo</span> [value]
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">cond-demo</span> [value]
   (<span class="keyword">cond</span>
     (<span class="keyword">instance?</span> Number value) (<span class="keyword">*</span> value <span class="integer">2</span>)
     (<span class="keyword">instance?</span> String value) (<span class="keyword">*</span> (<span class="keyword">count</span> value) <span class="integer">2</span>)
@@ -458,15 +457,15 @@ default-expr := 디폴트 처리를 담당한다.</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">demo</span> [value]
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">condp-demo</span> [value]
   (<span class="keyword">condp</span> <span class="keyword">instance?</span> value
     Number (<span class="keyword">*</span> value <span class="integer">2</span>)
     String (<span class="keyword">*</span> (<span class="keyword">count</span> value) <span class="integer">2</span>)
     <span class="string"><span class="delimiter">&quot;</span><span class="content">Unexpected type.</span><span class="delimiter">&quot;</span></span>))   <span class="comment">; </span><i class="conum" data-value="1"></i><b>(1)</b>
 
-(demo <span class="integer">10</span>)          <span class="comment">;=&gt; 20</span>
-(demo <span class="string"><span class="delimiter">&quot;</span><span class="content">Clojure</span><span class="delimiter">&quot;</span></span>)   <span class="comment">;=&gt; 14</span>
-(demo <span class="symbol">:hello</span>)      <span class="comment">;=&gt; &quot;Unexpected type.&quot;</span></code></pre>
+(condp-demo <span class="integer">10</span>)          <span class="comment">;=&gt; 20</span>
+(condp-demo <span class="string"><span class="delimiter">&quot;</span><span class="content">Clojure</span><span class="delimiter">&quot;</span></span>)   <span class="comment">;=&gt; 14</span>
+(condp-demo <span class="symbol">:hello</span>)      <span class="comment">;=&gt; &quot;Unexpected type.&quot;</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -483,12 +482,12 @@ default-expr := 디폴트 처리를 담당한다.</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">demo</span> [value]
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">condp-demo2</span> [value]
   (<span class="keyword">condp</span> <span class="keyword">instance?</span> value
     Number (<span class="keyword">*</span> value <span class="integer">2</span>)
     String (<span class="keyword">*</span> (<span class="keyword">count</span> value) <span class="integer">2</span>)))
 
-(demo <span class="symbol">:hello</span>)
+(condp-demo2 <span class="symbol">:hello</span>)
 <span class="symbol">:&gt;&gt;</span> IllegalArgumentException No matching clause<span class="error">:</span> <span class="symbol">:hello</span></code></pre>
 </div>
 </div>
@@ -501,12 +500,12 @@ default-expr := 디폴트 처리를 담당한다.</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>이때 두 번째 식은 반드시 <code>:&gt;&gt;</code> 키워드이어야 하고, 세 번쨰 식은 인수가 하나인 함수이어야
+<p>이때 두 번째 식은 반드시 <code>:&gt;&gt;</code> 키워드이어야 하고, 세 번째 식은 인수가 하나인 함수이어야
 한다. <code>(pred test-expr expr)</code> 식을 평가한 결과가 이 함수의 인수로 들어간다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">demo</span> [value]
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">condp-demo3</span> [value]
   (<span class="keyword">condp</span> <span class="keyword">some</span> value
     #{<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>} <span class="symbol">:&gt;&gt;</span> <span class="keyword">inc</span>
     #{<span class="integer">4</span> <span class="integer">5</span> <span class="integer">6</span>} <span class="symbol">:&gt;&gt;</span> <span class="keyword">dec</span>
@@ -515,9 +514,9 @@ default-expr := 디폴트 처리를 담당한다.</pre>
 <span class="comment">;; (some #{4 5 6} [6 5 4]) =&gt; 6</span>
 <span class="comment">;; (some #{7 8 9} [8 7 9]) =&gt; 8</span>
 
-(demo [<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>])   <span class="comment">;=&gt; 2</span>
-(demo [<span class="integer">6</span> <span class="integer">5</span> <span class="integer">4</span>])   <span class="comment">;=&gt; 5</span>
-(demo [<span class="integer">8</span> <span class="integer">7</span> <span class="integer">9</span>])   <span class="comment">;=&gt; 11</span></code></pre>
+(condp-demo3 [<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>])   <span class="comment">;=&gt; 2</span>
+(condp-demo3 [<span class="integer">6</span> <span class="integer">5</span> <span class="integer">4</span>])   <span class="comment">;=&gt; 5</span>
+(condp-demo3 [<span class="integer">8</span> <span class="integer">7</span> <span class="integer">9</span>])   <span class="comment">;=&gt; 11</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -538,9 +537,9 @@ clause := test-constant result-expr |
 </div>
 </div>
 <div class="paragraph">
-<p><code>case</code> 구문<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup>은 <code>clause</code> 내의 <code>test-constant</code> 부분에 나열된 값들이 컴파일 타임에 그 값을
-알 수 있어야 한다는 제약이 있다. 따라서 문자열이나 키워드 같은 자기 자신으로 평가되는
-값들이 주로 나열된다.</p>
+<p><code>case</code> 구문<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup>은 <code>clause</code> 내의 <code>test-constant</code> 부분에 나열된
+값들이 컴파일 타임에 그 값을 알 수 있어야 한다는 제약이 있다. 따라서 문자열이나 키워드
+같은 자기 자신으로 평가되는 값들이 주로 나열된다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -585,8 +584,8 @@ clause := test-constant result-expr |
 </table>
 </div>
 <div class="paragraph">
-<p><code>clause</code>의 <code>test-constant</code> 부분에 다음과 같이 심볼이 올 수도 있다. 이 심볼은 평가되지
-않고, 컴파일시에 앞에 인용 기호가 자동으로 붙게 된다.</p>
+<p><code>clause</code>의 <code>test-constant</code> 부분에 다음과 같이 심볼이 올 수도 있다. 이 심볼은 런타임에
+평가되지 않고, 컴파일시에 (앞에 인용 기호가 자동으로 붙는) 심볼로 컴파일된다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -602,11 +601,12 @@ clause := test-constant result-expr |
 </div>
 </div>
 <div class="paragraph">
-<p>위의 코드에서 <code>case</code> 내부의 <code>x</code>는 <code>10</code>으로 평가되지 않고, 컴파일시에 심볼 <code>'x</code>로
-값이 바뀌에 되어, 결과적으로 <code>"x"</code>라는 문자열을 반환하게 된다.</p>
+<p>위의 코드에서 <code>case</code> 내부의 <code>x</code>는 런타임에 <code>10</code>으로 평가되지 않고, 컴파일시에 심볼
+<code>'x</code>로 값이 바뀌에 된다. 따라서 런타임에 심볼 <code>'x</code>와 일치하게 되어, 결과적으로
+<code>"x"</code>라는 문자열을 반환하게 된다.</p>
 </div>
 <div class="paragraph">
-<p>위의 코드는 다음처럼 심볼 <code>x</code>, <code>y</code>, <code>z</code>를 리스트로 묶어 한꺼번에 처리할 수도 있다.  이
+<p>위의 코드는 다음처럼 심볼 <code>x</code>, <code>y</code>, <code>z</code>를 리스트로 묶어 한꺼번에 처리할 수도 있다. 이
 경우에는 <code>value</code>가 심볼 <code>x</code>나 <code>y</code> 또는 <code>z</code>이면 <code>"x, y or z"</code>를 반환하게 된다.</p>
 </div>
 <div class="listingblock">
@@ -621,9 +621,9 @@ clause := test-constant result-expr |
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>여기서 <code>(x y z)</code>는 <code>x</code>라는 함수에 인수 <code>y</code>와 <code>z</code>를 적용하라는 의미가 아닌 것에
+<td>여기서 <code>(x y z)</code>는 <code>x</code>라는 함수를 인수 <code>y</code>와 <code>z</code>에 적용하라는 의미가 아닌 것에
 주의해아 한다. <code>(x y z)</code>는 컴파일시에 <code>'(x y z)</code>의 형태로 리스트 자료형 자체로
-취급되기 때문이다.</td>
+컴파일되기 때문이다.</td>
 </tr>
 </table>
 </div>
@@ -659,12 +659,12 @@ clause := test-constant result-expr |
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
 <td><code>(())</code>에서 바깥의 괄호는 test-expr의 시작과 끝을 알리는 기호로 쓰이므로, 빈 리스트를
-나열하고자 할 때는 그 안에 다시 표시해 주어야 한다.</td>
+나열하고자 할 때는 그 안에 다시 나열해 주어야 한다.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
 <td>그래서 빈 리스트를 검사하고자 할 때는, <code>(())</code>처럼 해 주기 보다는 <code>[]</code>로 해 주는 것이
-낫다. <code>(= () [])</code>의 결과는 <code>true</code>이기 때문이다.</td>
+낫다. 왜냐하면 <code>(= () [])</code>의 평가 결과는 <code>true</code>이기 때문이다.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -678,15 +678,15 @@ clause := test-constant result-expr |
 <div id="footnotes">
 <hr>
 <div class="footnote" id="_footnote_1">
-<a href="#_footnoteref_1">1</a>. 내부적으로 <code>condp</code> 구문은 <code>cond</code> 구문으로 확장된다.
+<a href="#_footnoteref_1">1</a>. <code>condp</code> 구문은 내부적으로 <code>cond</code> 구문으로 확장된다.
 </div>
 <div class="footnote" id="_footnote_2">
-<a href="#_footnoteref_2">2</a>. <code>case</code> 구문은 내부적으로 <code>condp</code> 구문으로 확장된다. 더 정확히는, <code>(condp = &#8230;&#8203;.)</code>의 형태로 확장된다. 이때 <code>pred</code> 함수로 <code>=</code>을 사용한다는 점에 주목할 필요가 있다.
+<a href="#_footnoteref_2">2</a>. <code>case</code> 구문은 내부적으로 <code>condp</code> 구문으로 확장된다. 더 정확히는, <code>(condp = &#8230;&#8203;.)</code>의 형태로 확장된다. 즉 <code>=</code> 함수가 <code>pred</code> 함수로 사용된다. 이것을 이해해야 <code>case</code>의 동작이 제대로 이해된다.
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-12-10 19:48:10 KST
+Last updated 2015-12-16 11:47:01 KST
 </div>
 </div>
 </body>
