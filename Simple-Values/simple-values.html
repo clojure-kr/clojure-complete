@@ -839,6 +839,31 @@ Math/E          <span class="comment">;=&gt; 2.718281828459045</span>
 (<span class="keyword">nil?</span> [])      <span class="comment">;=&gt; false</span></code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p><code>some?</code> 함수는 주어진 인수가 <code>nil</code>이 아닌지 판별한다. <code>(not (nil? x)</code> 와 같다.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<code>some?</code> 함수는 클로저 버전 1.6부터 도입되었다. core 함수치고 꽤 늦게 도입된 것인데, 그 아래 버전에서는 컴파일 예외 발생하니 사용시 버전 주의.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(some? <span class="predefined-constant">nil</span>)      <span class="comment">;=&gt; false</span>
+
+(some? <span class="predefined-constant">false</span>)    <span class="comment">;=&gt; true</span>
+(some? <span class="integer">0</span>)        <span class="comment">;=&gt; true</span>
+(some? <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>)       <span class="comment">;=&gt; true</span>
+(some? [])       <span class="comment">;=&gt; true</span></code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1429,7 +1454,7 @@ effect(부수 효과)를 수행하는 함수이다. 그리고 클로저에서 �
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-12-09 11:11:37 KST
+Last updated 2015-12-28 12:46:18 KST
 </div>
 </div>
 </body>

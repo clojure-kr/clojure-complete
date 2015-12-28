@@ -399,7 +399,7 @@ value(값)의 합성어로, 어떤 값을 내놓는다, 즉 평가한다는 의�
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-clojure" data-lang="clojure">;; 다음의 코드는 결과적으로 (+ 10 20 nil 30)을 계산하게 된다.
-;; 이때 + 함수는 nil을 대상으로 연산을 수행할 수 없어 예외가 발생한다.
+;; 이때 + 함수는 nil을 대상으로 연산을 수행할 수 없으므로 예외가 발생한다.
 (+ 10 20 (comment (* 2 3)) 30)
 ;&gt;&gt; NullPointerException   clojure.lang.Numbers.ops</code></pre>
 </div>
@@ -429,9 +429,10 @@ value(값)의 합성어로, 어떤 값을 내놓는다, 즉 평가한다는 의�
 <div class="title">Caution</div>
 </td>
 <td class="content">
-#_ reader 매크로는 그 다음에 나오는 형식의 소스 코드를 아예 읽어 들이지 않는다.
-반면에 <code>comment</code> 일반 매크로는 괄호로 둘러 싸인 소스 코드를 일단 읽어 들인 후 무시한다는
-점에서 <code>#_</code> reader 매크로와 다르다.
+#_ reader 매크로는 그 다음에 나오는 형식(form)의 소스 코드를 클로저
+자료형으로 아예 읽어 들이지 않고 무시한다. 반면에 <code>comment</code> 일반 매크로는 괄호로 둘러 싸인
+소스 코드를 클로저 자료형으로 일단 읽어 들인 후 무시한다는 점에서 <code>#_</code> reader 매크로와
+다르다. 따라서 <code>comment</code>는 소스 코드를 읽어 들이는 과정에서 오류가 없어야 한다.
 </td>
 </tr>
 </table>
@@ -457,7 +458,7 @@ value(값)의 합성어로, 어떤 값을 내놓는다, 즉 평가한다는 의�
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-12-17 19:29:14 KST
+Last updated 2015-12-24 15:00:22 KST
 </div>
 </div>
 </body>

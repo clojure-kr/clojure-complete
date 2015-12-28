@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.3">
+<title>Funcions and Functional Programming</title>
+<link rel="stylesheet" href="..//my-asciidoctor.css">
+<link rel="stylesheet" href="..//coderay-asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Funcions and Functional Programming</h1>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_함수형_언어란_무엇인가">1. 함수형 언어란 무엇인가?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>다음의 조건 네 가지를 충족시키면, 그 함수는 일급 함수(fisrt-class function)라고 부르고,
+일급 함수를 지원하는 언어는 '전통적인 의미&#8217;에서의 함수형 언어라고 부를 수 있다.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>함수 객체를 변수에 대입할 수 있다.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">def</span> <span class="function">double</span> (<span class="keyword">fn</span> [a] (<span class="keyword">*</span> <span class="integer">2</span> a)))   <span class="comment">; </span><b class="conum">(1)</b>
+
+(<span class="keyword">double</span> <span class="integer">10</span>)    <span class="comment">; =&gt; 20</span>
+
+(<span class="keyword">def</span> <span class="function">double2</span> <span class="keyword">double</span>)
+
+(double2 <span class="integer">10</span>)   <span class="comment">; =&gt; 20</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>특수 형식(special form) <code>fn</code>을 이용해 먼저 함수 객체를 만든 후, 이 객체를
+<code>double</code>이라는 심볼에 바인딩한다.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>함수 객체를 함수의 인수로 전달할 수 있다.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">calc</span> [op a b]
+  (op a b))
+
+(calc <span class="keyword">+</span> <span class="integer">10</span> <span class="integer">20</span>)   <span class="comment">; =&gt; 30   ; </span><b class="conum">(1)</b>
+(calc <span class="keyword">*</span> <span class="integer">10</span> <span class="integer">20</span>)   <span class="comment">; =&gt; 200</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>함수 객체 <code>+</code>를 <code>calc</code> 함수의 첫 번째 인수로 넘긴다.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>함수 객체를 함수의 반환값으로 반환할 수 있다.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">operator</span> [op]
+  (<span class="keyword">cond</span>
+    (<span class="keyword">=</span> op <span class="symbol">:plus</span>)  <span class="keyword">+</span>   <span class="comment">; </span><b class="conum">(1)</b>
+    (<span class="keyword">=</span> op <span class="symbol">:minus</span>) <span class="keyword">-</span>))
+
+((operator <span class="symbol">:plus</span>) <span class="integer">10</span> <span class="integer">20</span>)    <span class="comment">; =&gt; 30</span>
+((operator <span class="symbol">:minus</span>) <span class="integer">10</span> <span class="integer">20</span>)   <span class="comment">; =&gt; -10</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>함수 객체 <code>+</code>를 함수의 반환값으로 반환한다.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>함수 객체를 동적으로 생성할 수 있다.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">multiple</span> [n]
+  (<span class="keyword">fn</span> [a]   <span class="comment">; </span><b class="conum">(1)</b>
+    (<span class="keyword">*</span> n a)))
+
+(<span class="keyword">def</span> <span class="function">double</span> (multiple <span class="integer">2</span>))
+<span class="comment">; =&gt; #&lt;Var@4340684b: #object[user$multiple$fn__12286 0x26a894a2]&gt;</span>
+
+(<span class="keyword">def</span> <span class="function">triple</span> (multiple <span class="integer">3</span>))
+<span class="comment">; =&gt; #&lt;Var@fc4d31e: #object[user$multiple$fn__12286 0x1a4b7c5d]&gt;</span>
+
+(<span class="keyword">double</span> <span class="integer">10</span>)   <span class="comment">; =&gt; 20</span>
+(triple <span class="integer">10</span>)   <span class="comment">; =&gt; 30</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>함수를 동적으로 생성해 반환한다. 특수 형식 <code>fn</code>이 수행될 때마다 새로운 함수 객체가
+생성된다.</p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+특히 위의 두 번째와 세 번째 조건을 충족시키는 함수를 고차 함수(higher-order
+     function)라고 부른다.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>오늘날 대부분의 언어가 함수형 언어의 영향을 받아, 위의 네 가지 조건을 모두 지원하거나
+일부를 지원하고 있다. 그래서 루비나 파이썬, 심지어는 자바스크립트 언어마저도 위의 조건들을
+모두 충족하고 있다. 그렇다면 이 세상은 이미 함수형 언어가 지배하고 있는 것일까? 함수형
+언어를 어떻게 정의하느냐에 따라 의견이 달라질 수 있겠지만, 클로저 언어의 입장에서는 그렇게
+보지 않는다. '현대적인 의미&#8217;에서, 즉 진정한 의미에서의 함수형 언어는 위의 네 가지 조건에
+한 가지 조건을 더 만족시켜야 하는데, 그것은 바로 클로저나 해스켈처럼 불변형(immutable)
+자료 구조를 기본적으로 지원해야 한다는 것이다.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2015-12-24 15:00:22 KST
+</div>
+</div>
+</body>
+</html>

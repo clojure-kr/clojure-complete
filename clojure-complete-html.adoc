@@ -7,6 +7,7 @@
 :linkcss:
 :icons: font
 :imagesdir: ./img
+:docinfo1:
 
 * github 저장소: https://github.com/clojure-kr/clojure-complete[]
 
