@@ -338,7 +338,7 @@ value(값)의 합성어로, 어떤 값을 내놓는다, 즉 평가한다는 의�
 <li>
 <p>함수 한 개에 대한 설명(예를 들면, 구현 알고리즘)이나, 함수 내 코드 블럭에 대한 주석은
 <code>;</code> 기호 2개를 사용한다. 함수 내 코드 블럭에 대한 주석인 경우에는, 주석을 코드 블럭 앞에
-두고, 코드 블럭에 맞게 indent를 맞춘다.</p>
+두고, 코드 블럭에 맞게 들여쓰기를 맞춘다.</p>
 </li>
 <li>
 <p>코드 뒤에 주석을 달 때는 <code>;</code> 기호 1개를 사용한다.</p>
@@ -429,10 +429,10 @@ value(값)의 합성어로, 어떤 값을 내놓는다, 즉 평가한다는 의�
 <div class="title">Caution</div>
 </td>
 <td class="content">
-#_ reader 매크로는 그 다음에 나오는 형식(form)의 소스 코드를 클로저
+<code>#_</code> reader 매크로는 그 다음에 나오는 형식(form)의 소스 코드를 클로저
 자료형으로 아예 읽어 들이지 않고 무시한다. 반면에 <code>comment</code> 일반 매크로는 괄호로 둘러 싸인
 소스 코드를 클로저 자료형으로 일단 읽어 들인 후 무시한다는 점에서 <code>#_</code> reader 매크로와
-다르다. 따라서 <code>comment</code>는 소스 코드를 읽어 들이는 과정에서 오류가 없어야 한다.
+다르다. 그래서 <code>comment</code>의 경우에는 소스 코드를 읽어 들이는 과정에서 오류가 없어야 한다.
 </td>
 </tr>
 </table>
@@ -453,12 +453,12 @@ value(값)의 합성어로, 어떤 값을 내놓는다, 즉 평가한다는 의�
 <div id="footnotes">
 <hr>
 <div class="footnote" id="_footnote_1">
-<a href="#_footnoteref_1">1</a>. 참고로, 클로저에서 부수 효과를 수행하는 함수들은 일반적으로 <code>nil</code>을 반환한다.
+<a href="#_footnoteref_1">1</a>. 참고로, 클로저에서 부수 효과를 수행하는 함수들은 대체로 <code>nil</code>을 반환한다.
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-12-24 15:00:22 KST
+Last updated 2015-12-28 20:19:33 KST
 </div>
 </div>
 </body>
