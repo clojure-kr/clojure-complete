@@ -22,34 +22,39 @@ commit은 수시로 이루어지지만, 버전 번호는 큰 변화가 있다고
 :leveloffset: 1
 
 다음의 목차에서 링크가 아직 걸려 있지 않은 장은 앞으로 채워 나갈 예정입니다.
- 
+
 .Table of Contents
 [sidebar]
 ****
 . <<Preface/preface.html#, Preface>>
-. Why Clojure?
-. <<Development-Environments/development-environments.html#, Development Environments>>
+. 왜 클로저인가?
+. <<Development-Environments/development-environments.html#, 개발 환경>>
 . <<Start/start.html#, 클로저 시작하기>>
-. <<Simple-Values/simple-values.html#, Simple Values>>
-. <<Flow-Controls/flow-controls.html#, Flow Controls>>
-. Collections and Sequences
-. Functions and Functional Programming
-. <<Destructuring/destructuring.html#, Destructuring(구조분해)>>
-. Transducers
-. <<Java-Interoperability/java-interoperability.html#, Java Interoperability>>
-. Metadata
-. <<Namespaces-and-Libraries/namespaces-and-libraries.html#, Namespaces and Libraries>>
-. State Management and Parallel Programming
+. <<Simple-Values/simple-values.html#, 단순값>>
+. <<Flow-Controls/flow-controls.html#, 제어 구조>>
+. 컬렉션과 시퀀스
+. 함수형 프로그래밍
+. <<Destructuring/destructuring.html#, 구조분해(Destructuring)>>
+. 변환자(Transducers)
+. <<Java-Interoperability/java-interoperability.html#, 자바 코드 가져다쓰기(Java Interoperability)>>
+. <<Namespaces-and-Libraries/namespaces-and-libraries.html#, 이름공간과 라이브러리>>
+. 상태 관리와 동시성
 . core.async
-. Multimedthos and Hierarchies
-. Protocols, Records and Types
-. Macros
-. Numerics and Mathematics
-. Project Management
-. Testing
-. Type Checking
-. Database Programming
-. Web Programming
+. 멀티메소드와 상속
+. 프로토콜과 레코드
+. 매크로
+. 수학
+. 날짜와 시간
+. 입출력: 파일과 디렉토리
+. 프로젝트 관리
+. 예외 처리
+. 테스팅
+. 타입 검사
+. 데이타베이스 프로그래밍
+. 통신 및 웹 프로그래밍
+. 파서
+. 문자 인코딩
+. GUI 프로그래밍
 ****
 
 //. <<Why-Clojure/why-clojure.html#, Why Clojure?>>
