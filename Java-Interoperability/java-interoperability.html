@@ -19,9 +19,39 @@
   ga('send', 'pageview');
 </script>
 </head>
-<body class="article">
+<body class="article toc2 toc-right">
 <div id="header">
 <h1>Java and JVM Interoperability</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_자바의_클래스_메소드_필드_사용하기">1. 자바의 클래스, 메소드, 필드 사용하기</a>
+<ul class="sectlevel2">
+<li><a href="#_자바_클래스_import하기">1.1. 자바 클래스 import하기</a></li>
+<li><a href="#_인스턴스_생성_및_인스턴스_메소드_호출">1.2. 인스턴스 생성 및 인스턴스 메소드 호출</a></li>
+<li><a href="#_정적_필드_및_정적_메소드_호출">1.3. 정적 필드 및 정적 메소드 호출</a></li>
+<li><a href="#_객체의_필드_읽고_쓰기">1.4. 객체의 필드 읽고 쓰기</a></li>
+</ul>
+</li>
+<li><a href="#_유용한_interop_관련_함수들">2. 유용한 Interop 관련 함수들</a>
+<ul class="sectlevel2">
+<li><a href="#__code_class_code">2.1. <code>class</code></a></li>
+<li><a href="#__code_instance_code">2.2. <code>instance?</code></a></li>
+<li><a href="#__code_code">2.3. <code>..</code></a></li>
+<li><a href="#__code_doto_code">2.4. <code>doto</code></a></li>
+</ul>
+</li>
+<li><a href="#_exceptions_and_error_handling">3. Exceptions and Error Handling</a></li>
+<li><a href="#_type_hinting_for_performance">4. Type Hinting for Performance</a></li>
+<li><a href="#_arrays">5. Arrays</a></li>
+<li><a href="#_defining_classes_and_implementing_interfaces">6. Defining Classes and Implementing Interfaces</a>
+<ul class="sectlevel2">
+<li><a href="#_무명_클래스의_인스턴스_만들기_code_proxy_code">6.1. 무명 클래스의 인스턴스 만들기: <code>proxy</code></a></li>
+<li><a href="#_이름_있는_클래스_named_classes_정의하기_code_gen_class_code">6.2. 이름 있는 클래스(Named Classes) 정의하기: <code>gen-class</code></a></li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 <div id="content">
 <div id="preamble">
@@ -1384,7 +1414,7 @@ Compiling java-interop.example1</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-12-31 12:14:35 KST
+Last updated 2016-01-01 02:10:21 KST
 </div>
 </div>
 </body>

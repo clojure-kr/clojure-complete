@@ -8,6 +8,7 @@
 :stylesdir: ../
 :stylesheet: my-asciidoctor.css
 :docinfo1:
+:toc: right
 
 
 이번 장에서는 클로저의 제어 구문에 대해 알아본다.

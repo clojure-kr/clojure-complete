@@ -18,9 +18,31 @@
   ga('send', 'pageview');
 </script>
 </head>
-<body class="article">
+<body class="article toc2 toc-right">
 <div id="header">
 <h1>Funcions and Functional Programming</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_함수형_언어란_무엇인가">1. 함수형 언어란 무엇인가?</a></li>
+<li><a href="#_함수_정의하기">2. 함수 정의하기</a>
+<ul class="sectlevel2">
+<li><a href="#_defn">2.1. defn</a></li>
+<li><a href="#_fn">2.2. fn</a></li>
+<li><a href="#_함수_리터럴">2.3. 함수 리터럴: #(&#8230;&#8203;)</a></li>
+</ul>
+</li>
+<li><a href="#_주요_함수들">3. 주요 함수들</a>
+<ul class="sectlevel2">
+<li><a href="#_map_mapv_map_indexed">3.1. map/mapv/map-indexed</a></li>
+<li><a href="#_filter_filterv_remove">3.2. filter/filterv/remove</a></li>
+<li><a href="#_reduce_reduce_kv_reductions">3.3. reduce/reduce-kv/reductions</a></li>
+<li><a href="#_apply">3.4. apply</a></li>
+<li><a href="#_keep_keep_indexed">3.5. keep/keep-indexed</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 <div id="content">
 <div class="sect1">
@@ -48,7 +70,7 @@
 <div class="colist arabic">
 <ol>
 <li>
-<p>특수 형식(special form) <code>fn</code>을 이용해 먼저 함수 객체를 생성한 후, 이 객체를
+<p>특수 함수(special form) <code>fn</code>을 이용해 먼저 함수 객체를 생성한 후, 이 객체를
 <code>double</code>이라는 심볼에 바인딩한다.</p>
 </li>
 </ol>
@@ -115,7 +137,7 @@
 <div class="colist arabic">
 <ol>
 <li>
-<p>함수를 동적으로 생성해 반환한다. 특수 형식 <code>fn</code>이 수행될 때마다 새로운 함수 객체가
+<p>함수를 동적으로 생성해 반환한다. 특수 함수 <code>fn</code>이 수행될 때마다 새로운 함수 객체가
 생성된다.</p>
 </li>
 </ol>
@@ -148,15 +170,488 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="_주요_함수들">2. 주요 함수들</h2>
+<h2 id="_함수_정의하기">2. 함수 정의하기</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>아래의 함수들 중 일부는 반환값으로 transducer를 반환한다. transducer에 대해서는
-<a href="../Transducers/transducers.html">Transducers</a> 장에서 자세히 설명할 것이므로,
-이곳에서는 함수 설명의 완결성을 위해 단순히 사용 예를 보여주는 데 그칠 것이다.</p>
+<p>이제 함수를 직접 정의해 보자.</p>
+</div>
+<div class="paragraph">
+<p></p>
 </div>
 <div class="sect2">
-<h3 id="_map_mapv_map_indexed">2.1. map/mapv/map-indexed</h3>
+<h3 id="_defn">2.1. defn</h3>
+<div class="paragraph">
+<p>클로저에서 함수를 정의하는 가장 일반적인 방법은 <code>defn</code>을 이용하는 것이다.</p>
+</div>
+<div class="listingblock">
+<div class="title">defn</div>
+<div class="content">
+<pre>(defn name doc-string? metadata-map? [params*] prepost-map? body)
+(defn name doc-string? metadata-map? ([params*] prepost-map? body)+)
+
+prepost-map := {:pre  [pre-expr+]
+                :post [post-expr+]}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>좀 복잡하게 보인다. 그래서 가장 간단한 예부터 차근차근 설명해 보겠다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">foo</span>                   <span class="comment">; </span><b class="conum">(1)</b>
+  <span class="string"><span class="delimiter">&quot;</span><span class="content">세 개의 숫자를 곱한다.</span><span class="delimiter">&quot;</span></span>   <span class="comment">; </span><b class="conum">(2)</b>
+  [a b c]                   <span class="comment">; </span><b class="conum">(3)</b>
+  (<span class="keyword">*</span> a b c))                <span class="comment">; </span><b class="conum">(4)</b>
+
+(foo <span class="integer">2</span> <span class="integer">3</span> <span class="integer">4</span>)   <span class="comment">;=&gt; 24</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>함수의 이름(name)이다.</p>
+</li>
+<li>
+<p>함수를 설명하는 doc-string이다.</p>
+</li>
+<li>
+<p>함수의 인수들(params)이다.</p>
+</li>
+<li>
+<p>함수의 몸체(body)이다.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>같은 이름을 사용하지만, 인수의 개수를 달리한 함수 본체를 여러 개 정의할 수도 있다. 이때
+정의된 함수들 중에서 어떤 함수 본체가 호출될지는 오직 인수의 개수에 의해서만 결정이 되고,
+타입은 전혀 고려의 대상이 아니다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">foo</span>
+  <span class="string"><span class="delimiter">&quot;</span><span class="content">숫자를 곱한다.</span><span class="delimiter">&quot;</span></span>
+  ([a b]                                   <span class="comment">; </span><b class="conum">(1)</b>
+   (<span class="keyword">println</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">Called with 2 arguments.</span><span class="delimiter">&quot;</span></span>)
+   (<span class="keyword">*</span> a b))
+  ([a b c]                                 <span class="comment">; </span><b class="conum">(2)</b>
+   (<span class="keyword">println</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">Called with 3 arguments.</span><span class="delimiter">&quot;</span></span>)
+   (<span class="keyword">*</span> a b c)))
+
+(foo <span class="integer">2</span> <span class="integer">3</span>)
+<span class="comment">;&gt;&gt; Called with 2 arguments.</span>
+<span class="comment">;=&gt; 6</span>
+
+(foo <span class="integer">2</span> <span class="integer">3</span> <span class="integer">4</span>)
+<span class="comment">;&gt;&gt; Called with 3 arguments.</span>
+<span class="comment">;=&gt; 24</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>두 개의 인수가 주어질 때 호출되는 함수를 정의한다.</p>
+</li>
+<li>
+<p>세 개의 인수가 주어질 때 호출되는 함수를 정의한다.</p>
+</li>
+</ol>
+</div>
+<div class="sect3">
+<h4 id="_metadata_map을_사용한_경우">2.1.1. metadata-map을 사용한 경우</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">greet</span>
+  <span class="string"><span class="delimiter">&quot;</span><span class="content">인사말을 전한다.</span><span class="delimiter">&quot;</span></span>                 <span class="comment">; </span><b class="conum">(1)</b>
+  {<span class="symbol">:tag</span> String <span class="symbol">:other-meta-data</span> <span class="integer">5</span>}   <span class="comment">; </span><b class="conum">(2)</b>
+  [<span class="keyword">name</span>]
+  (<span class="keyword">format</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello, %s</span><span class="delimiter">&quot;</span></span> <span class="keyword">name</span>))
+
+(<span class="keyword">meta</span> <span class="error">#</span>'greet)
+<span class="comment">;=&gt; {:arglists ([name]), :tag java.lang.String, :other-meta-data 5, :line 10,</span>
+<span class="comment">;    :column 6, :file &quot;*cider-repl localhost:53283*&quot;, :name greet, :ns #namespace[user]}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>함수의 doc-string이다.</p>
+</li>
+<li>
+<p>함수의 <code>metadata-map</code>이다.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>위의 코드는 아래의 코드와 동일한 결과를 낳는다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> ^{<span class="symbol">:tag</span> String <span class="symbol">:other-meta-data</span> <span class="integer">5</span>}   <span class="comment">; </span><b class="conum">(1)</b>
+  greet
+  [<span class="keyword">name</span>]
+  (<span class="keyword">format</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello, %s</span><span class="delimiter">&quot;</span></span> <span class="keyword">name</span>))
+
+(<span class="keyword">meta</span> <span class="error">#</span>'greet)
+<span class="comment">;=&gt; {:tag java.lang.String, :other-meta-data 5, :arglists ([name]), :line 15,</span>
+<span class="comment">;    :column 6, :file &quot;*cider-repl localhost:53283*&quot;, :name greet2, :ns #namespace[user]}</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>var인 greet에 대한 metadata map이다.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>결과적으로 var인 <code>greet</code>에 대한 metadata를 표기하는 방식을 두 가지 제공하고 있는
+셈이다. 그런데 실제로는 metadata를 표시할 때, 첫 번쨰 방식보다는 두 번쨰째 방식이 더 많이
+사용된다. 하지만, 표시해야 하는 metadata의 내용이 아주 많은 경우에는 첫 번째 방식이 두
+번째 방식보다 코드가 더 깔끔하게 보이는 장점은 있다.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_prepost_map을_사용한_경우">2.1.2. prepost-map을 사용한 경우</h4>
+<div class="paragraph">
+<p><code>:pre</code> 뒤에는 함수를 실행하기 전에 그 인수를 검사(validation)하는 식들이 벡터 기호 안에
+나열될 수 있다. <code>:post</code> 뒤에는 함수가 반환한 값(이 값은 <code>%</code>로 표기한다)을 검사하는
+식들이 벡터 기호 안에 나열될 수 있다. <code>:pre</code>와 <code>:post</code> 둘 중에 한 개만 올 수도
+있다. 이 검사는 <code>*assert*</code>의 값이 <code>true</code>일 때만 실행되고, <code>false</code>일 때는 실행되지
+않는다. 게다가 이 검사는 내부적으로 <code>assert</code> 매크로를 이용해 구현되어 있어서,
+<code>*assert*</code>의 값이 <code>false</code>일 때는 아무것으로도 확장되지 않아, 실행시 아무런 부하도
+일으키지 않는다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">*assert*   <span class="comment">;=&gt; true</span>
+
+(<span class="keyword">defn</span> <span class="function">constrained-fn</span> [f x]
+  {<span class="symbol">:pre</span>  [(<span class="keyword">pos?</span> x) (<span class="keyword">integer?</span> x)]
+   <span class="symbol">:post</span> [(<span class="keyword">=</span> % (<span class="keyword">*</span> <span class="integer">2</span> x)) (<span class="keyword">integer?</span> %)]}
+  (f x))
+
+(constrained-fn #(<span class="keyword">*</span> <span class="integer">2</span> %) <span class="integer">2</span>)
+<span class="comment">;=&gt; 4</span>
+
+(constrained-fn #(<span class="keyword">*</span> <span class="integer">2</span> %) <span class="integer">-2</span>)
+<span class="comment">;&gt;&gt; AssertionError Assert failed: (pos? x)</span>
+
+(constrained-fn #(<span class="keyword">*</span> <span class="integer">2</span> %) <span class="float">2.0</span>)
+<span class="comment">;&gt;&gt; AssertionError Assert failed: (integer? x)</span>
+
+(constrained-fn #(<span class="keyword">*</span> <span class="integer">3</span> %) <span class="integer">2</span>)
+<span class="comment">;&gt;&gt; AssertionError Assert failed: (= % (* 2 x))</span>
+
+<span class="comment">;; *assert*를 false로 설정한다.</span>
+(set! *assert* <span class="predefined-constant">false</span>)
+*assert*   <span class="comment">;=&gt; false</span>
+
+<span class="comment">;; constrained-fn을 재컴파일해 주어야 한다. 검사할 때 내부적으로 이용되는 assert는</span>
+<span class="comment">;; 매크로이고, 매크로 확장은 컴파일 이전에 이루어지기 때문이다.</span>
+(<span class="keyword">defn</span> <span class="function">constrained-fn</span> [f x]
+  {<span class="symbol">:pre</span>  [(<span class="keyword">pos?</span> x) (<span class="keyword">integer?</span> x)]
+   <span class="symbol">:post</span> [(<span class="keyword">=</span> % (<span class="keyword">*</span> <span class="integer">2</span> x)) (<span class="keyword">integer?</span> %)]}
+  (f x))
+
+<span class="comment">;; 이번에는 검사를 하지 않아 예외가 발생하지 않았다.</span>
+(constrained-fn #(<span class="keyword">*</span> <span class="integer">2</span> %) <span class="integer">-2</span>)
+<span class="comment">;=&gt; -4</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_defn_2">2.1.3. defn-</h4>
+<div class="paragraph">
+<p><code>defn-</code>로 함수를 정의하면, 이 함수는 해당 이름공간 내에서만 호출할 수 있는 함수가 된다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">user&gt;(<span class="keyword">defn-</span> <span class="function">private-add</span> [a b]
+        (<span class="keyword">+</span> a b))
+<span class="error">#</span>'user/private-add
+
+user&gt;  (private-add <span class="integer">5</span> <span class="integer">6</span>)
+<span class="integer">11</span>
+
+user&gt; (<span class="keyword">ns</span> <span class="namespace">my-new-namespace</span>)
+<span class="predefined-constant">nil</span>
+
+my-new-namespace&gt; (user/private-add <span class="integer">7</span> <span class="integer">8</span>)     <span class="comment">; </span><b class="conum">(1)</b>
+CompilerException java.lang.IllegalStateException<span class="error">:</span> <span class="keyword">var</span><span class="error">:</span> <span class="error">#</span>'user/private-add is <span class="keyword">not</span> public
+
+my-new-namespace&gt; (<span class="error">#</span>'user/private-add <span class="integer">7</span> <span class="integer">8</span>)   <span class="comment">; </span><b class="conum">(2)</b>
+<span class="integer">15</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p><code>user/private-add</code> 함수는 <code>user</code> 이름공간 밖에서는 호출할 수 없다.</p>
+</li>
+<li>
+<p>하지만 `user/private-add`의 var<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</sup>를 통해서는
+호출할 수 있다. 이것은 private 함수도 Unit Test를 실행할 때는 외부 이름공간에서
+테스트될 필요가 있기 때문에 허용하고 있다.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>그리고 다음의 두 코드는 완전히 같은 일을 수행한다. 다시 말해, <code>(defn- &#8230;&#8203;)</code>는 <code>(defn
+^:private &#8230;&#8203;)</code>의 구문 단축형(syntactic sugar)이다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn-</span> <span class="function">private-add</span> [a b]
+  (<span class="keyword">+</span> a b))
+
+(<span class="keyword">defn</span> ^<span class="symbol">:private</span> private-add
+  [a b]
+  (<span class="keyword">+</span> a b))</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_fn">2.2. fn</h3>
+<div class="paragraph">
+<p></p>
+</div>
+<div class="listingblock">
+<div class="title">fn 특수 형식</div>
+<div class="content">
+<pre>(fn name? [params*] prepost-map? exprs*)
+(fn name? ([params*] prepost-map? exprs*)+)</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>fn</code>은 무명(anonymous)<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup>의 함수 객체를 생성하는 클로저의 특수 형식(special forms)이다.</p>
+</div>
+<div class="paragraph">
+<p><code>defn</code>으로 함수를 다음과 같이 정의하면</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">add</span> [a b] (<span class="keyword">+</span> a b))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>실제로는 다음과 같은 방식<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</sup>으로 두 단계로 나뉘어 처리된다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">def</span> <span class="function">add</span>                   <span class="comment">; </span><b class="conum">(2)</b>
+  (<span class="keyword">fn</span> [a b] (<span class="keyword">+</span> a b)))      <span class="comment">; </span><b class="conum">(1)</b>
+
+(add <span class="integer">1</span> <span class="integer">2</span>)   <span class="comment">;=&gt; 3            </span><b class="conum">(3)</b>
+(add <span class="integer">3</span> <span class="integer">4</span>)   <span class="comment">;=&gt; 7            </span><b class="conum">(3)</b>
+
+((<span class="keyword">fn</span> [a b] (<span class="keyword">*</span> a b)) <span class="integer">2</span> <span class="integer">3</span>)   <span class="comment">; </span><b class="conum">(4)</b>
+<span class="comment">;=&gt; 6</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p><code>fn</code>으로 무명의 함수 객체를 생성한다.</p>
+</li>
+<li>
+<p>생성된 무명의 함수 객체에 이름을 부여한다.</p>
+</li>
+<li>
+<p>이름이 부여된 함수는 같은 이름으로 여러 번 호출될 수 있다.</p>
+</li>
+<li>
+<p>여기서 <code>fn</code>으로 생성된 함수는 이름이 없으므로, 다른 곳에서는 호출될 수 없고
+이곳에서만 호출된 후 적절한 시점에 garbage collecting된다.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>위의 <code>fn</code> 특수 형식의 구문을 설명한 부분을 보면, <code>fn</code>이 무명의 함수 객체를 생성하는 일을
+맡고 있음에도 불구하고, 선택적으로 이름을 붙일 수 있게 해 놓은 것을 알 수 있다. 무명
+함수가 이름을 가질 수 있다니 대체 이게 무슨 일이란 말인가 하고 생각할 수도 있지만, 그만한
+이유는 있다.</p>
+</div>
+<div class="paragraph">
+<p>첫 번째 이유는, <code>fn</code>으로 정의한 함수가 <code>fn</code> 함수 내에서 자기 자신을 호출해야 하는 경우가
+종종 있기 때문이다. 이때 이름이 없다면 자기 자신을 다시 호출할 방법이 없게 된다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">((<span class="keyword">fn</span> fact [x]
+   (<span class="keyword">if</span> (<span class="keyword">=</span> x <span class="integer">0</span>)
+     <span class="integer">1</span>
+     (<span class="keyword">*</span> x (fact (<span class="keyword">dec</span> x)))))
+ <span class="integer">5</span>)
+<span class="comment">;=&gt; 120</span>
+
+(fact <span class="integer">5</span>)   <span class="comment">; </span><b class="conum">(1)</b>
+<span class="comment">;&gt;&gt; CompilerException java.lang.RuntimeException: Unable to resolve symbol: fact in this context,</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p><code>fn</code> 안에서 지정한 익명 함수 이름 <code>fact</code>는 이 함수 안에서만 유효하다. 이 함수 밖에서
+호출해서 예외가 발생했다.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>두 번째 이유는, 하나의 파일 안에서 <code>fn</code>으로 정의한 무명 함수가 여러 개 있는데, 그 중에
+하나에서 에러가 발생하면, 디버깅할 때 어느 무명 함수에서 에러가 발생했는지 구분하기가
+힘들어진다. 이런 경우에 매 무명 함수마다 이름을 지정해 놓으면, 에러 메시지에 그 이름을
+함께 출력해 주므로 디비깅할 때 도움이 될 수 있기 때문이다. 예를 통해 확인해 보자.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">reduce</span> (<span class="keyword">fn</span> [<span class="keyword">num</span>] (<span class="keyword">inc</span> <span class="keyword">num</span>)) [<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span> <span class="integer">4</span>])     <span class="comment">; </span><b class="conum">(1)</b>
+(<span class="keyword">filter</span> (<span class="keyword">fn</span> [<span class="keyword">num</span>] (<span class="keyword">even?</span> <span class="keyword">num</span>)) [<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span> <span class="integer">4</span>])
+<span class="comment">;&gt;&gt; ArityException Wrong number of args (2) passed to: user/eval12399/fn--12400   ; </span> <b class="conum">(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p><code>reduce</code>의 첫 번째 인수는 두 개의 인수를 받는 함수이어야 하는데, 한 개를 받는 함수가
+주어져 예외를 일으킨다.</p>
+</li>
+<li>
+<p>하지만, 에러 메시지에 나와 있는 함수명(<code>fn--12400</code>)은 식별하기 힘든 이름을
+반환하고 있어 어느 익무명 함수가 에러를 일으켰는지 구분하기 힘들다.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>위와 같은 경우에 각각의 무명 함수에 이름을 부여하면, 다음과 같이 좀 더 식별하기 쉬운
+함수명(<code>fn-a--12408</code>)을 가진 에러 메시지가 출력된다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">reduce</span> (<span class="keyword">fn</span> fn-a [<span class="keyword">num</span>] (<span class="keyword">inc</span> <span class="keyword">num</span>)) [<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span> <span class="integer">4</span>])
+(<span class="keyword">filter</span> (<span class="keyword">fn</span> fn-b [<span class="keyword">num</span>] (<span class="keyword">even?</span> <span class="keyword">num</span>)) [<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span> <span class="integer">4</span>])
+<span class="comment">;&gt;&gt; ArityException Wrong number of args (2) passed to: user/eval12407/fn-a--12408</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_함수_리터럴">2.3. 함수 리터럴: #(&#8230;&#8203;)</h3>
+<div class="paragraph">
+<p></p>
+</div>
+<div class="paragraph">
+<p>함수 리터럴 <code>#()</code>을 사용하면, <code>fn</code>을 사용하는 것보다 더 간결한 형태로 무명 함수를
+생성할 수 있다. 함수 리터럴 안에서 함수의 인수는 <code>%1</code>, <code>%2</code>, <code>%3</code>, &#8230;&#8203; 형식으로 표현된다.</p>
+</div>
+<div class="paragraph">
+<p>함수 인수 <code>%1</code>은 숫자 1을 생략하고 <code>%</code>처럼 사용할 수도 있는데, 일반적으로 다음과 같은
+코딩 스타일이 권장된다.</p>
+</div>
+<div class="paragraph">
+<p>인수가 한 개뿐인 무명 함수는 <code>%</code>를 사용하는 것이 좋다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure"><span class="comment">;; good</span>
+#(Math/round %)
+
+<span class="comment">;; bad</span>
+#(Math/round %1)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>인수가 두 개 이상인 무명 함수는 <code>%1</code>을 사용하는 것이 좋다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure"><span class="comment">;; good</span>
+#(Math/pow %1 %2)
+
+<span class="comment">;; bad</span>
+#(Math/pow % %2)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>함수 리터럴의 경우에는, <code>%&amp;</code>를 통해서 가변 인수(vararg)를 받는다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(#(<span class="keyword">apply</span> <span class="keyword">max</span> %&amp;) <span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>)
+<span class="comment">;=&gt; 3</span></code></pre>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title"><code>fn</code>과 함수 리터럴 <code>#()</code>의 차이</div>
+<div class="paragraph">
+<p><code>fn</code>과 함수 리터럴 <code>#()</code>은 둘다 익명 함수를 반환한다는 공통점이 있지만 다음과 같은
+차이점도 있다.</p>
+</div>
+<div class="paragraph">
+<p>첫 번째 차이점은 <code>fn</code>은 암묵적으로 코드 블럭을 감싸는 <code>(do &#8230;&#8203;)</code>가 들어가 있어서
+함수의 본체에 여러 개의 식을 나열할 수 있지만, 함수 리터럴 <code>#()</code>은 그렇지 않아서 여러
+개의 식을 나열하려면 명시적으로 <code>(do &#8230;&#8203;)</code>로 감싸 주어야만 한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">((<span class="keyword">fn</span> [x]
+   (<span class="keyword">println</span> x)
+   (<span class="keyword">*</span> x <span class="integer">2</span>))
+ <span class="integer">5</span>)
+<span class="comment">;&gt;&gt; 5</span>
+<span class="comment">;=&gt; 10</span>
+
+(#(<span class="keyword">do</span> (<span class="keyword">println</span> %)
+      (<span class="keyword">*</span> % <span class="integer">2</span>))
+ <span class="integer">5</span>)
+<span class="comment">;&gt;&gt; 5</span>
+<span class="comment">;=&gt; 10</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>두 번째 차이점은, <code>fn</code>은 중접해 사용할 수 있지만, 함수 리터럴 <code>#()</code>은 중첩해서 사용할
+수 없다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">((<span class="keyword">fn</span> [a]
+  ((<span class="keyword">fn</span> [b] (<span class="keyword">*</span> a b))
+   (<span class="keyword">inc</span> a)))
+ <span class="integer">2</span>)
+<span class="comment">;=&gt; 6</span>
+
+<span class="comment">;; 위의 코드를 함수 리터럴을 사용해서 표현했다.</span>
+((#(<span class="keyword">*</span> % %)   <span class="comment">; </span><b class="conum">(1)</b>
+  (<span class="keyword">inc</span> %))
+ <span class="integer">2</span>)
+<span class="comment">;&gt;&gt; CompilerException java.lang.RuntimeException: Unable to resolve symbol: % in this context</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>첫 번째 <code>%</code> 기호는 위의 코드의 <code>a</code>를, 두 번째 <code>%</code> 기호는 위의 코드의 <code>b</code>를 염두에
+두고 코드를 작성했지만, 이 <code>%</code> 기호가 내부 무명 함수의 인수인지, 외부 무명 함수의
+인수인지를 구별할 방법이 달리 없기 때문에, 함수 리터럴의 중첩은 허용되지 않는다.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_주요_함수들">3. 주요 함수들</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>아래의 함수들 중 일부는 반환값으로 변환자(transducer)를 반환한다. 변환자에 대해서는
+<a href="../Transducers/transducers.html">변환자</a> 장에서 자세히 설명할 것이므로, 변환자를
+반환하는 예는 생략할 것이다.</p>
+</div>
+<div class="sect2">
+<h3 id="_map_mapv_map_indexed">3.1. map/mapv/map-indexed</h3>
 <div class="paragraph">
 <p>함수형 언어에서는 다음의 자바 코드에서처럼 index를 증가시키며 반복문을 실행하는 경우가
 극히 드물다.</p>
@@ -213,15 +708,17 @@ value)을 통해 해결한다.</p>
 <p>고차 함수 중에서 가장 많이 사용되는 <code>map</code> 함수를 통해서 이를 확인해 보자.</p>
 </div>
 <div class="sect3">
-<h4 id="_map">2.1.1. map</h4>
+<h4 id="_map">3.1.1. map</h4>
 <div class="paragraph">
 <p></p>
 </div>
 <div class="listingblock">
-<div class="title">map 형식</div>
+<div class="title">map 함수</div>
 <div class="content">
-<pre>(map f coll*)
-=&gt; lazy-seq</pre>
+<pre>(map f)       =&gt; transducer
+(map f coll+) =&gt; lazy-seq
+
+f := (fn [element] ...)</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -344,23 +841,9 @@ b             <span class="comment">;=&gt; [0 1 2 3 4]</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><code>map</code>은 함수인 인수 한 개만을 받을 때에는 transducer를 반환한다. 당장은 다음의 예제가
-이해가 안되더라도 일단은 그냥 넘어 가자. <a href="../Transducers/transducers.html">Transducers</a>
-장에서 자세히 설명할 것이다.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">map</span> <span class="keyword">inc</span>)
-<span class="comment">;=&gt; #function[clojure.core/map$fn--4549]</span>
-
-(transduce (<span class="keyword">map</span> <span class="keyword">inc</span>) <span class="keyword">+</span> (<span class="keyword">range</span> <span class="integer">5</span>))
-<span class="comment">;=&gt; 55</span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>마지막으로 초보자들이 <code>map</code> 함수를 사용할 때 종종 겪는 실수를 한 가지 언급하고자
-한다. 그것은 바로 <code>map</code>의 첫 번째 함수 인수 자리에 부수 효과(side effects)를 일으키는
-함수를 사용하는 데서 비롯되는 실수이다. 이것은 lazy-seq를 반환하는 모든 클로저 함수에 해당하는
+<p>마지막으로 초보자들이 <code>map</code> 함수를 사용할 때 종종 겪는 실수를 한 가지 언급하겠다. 그것은
+바로 <code>map</code>의 첫 번째 함수 인수 자리에 부수 효과(side effects)를 일으키는 함수를 사용하는
+데서 비롯되는 실수이다. 이것은 lazy-seq를 반환하는 모든 클로저 함수에 해당하는
 이야기이기도 하다.</p>
 </div>
 <div class="paragraph">
@@ -451,24 +934,22 @@ b             <span class="comment">;=&gt; [0 1 2 3 4]</span></code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_mapv">2.1.2. mapv</h4>
+<h4 id="_mapv">3.1.2. mapv</h4>
 <div class="paragraph">
 <p></p>
 </div>
 <div class="listingblock">
-<div class="title">mapv 형식</div>
+<div class="title">mapv 함수</div>
 <div class="content">
-<pre>(mapv f coll+)
-=&gt; vector</pre>
+<pre>(mapv f coll+) =&gt; vector</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>또는 <code>mapv</code> 함수를 이용할 수도 있다. <code>mapv</code> 함수는 lazy-seq를 반환하는 <code>map</code> 함수와는 달리
-벡터 자료형을 반환한다. 클로저에서 지연 평가(lazy evaluation)가 일어나는 유일한 자료형은
-lazy-seq이다. 다시 말해, lazy-seq 자료형을 제외한 모든 자료형은 즉시 평가(eager
-evaluation)가 일어난다. 따라서 <code>mapv</code> 함수는 벡터 자료형을 반환하므로 지연 평가가 일어나지
-않고 즉시 평가(eager evaluation)가 일어나게 되어, 함수 인수 <code>f</code> 자리에 부수 효과가
-일어나는 함수가 올 수 있다.</p>
+<p><code>mapv</code> 함수는 lazy-seq를 반환하는 <code>map</code> 함수와는 달리 벡터 자료형을 반환한다. 클로저에서
+지연 평가(lazy evaluation)가 일어나는 유일한 자료형은 lazy-seq이다. 다시 말해, lazy-seq
+자료형을 제외한 모든 자료형은 즉시 평가(eager evaluation)가 일어난다. 따라서 <code>mapv</code> 함수는
+벡터 자료형을 반환하므로 지연 평가가 일어나지 않고 즉시 평가(eager evaluation)가 일어나게
+되어, 함수 인수 <code>f</code> 자리에 부수 효과가 일어나는 함수가 올 수 있다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -483,19 +964,21 @@ evaluation)가 일어난다. 따라서 <code>mapv</code> 함수는 벡터 자료
 </div>
 </div>
 <div class="sect3">
-<h4 id="_map_indexed">2.1.3. map-indexed</h4>
+<h4 id="_map_indexed">3.1.3. map-indexed</h4>
 <div class="paragraph">
 <p></p>
 </div>
 <div class="listingblock">
-<div class="title">map-indexed 형식</div>
+<div class="title">map-indexed 함수</div>
 <div class="content">
-<pre>(map-indexed f coll*)
-=&gt; lazy-seq</pre>
+<pre>(map-indexed f)       =&gt; transducer
+(map-indexed f coll+) =&gt; lazy-seq
+
+f := (fn [index element] ...)</pre>
 </div>
 </div>
 <div class="paragraph">
-<p><code>map-indexed</code>는 함수 인수인 <code>f</code>가 <code>[index item]</code> 형식의 두 개의 인수를 받게 된다는
+<p><code>map-indexed</code>는 함수 인수인 <code>f</code>가 <code>[index item]</code> 함수의 두 개의 인수를 받게 된다는
 점을 제외하고는 <code>map</code> 함수와 동일하다. 이 함수는 현재 처리하고 있는 <code>coll</code>의 요소가
 <code>coll</code>의 몇 번째 항목인지 알고 싶을 때 사용하면 유용하다.</p>
 </div>
@@ -508,17 +991,17 @@ evaluation)가 일어난다. 따라서 <code>mapv</code> 함수는 벡터 자료
 </div>
 </div>
 <div class="sect2">
-<h3 id="_filter_filterv_remove">2.2. filter/filterv/remove</h3>
+<h3 id="_filter_filterv_remove">3.2. filter/filterv/remove</h3>
 <div class="sect3">
-<h4 id="_filter">2.2.1. filter</h4>
+<h4 id="_filter">3.2.1. filter</h4>
 <div class="paragraph">
 <p></p>
 </div>
 <div class="listingblock">
-<div class="title">filter 형식</div>
+<div class="title">filter 함수</div>
 <div class="content">
-<pre>(filter pred coll?)
-=&gt; lazy-seq</pre>
+<pre>(filter pred)       =&gt; transducer
+(filter pred coll?) =&gt; lazy-seq</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -550,14 +1033,13 @@ evaluation)가 일어난다. 따라서 <code>mapv</code> 함수는 벡터 자료
 </div>
 </div>
 <div class="sect3">
-<h4 id="_filterv">2.2.2. filterv</h4>
+<h4 id="_filterv">3.2.2. filterv</h4>
 <div class="paragraph">
 <p></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>(filterv pred coll)
-=&gt; vector</pre>
+<pre>(filterv pred coll) =&gt; vector</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -575,14 +1057,14 @@ evaluation)가 일어난다. 따라서 <code>mapv</code> 함수는 벡터 자료
 </div>
 </div>
 <div class="sect3">
-<h4 id="_remove">2.2.3. remove</h4>
+<h4 id="_remove">3.2.3. remove</h4>
 <div class="paragraph">
 <p></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>(remove pred coll?)
-=&gt; lazy-seq</pre>
+<pre>(remove pred)       =&gt; transducer
+(remove pred coll) =&gt; lazy-seq</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -601,16 +1083,16 @@ element)</code>가 논리적 참인 <code>element</code>를 모두 제거한 요
 </div>
 </div>
 <div class="sect2">
-<h3 id="_reduce_reduce_kv_reductions">2.3. reduce/reduce-kv/reductions</h3>
+<h3 id="_reduce_reduce_kv_reductions">3.3. reduce/reduce-kv/reductions</h3>
 <div class="paragraph">
 <p></p>
 </div>
 <div class="sect3">
-<h4 id="_reduce">2.3.1. reduce</h4>
+<h4 id="_reduce">3.3.1. reduce</h4>
 <div class="listingblock">
-<div class="title">reduce 형식</div>
+<div class="title">reduce 함수</div>
 <div class="content">
-<pre>(reduce f init coll)
+<pre>(reduce f init? coll)
 
 f := (fn [acc element] ...)
      이 함수의 첫 번쨰 인수인 acc에 누적(accumulation)된 값이 담기고,
@@ -737,12 +1219,12 @@ init := 초기값</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_reduce_kv">2.3.2. reduce-kv</h4>
+<h4 id="_reduce_kv">3.3.2. reduce-kv</h4>
 <div class="paragraph">
 <p></p>
 </div>
 <div class="listingblock">
-<div class="title">reduce-kv 형식</div>
+<div class="title">reduce-kv 함수</div>
 <div class="content">
 <pre>(reduce-kv f init coll)
 
@@ -775,15 +1257,14 @@ element]</code>의 2개가 아니라 <code>[acc key value]</code>의 3개이다.
 </div>
 </div>
 <div class="sect3">
-<h4 id="_reductions">2.3.3. reductions</h4>
+<h4 id="_reductions">3.3.3. reductions</h4>
 <div class="paragraph">
 <p></p>
 </div>
 <div class="listingblock">
-<div class="title">reductions 형식</div>
+<div class="title">reductions 함수</div>
 <div class="content">
-<pre>(reductions f init? coll)
-=&gt; lazy-seq</pre>
+<pre>(reductions f init? coll) =&gt; lazy-seq</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -808,12 +1289,12 @@ element]</code>의 2개가 아니라 <code>[acc key value]</code>의 3개이다.
 </div>
 </div>
 <div class="sect2">
-<h3 id="_apply">2.4. apply</h3>
+<h3 id="_apply">3.4. apply</h3>
 <div class="paragraph">
 <p></p>
 </div>
 <div class="listingblock">
-<div class="title">apply 형식</div>
+<div class="title">apply 함수</div>
 <div class="content">
 <pre>(apply f element* coll)</pre>
 </div>
@@ -909,12 +1390,102 @@ element]</code>의 2개가 아니라 <code>[acc key value]</code>의 3개이다.
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_keep_keep_indexed">3.5. keep/keep-indexed</h3>
+<div class="sect3">
+<h4 id="_keep">3.5.1. keep</h4>
+<div class="paragraph">
+<p></p>
 </div>
+<div class="listingblock">
+<div class="title">keep 함수</div>
+<div class="content">
+<pre>(keep f)      =&gt; transdducer
+(keep f coll) =&gt; lazy-seq
+
+f := (fn [element] ...)</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>keep</code> 함수는 <code>coll</code>의 각 <code>element</code>에 대해 <code>(f element)</code>을 수행한 후, 그 반환값이
+<code>nil</code>이 아닌 값들만을 담은 lazy-seq를 반환한다.</p>
+</div>
+<div class="paragraph">
+<p>예를 들어, 컬렉션 <code>[0 1 2 3 4 5]</code>의 값들 중에서 홀수들만을 취해 그 수를 제곱하고 싶을 떄
+는 <code>keep</code> 함수를 이용해 다음과 같이 하면 된다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(keep (<span class="keyword">fn</span> [<span class="keyword">num</span>]
+        (<span class="keyword">when</span> (<span class="keyword">odd?</span> <span class="keyword">num</span>) (<span class="keyword">*</span> <span class="keyword">num</span> <span class="keyword">num</span>)))
+      [<span class="integer">0</span> <span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span> <span class="integer">4</span> <span class="integer">5</span>])
+<span class="comment">;=&gt; (1 9 25)</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>이런 경우 <code>map</code> 함수를 이용하면 다음과 같은 원하지 않는 결과도 반환하게 된다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">map</span> (<span class="keyword">fn</span> [<span class="keyword">num</span>]
+        (<span class="keyword">when</span> (<span class="keyword">odd?</span> <span class="keyword">num</span>) (<span class="keyword">*</span> <span class="keyword">num</span> <span class="keyword">num</span>)))
+     [<span class="integer">0</span> <span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span> <span class="integer">4</span> <span class="integer">5</span>])
+<span class="comment">;=&gt; (nil 1 nil 9 nil 25)</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>결론적으로 말하자면, <code>map</code> 함수는 첫 번째 인수인 함수 <code>f</code>가 어떤 값을 반환하느냐에 상관
+없이 무조건 입력값에 해당하는 개수만큼의 결과값을 반환하지만, <code>keep</code> 함수는 입력값들
+중에서 처리를 원하지 않는 값들의 경우에는 일부러 nil을 반환하는 것을 통해, 처리를 원치
+않는 값들을 결과값에 포함되지 않도록 할 수 있다.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_keep_indexed">3.5.2. keep-indexed</h4>
+<div class="paragraph">
+<p></p>
+</div>
+<div class="listingblock">
+<div class="title">keep-indexed 함수</div>
+<div class="content">
+<pre>(keep-indexed f)      =&gt; transdducer
+(keep-indexed f coll) =&gt; lazy-seq
+
+f := (fn [index element] ...)</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>keep-indexed</code>는 함수 인수 <code>f</code>가 <code>coll</code>의 <code>index</code>와 <code>element</code> 두 개의 인수를
+받는다는 점을 제외하고는 <code>keep</code> 함수와 동일하다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(keep-indexed (<span class="keyword">fn</span> [index <span class="keyword">num</span>]
+                (<span class="keyword">if</span> (<span class="keyword">pos?</span> <span class="keyword">num</span>) index))
+              [<span class="integer">-9</span> <span class="integer">0</span> <span class="integer">29</span> <span class="integer">-7</span> <span class="integer">45</span> <span class="integer">3</span> <span class="integer">-8</span>])
+<span class="comment">;=&gt; (2 4 5)</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnote_1">
+<a href="#_footnoteref_1">1</a>. <code>#'</code>는 var의 reader 매크로이다.
+</div>
+<div class="footnote" id="_footnote_2">
+<a href="#_footnoteref_2">2</a>. 일반적으로 anonymous function을 흔히들 익명 함수라고 번역하고 있는데, '익명&#8217;은 이미 있는 이름을 '숨긴다&#8217;는 의미이기 때문에, '무명&#8217;으로 번역하는 것이 옳다고 본다.
+</div>
+<div class="footnote" id="_footnote_3">
+<a href="#_footnoteref_3">3</a>. 실제로는 훨씬 복잡하게 정의되어 있지만, 이곳에서는 최대한으로 단순화했다.
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-12-31 12:14:35 KST
+Last updated 2016-01-01 02:10:21 KST
 </div>
 </div>
 </body>
