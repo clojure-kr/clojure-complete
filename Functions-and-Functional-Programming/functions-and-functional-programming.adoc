@@ -749,10 +749,12 @@ indexterm:[apply]
 ****
 
 
-// some keep keep-indexed for doseq dotimes concat mapcat 
-// every? some?
-// partial comp
-// loop recur trampoline 재귀 
+// keep keep-indexed for doseq dotimes concat mapcat 
+// partion/partition-all/partition-by group-by split/split-at/split-with distinct 
+// some not-any? every? not-every?
+// complement partial comp
+// rand/rand-int/rand-nth/shuffle
+// 재귀: loop recur trampoline
 
    
 
