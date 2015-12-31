@@ -9,6 +9,15 @@
 <link rel="stylesheet" href="..//my-asciidoctor.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="..//coderay-asciidoctor.css">
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-71804757-1', 'auto');
+  ga('send', 'pageview');
+</script>
 </head>
 <body class="article toc2 toc-right">
 <div id="header">
@@ -24,7 +33,7 @@
 <li><a href="#_자료구조에_요소_추가_삭제">1.4. 자료구조에 요소 추가/삭제</a></li>
 <li><a href="#_자료구조에서_요소_참조">1.5. 자료구조에서 요소 참조</a></li>
 <li><a href="#_자료구조_진위_함수_predicates">1.6. 자료구조 진위 함수(predicates)</a></li>
-<li><a href="#_스택과_트리">1.7. 스택과 트리</a></li>
+<li><a href="#_스택_큐_트리">1.7. 스택 / 큐 / 트리</a></li>
 <li><a href="#_정렬">1.8. 정렬</a></li>
 </ul>
 </li>
@@ -93,7 +102,7 @@
 <p>클로저의 자료구조의 이러한 특성으로 인해 클로저는 다른 리스프(LISP)언어와는 구별된다.<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</sup> 또한 자료구조는 클로저가 함수형 프로그래밍 언어로서의 효율적이고 효과적으로 동작하는데 았어 매우 중요한 역할을 한다. 자료구조의 이러한 특성을 잘 아는 것은 그것을 잘 사용하는 것 만큼이나 중요하다. 앞으로 본 장을 통해서 위 특성들에 대해 자세히 살펴볼 것이다.</p>
 </div>
 <div class="paragraph">
-<p>컬렉션으로서 데이터를 어떤 방식로 묶느냐에 따라 클로저는 다음 4개의 자료구조를 제공한다.</p>
+<p>컬렉션으로서 데이터를 어떤 방식으로 묶느냐에 따라 클로저는 다음 4개의 자료구조를 제공한다.</p>
 </div>
 <div class="dlist">
 <div class="title">클로저 자료구조</div>
@@ -119,7 +128,7 @@
 <div class="sect2">
 <h3 id="_자료구조_리터럴_literals">1.1. 자료구조 리터럴(Literals)</h3>
 <div class="paragraph">
-<p>자료구조 리터럴은 자료구조를 어떻게 표기하는지를 나타내는 것이다. 다음은 리스트, 벡터, 집합, 맵의 리터럴 표기를 보여준다.</p>
+<p>자료구조 리터럴은 자료구조를 어떻게 표기하는지를 나타내는 것이다. 다음은 리스트, 벡터, 맵, 집합의 리터럴 표기를 보여준다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -132,10 +141,10 @@
 <span class="comment">;=&gt; [1 1.0 :a \a &quot;a&quot;]</span>
 
 {<span class="symbol">:a</span> <span class="integer">1</span> <span class="symbol">:b</span> <span class="integer">2</span> <span class="symbol">:c</span> <span class="integer">3</span>}    <span class="comment">; 맵 리터럴     </span><i class="conum" data-value="3"></i><b>(3)</b>
-<span class="comment">;=&gt; {:a 1, :c 3, :b 2} </span><i class="conum" data-value="4"></i><b>(4)</b>
+<span class="comment">;=&gt; {:a 1, :c 3, :b 2}  </span><i class="conum" data-value="4"></i><b>(4)</b> <i class="conum" data-value="5"></i><b>(5)</b>
 
-#{<span class="integer">1</span> <span class="float">1.0</span> <span class="symbol">:a</span> <span class="char">\a</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">a</span><span class="delimiter">&quot;</span></span>}  <span class="comment">; 집합 리터럴   </span><i class="conum" data-value="5"></i><b>(5)</b>
-<span class="comment">;=&gt; #{1.0 1 :a \a &quot;a&quot;}  </span> <i class="conum" data-value="6"></i><b>(6)</b> <i class="conum" data-value="7"></i><b>(7)</b></code></pre>
+#{<span class="integer">1</span> <span class="float">1.0</span> <span class="symbol">:a</span> <span class="char">\a</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">a</span><span class="delimiter">&quot;</span></span>}  <span class="comment">; 집합 리터럴   </span><i class="conum" data-value="6"></i><b>(6)</b>
+<span class="comment">;=&gt; #{1.0 1 :a \a &quot;a&quot;} </span> <i class="conum" data-value="7"></i><b>(7)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -154,19 +163,19 @@
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>리스트와 벡터와는 달리 맵은 요소간에 순서가 없다. 그래서 정의했을 때의 순서가 보장되지 않는다.</td>
+<td>리스트와 벡터와는 달리 맵은 요소 간에 순서가 없다. 그래서 정의했을 때의 순서가 보장되지 않는다.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>집합  : #이 앞에 붙은 중괄호 #{}로 묶는다.</td>
+<td>쉼표(,)는 스페이스로 취급되기 때문에, 있으나 없으나 상관없다.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>집합도 맵과 마찬가지로 요소간에 순서가 없다.</td>
+<td>집합  : #이 앞에 붙은 중괄호 #{}로 묶는다.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="7"></i><b>7</b></td>
-<td>쉼표(,)는 스페이스로 취급되기 때문에, 있으나 없으나 상관없다.</td>
+<td>집합도 맵과 마찬가지로 요소 간에 순서가 없다.</td>
 </tr>
 </table>
 </div>
@@ -178,20 +187,21 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">+</span> <span class="integer">1</span> <span class="integer">2</span>) <span class="comment">; 첫 요소인 +를 함수로서 호출한다.</span>
+<pre class="CodeRay highlight"><code data-lang="clojure"><span class="comment">;; 첫 요소인 +를 함수로서 호출한다.</span>
+(<span class="keyword">+</span> <span class="integer">1</span> <span class="integer">2</span>)
 <span class="comment">;=&gt; 3</span>
 
-(<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>) <span class="comment">; 첫 요소인 1을 함수로서 호출한다.</span>
-<span class="comment">;; 하지만 1은 함수가 아니라서 예외가 발생한다.</span>
+<span class="comment">;; 첫 요소인 1을 함수로서 호출한다. 하지만 1은 함수가 아니라서 예외가 발생한다.</span>
+(<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>)
 <span class="comment">;&gt;&gt; ClassCastException java.lang.Long cannot be cast to clojure.lang.IFn</span>
 
 <span class="comment">;; 인용부호(')를 붙이면 리스트는 첫 요소를 함수로 호출하는 역할을 하지 않는다.</span>
-'(<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>) <span class="comment">; 1을 함수로서 호출하지 않는다.</span>
-<span class="comment">;; 단지 컬렉션으로서의 역할만 한다.</span>
+<span class="comment">;; 단지 리스트 자료형의 역할만 한다.</span>
+'(<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>)
 <span class="comment">;=&gt; (1 2 3)</span>
 
-'(<span class="keyword">+</span> <span class="integer">1</span> <span class="integer">2</span>) <span class="comment">; +를 함수로서 호출하지 않는다.</span>
-<span class="comment">;; +는 리스트의 첫 요소로서 포함된다.</span>
+<span class="comment">;; +를 함수로서 호출하지 않는다. +는 리스트의 첫 요소일 뿐이다.</span>
+'(<span class="keyword">+</span> <span class="integer">1</span> <span class="integer">2</span>)
 <span class="comment">;=&gt; (+ 1 2)</span></code></pre>
 </div>
 </div>
@@ -207,32 +217,36 @@
 </div>
 </div>
 <div class="paragraph">
-<p>자료구조는 물론 여러 컬렉션을 요소로 취할 수 있다.</p>
+<p>컬렉션의 요소로 컬렉션이 올 수 있다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">'((<span class="integer">1</span>) [<span class="integer">1</span>] #{<span class="integer">1</span>} {<span class="symbol">:a</span> <span class="integer">1</span>})  <span class="comment">; 리스트 안에 리스트, 벡터, 집합, 맵이 있다. </span><i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="clojure">'((<span class="integer">1</span>) [<span class="integer">1</span>] {<span class="symbol">:a</span> <span class="integer">1</span>} #{<span class="integer">1</span>})  <span class="comment">; 리스트 안에 리스트, 벡터, 맵, 집합이 있다. </span><i class="conum" data-value="1"></i><b>(1)</b>
 <span class="comment">;=&gt; ((1) [1] #{1} {:a 1})</span>
 
-['(<span class="integer">1</span>) [<span class="integer">1</span>] #{<span class="integer">1</span>} {<span class="symbol">:a</span> <span class="integer">1</span>}]  <span class="comment">; 벡터 안에 리스트, 벡터, 집합, 맵이 있다.</span>
+['(<span class="integer">1</span>) [<span class="integer">1</span>] {<span class="symbol">:a</span> <span class="integer">1</span>} #{<span class="integer">1</span>}]  <span class="comment">; 벡터 안에 리스트, 벡터, 집합, 맵이 있다.</span>
 <span class="comment">;=&gt; [(1) [1] #{1} {:a 1}]</span>
 
-{'(<span class="integer">1</span>) [<span class="integer">1</span>] #{<span class="integer">1</span>} {<span class="symbol">:a</span> <span class="integer">1</span>}}  <span class="comment">; 맵 안에 리스트, 벡터, 집합, 맵이 있다.</span>
-<span class="comment">;=&gt; {(1) [1] #{1} {:a 1}}</span>
+{'(<span class="integer">1</span>) [<span class="integer">1</span>] #{<span class="integer">1</span>} {<span class="symbol">:a</span> <span class="integer">1</span>}}  <span class="comment">; 맵 안에 리스트, 벡터, 맵, 집합이 있다.</span>
+<span class="comment">;=&gt; {(1) [1] {:a 1} #{1}} </span><i class="conum" data-value="2"></i><b>(2)</b>
 
-#{'(<span class="integer">1</span>) [<span class="integer">1</span>] #{<span class="integer">1</span>} {<span class="symbol">:a</span> <span class="integer">1</span>}} <span class="comment">; 집합 안에 리스트, 벡터, 집합, 맵이 있다.</span>
-<span class="comment">;=&gt; #{[1] #{1} {:a 1}}  </span> <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+#{'(<span class="integer">1</span>) [<span class="integer">1</span>] {<span class="symbol">:a</span> <span class="integer">1</span>} #{<span class="integer">1</span>}} <span class="comment">; 집합 안에 리스트, 벡터, 맵, 집합이 있다.</span>
+<span class="comment">;=&gt; #{[1] #{1} {:a 1}}  </span> <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>내포된 리스트에는 인용부호(')를 하지 않아도 된다.</td>
+<td>내포된 리스트에는 인용 부호(')를 붙이지 않아도 된다.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td><code><code>(= '(1) [1])</code></code> 이기 때문에, [1]만 남는다.</td>
+<td>맵의 키로 컬렉션이 사용될 수 있다.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><code>(= '(1) [1])</code>이기 때문에 <code>[1]</code>만 남는다.</td>
 </tr>
 </table>
 </div>
@@ -241,7 +255,8 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">{<span class="symbol">:a</span> <span class="integer">1</span> <span class="symbol">:a</span> <span class="integer">2</span>} <span class="comment">; 키 :a가 중복 &gt;&gt; 예외 발생</span>
+<pre class="CodeRay highlight"><code data-lang="clojure"><span class="comment">;; 키 :a가 중복되어 예외가 발생한다.</span>
+{<span class="symbol">:a</span> <span class="integer">1</span> <span class="symbol">:a</span> <span class="integer">2</span>}
 <span class="comment">;&gt;&gt; IllegalArgumentException Duplicate key: :a</span></code></pre>
 </div>
 </div>
@@ -250,7 +265,8 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">#{<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span> <span class="integer">3</span>} <span class="comment">; 3이 중복 &gt;&gt; 예외 발생</span>
+<pre class="CodeRay highlight"><code data-lang="clojure"><span class="comment">;; 3이 중복되어 예외가 발생한다.</span>
+#{<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span> <span class="integer">3</span>}
 <span class="comment">;&gt;&gt; IllegalArgumentException Duplicate key: 3</span></code></pre>
 </div>
 </div>
@@ -261,11 +277,12 @@
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-위의 두 코드를 보면 집합이나 맵이나 중복이 있으면 Duplicate key라는 예외가 발생한다는 것을 알 수 있다.
-      이 예외는 key가 중복되어서 발생한 것인데, 맵은 하나 키가 여러 값을 가질 수 없으니 이해가 된다.
-      하지만 집합은 키가 아니라 값이 중복된 것인데, 왜 Duplicate key 예외가 발생할까?
-      이것은 집합의 내부 구현은 맵과 같다는 것을 의미한다. 즉 집합은 키와 값이 같은 맵으로 볼 수 있다는 것이다.
-      예를 들어, #{1 2 3}은 {1 1 2 2 3 3}과 같다고 볼 수 있는 것이다.
+위의 두 코드를 보면 집합이나 맵이나 중복이 있으면 Duplicate key라는 예외가
+      발생한다는 것을 알 수 있다.  이 예외는 key가 중복되어서 발생한 것인데, 맵은 하나
+      키가 여러 값을 가질 수 없으니 이해가 된다. 하지만 집합은 키가 아니라 값이 중복된
+      것인데, 왜 Duplicate key 예외가 발생할까?  이것은 집합의 내부 구현은 맵과 같다는
+      것을 의미한다. 즉 집합은 키와 값이 같은 맵으로 볼 수 있다는 것이다.  예를 들어, <code>#{1
+      2 3}</code>은 <code>{1 1 2 2 3 3}</code>과 같다고 볼 수 있는 것이다.
 </td>
 </tr>
 </table>
@@ -275,19 +292,21 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">{<span class="symbol">:a</span> <span class="integer">1</span> <span class="symbol">:b</span>} <span class="comment">; 키 :b에 해당하는 값이 없다 &gt;&gt; 예외 발생</span>
+<pre class="CodeRay highlight"><code data-lang="clojure"><span class="comment">;; 키 :b에 해당하는 값이 없어서 예외가 발생한다.</span>
+{<span class="symbol">:a</span> <span class="integer">1</span> <span class="symbol">:b</span>}
 <span class="comment">;&gt;&gt; RuntimeException Map literal must contain an even number of forms</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>컬렉션은 구조화된 데이터의 묶음이지만, 또한 그 자체로 값(Value)이다. 따라서 데이타가 없는 컬렉션, 즉 빈(empty) 컬렉션도 값(Value)이다. 아무것도 없음을 의미하는 nil과는 다르다.</p>
+<p>컬렉션은 구조화된 데이터의 묶음이지만, 또한 그 자체로 값(value)이다. 따라서 데이타가 없는
+컬렉션, 즉 빈(empty) 컬렉션도 값(value)이다. 아무것도 없음을 의미하는 nil과는 다르다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">not</span><span class="keyword">=</span>  () <span class="predefined-constant">nil</span>) <span class="comment">;=&gt; true ; empty list</span>
-(<span class="keyword">not</span><span class="keyword">=</span>  [] <span class="predefined-constant">nil</span>) <span class="comment">;=&gt; true ; empty vector</span>
-(<span class="keyword">not</span><span class="keyword">=</span> #{} <span class="predefined-constant">nil</span>) <span class="comment">;=&gt; true ; empty set</span>
-(<span class="keyword">not</span><span class="keyword">=</span>  {} <span class="predefined-constant">nil</span>) <span class="comment">;=&gt; true ; empty map</span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">=</span>  () <span class="predefined-constant">nil</span>) <span class="comment">;=&gt; false ; empty list</span>
+(<span class="keyword">=</span>  [] <span class="predefined-constant">nil</span>) <span class="comment">;=&gt; false ; empty vector</span>
+(<span class="keyword">=</span> #{} <span class="predefined-constant">nil</span>) <span class="comment">;=&gt; false ; empty set</span>
+(<span class="keyword">=</span>  {} <span class="predefined-constant">nil</span>) <span class="comment">;=&gt; false ; empty map</span></code></pre>
 </div>
 </div>
 </div>
@@ -315,11 +334,11 @@
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>map은 전혀 다른 함수이다. 뒤에서 설명한다.</td>
+<td>map은 전혀 다른 함수이다.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>set은 다른 컬렉션을 집합으로 바꾸는 함수이다. 뒤에서 설명한다.</td>
+<td>set은 다른 컬렉션을 집합으로 바꾸는 함수이다.</td>
 </tr>
 </table>
 </div>
@@ -343,26 +362,69 @@
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p><code>vec</code>은 다른 컬렉션을 받아 벡터를 만든다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">vec</span> '(<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>))
+<span class="comment">;=&gt; [1 2 3]</span>
+
+(<span class="keyword">vec</span> #{<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>})
+<span class="comment">;=&gt; [1 3 2]</span>
+
+(<span class="keyword">vec</span> {<span class="symbol">:a</span> <span class="integer">1</span> <span class="symbol">:b</span> <span class="integer">2</span> <span class="symbol">:c</span> <span class="integer">3</span>})
+<span class="comment">;=&gt; [[:c 3] [:b 2] [:a 1]]</span>
+
+(<span class="keyword">vec</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">abcd</span><span class="delimiter">&quot;</span></span>)
+<span class="comment">;=&gt; [\a \b \c \d]</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>set</code>은 다른 컬렉션을 받아 집합을 만든다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">set</span> '(<span class="integer">1</span> <span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span> <span class="integer">2</span> <span class="integer">4</span> <span class="integer">5</span> <span class="integer">5</span>))      <span class="comment">; 중복은 제거된다</span>
+<span class="comment">;=&gt; #{1 2 3 4 5}</span>
+
+(<span class="keyword">set</span> [<span class="integer">1</span> <span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span> <span class="integer">2</span> <span class="integer">4</span> <span class="integer">5</span> <span class="integer">5</span>])       <span class="comment">; 중복은 제거된다</span>
+<span class="comment">;=&gt; #{1 2 3 4 5}</span>
+
+(<span class="keyword">set</span> [<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span> <span class="integer">4</span> <span class="integer">5</span>])
+<span class="comment">;=&gt; #{1 2 3 4 5}</span>
+
+(<span class="keyword">set</span> {<span class="symbol">:a</span> <span class="integer">1</span> <span class="symbol">:b</span> <span class="integer">2</span> <span class="symbol">:c</span> <span class="integer">3</span>})
+<span class="comment">;=&gt; #{[:b 2] [:c 3] [:a 1]}</span>
+
+(<span class="keyword">set</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">abcd</span><span class="delimiter">&quot;</span></span>)
+<span class="comment">;=&gt; #{\a \b \c \d}</span></code></pre>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_seq">1.3. seq</h3>
 <div class="paragraph">
-<p>클로저에서 모든 컬렉션은 시퀀스로 취급될 수 있다. 시퀀스는 head와 tail 두 개로 구성되는데, tail은 또 다른 시퀀스이다. 클로저에서의 시퀀스에 대해서는 뒤에서 보다 더 자세히 살펴볼 것이다. <code>seq</code> 함수는 컬렉션의 시퀀스를 반환한다.
-클로저에서 모든 컬렉션은 시퀀스로 취급될 수 있다. 시퀀스는 head와 tail 두 개로 구성되는데, tail은 또 다른 시퀀스이다. 시퀀스에 대해서는 뒤에서 보다 더 자세히 살펴볼 것이다. seq 함수는 컬렉션의 시퀀스를 반환한다.</p>
+<p>클로저에서 모든 컬렉션은 시퀀스로 취급될 수 있다. 시퀀스는 head와 tail 두 개로 구성되는데,
+tail은 또 다른 시퀀스이다. 클로저에서의 시퀀스에 대해서는 뒤에서 보다 더 자세히 살펴볼
+것이다.</p>
+</div>
+<div class="paragraph">
+<p><code>seq</code> 함수는 컬렉션을 시퀀스로 변환해 반환한다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">seq</span> '(<span class="integer">1</span>))  <span class="comment">;=&gt; (1)</span>
-(<span class="keyword">seq</span> [<span class="integer">1</span>])   <span class="comment">;=&gt; (1)</span>
-(<span class="keyword">seq</span> #{<span class="integer">1</span>})  <span class="comment">;=&gt; (1)</span>
-(<span class="keyword">seq</span> {<span class="symbol">:a</span> <span class="integer">1</span>} <span class="comment">;=&gt; ([:a 1])</span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">seq</span> '(<span class="integer">1</span>))    <span class="comment">;=&gt; (1)</span>
+(<span class="keyword">seq</span> [<span class="integer">1</span>])     <span class="comment">;=&gt; (1)</span>
+(<span class="keyword">seq</span> #{<span class="integer">1</span>})    <span class="comment">;=&gt; (1)</span>
+(<span class="keyword">seq</span> {<span class="symbol">:a</span> <span class="integer">1</span>}   <span class="comment">;=&gt; ([:a 1])</span></code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_자료구조에_요소_추가_삭제">1.4. 자료구조에 요소 추가/삭제</h3>
 <div class="paragraph">
-<p>클로저에서는 자료구조에 요소를 추가하거나 삭제하면, 기존 자료구조에 요소가 추가/삭제된 새로운 자료구조가 만들어진다. 기존자료구조는 변하지 않고 그대로 있다. 자료구조는 불변이다(immutable). 이것은 기존 자료구조를 복사한 후 요소를 추가/삭제하는 것처럼 비효율적인 방식은 아니다. 구조 공유(structural sharing)이라는 기법을 통해 아주 효율적으로 불변성을 지원한다.</p>
+<p>클로저에서는 자료구조에 요소를 추가하거나 삭제하면, 기존 자료구조에 요소가 추가/삭제된 새로운 자료구조가 만들어진다. 기존 자료구조는 변하지 않고 그대로 있다. 자료구조는 불변이다(immutable). 이것은 기존 자료구조를 복사한 후 요소를 추가/삭제하는 것처럼 비효율적인 방식은 아니다. 구조 공유(structural sharing)이라는 기법을 통해 아주 효율적으로 불변성을 지원한다.</p>
 </div>
 <div class="paragraph">
 <p>이러한 자료구조의 불변성은 멀티스레딩에 근본적으로 안전한 프로그래밍을 가능하게 한다.</p>
@@ -380,18 +442,18 @@
 (<span class="keyword">cons</span> <span class="integer">0</span> [<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>])   <span class="comment">; 벡터</span>
 <span class="comment">;=&gt; (0 1 2 3)</span>
 
-(<span class="keyword">cons</span> <span class="integer">0</span> {<span class="symbol">:a</span> <span class="integer">1</span>})    <span class="comment">; 맵</span>
-<span class="comment">;=&gt; (0 [:a 1])      </span><i class="conum" data-value="1"></i><b>(1)</b>
+(<span class="keyword">cons</span> <span class="integer">0</span> {<span class="symbol">:a</span> <span class="integer">1</span> <span class="symbol">:b</span> <span class="integer">2</span>})    <span class="comment">; 맵</span>
+<span class="comment">;=&gt; (0 [:a 1] [:b 2])   </span><i class="conum" data-value="1"></i><b>(1)</b>
 
 (<span class="keyword">cons</span> <span class="integer">0</span> #{<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>})  <span class="comment">; 집합</span>
-<span class="comment">;=&gt; (0 1 2 3)</span></code></pre>
+<span class="comment">;=&gt; (0 1 3 2)</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td><code>(seq {:a 1}) ;&#8658; ([:a 1])</code> 이다. 즉 맵의 seq 표현은 키-값 쌍의 튜플들이다.</td>
+<td><code>(seq {:a 1 :b 2}) ;&#8658; ([:a 1] [:b 2])</code> 이다. 즉 맵의 seq 표현은 키-값 쌍의 튜플들이다.</td>
 </tr>
 </table>
 </div>
@@ -399,15 +461,14 @@
 <div class="sect3">
 <h4 id="_conj">1.4.2. conj</h4>
 <div class="paragraph">
-<p><code>conj</code><sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</sup>함수는 컬렉션인 첫번째 인수에 두번째 인수를 추가한 새로운 컬렉션을 반환한다.
-<code>conj</code>는 입력 컬렉션의 형태가 보존되며, 요소 추가는 해당 컬렉션에 가장 효율적이고 효과적인 방식으로 처리된다.</p>
+<p><code>conj</code><sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</sup>함수는 컬렉션인 첫번째 인수에 두번째 인수를 추가한 새로운 컬렉션을 반환한다. <code>conj</code>는 입력 컬렉션의 형태가 보존되며, 요소 추가는 해당 컬렉션에 가장 효율적인 방식으로 처리된다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">conj</span> '(<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>) <span class="integer">0</span>)    <span class="comment">; 리스트. 맨 앞에 추가된다.</span>
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">conj</span> '(<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>) <span class="integer">0</span>)    <span class="comment">; 리스트는 맨 앞에 추가된다.</span>
 <span class="comment">;=&gt; (0 1 2 3)</span>
 
-(<span class="keyword">conj</span> [<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>] <span class="integer">0</span>)     <span class="comment">; 벡터의. 맨 뒤에 추가된다.</span>
+(<span class="keyword">conj</span> [<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>] <span class="integer">0</span>)     <span class="comment">; 벡터는 맨 뒤에 추가된다.</span>
 <span class="comment">;=&gt; [1 2 3 0]</span>
 
 (<span class="keyword">conj</span> {<span class="symbol">:a</span> <span class="integer">1</span>} [<span class="symbol">:b</span> <span class="integer">2</span>]) <span class="comment">; 맵은 키-값 쌍의 벡터 튜플로 추가된다.</span>
@@ -427,7 +488,7 @@
 <i class="fa icon-caution" title="Caution"></i>
 </td>
 <td class="content">
-cons와 conj는 리스트에 요소를 추가할 때는 똑같이 맨 앞에 추가한다. 하지만 벡터에 요소를 추가할 때는 서로 다르게 cons는 맨 앞에, conj는 맨 뒤에 추가한다.
+<code>cons</code>와 <code>conj</code>는 리스트에 요소를 추가할 때는 똑같이 맨 앞에 추가한다. 하지만 벡터에 요소를 추가할 때는 서로 다르게 <code>cons</code>는 맨 앞에, <code>conj</code>는 맨 뒤에 추가한다.
 </td>
 </tr>
 </table>
@@ -436,7 +497,7 @@ cons와 conj는 리스트에 요소를 추가할 때는 똑같이 맨 앞에 추
 <p>맵의 경우에는 요소를 추가하기 위해서는 키-값 쌍의 벡터로 된 튜풀을 제공해야 한다.</p>
 </div>
 <div class="paragraph">
-<p>conj는 여러개의 요소를 한 번에 추가할 수 있다.</p>
+<p><code>conj</code>는 여러 개의 요소를 한 번에 추가할 수 있다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -493,7 +554,7 @@ cons와 conj는 리스트에 요소를 추가할 때는 똑같이 맨 앞에 추
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td><strong><em>nil이 빈맵으로 취급되는 이유 설명 필요</em></strong></td>
+<td><strong><em><code>nil</code>이 빈맵으로 취급되는 이유 설명 필요</em></strong></td>
 </tr>
 </table>
 </div>
@@ -519,7 +580,7 @@ cons와 conj는 리스트에 요소를 추가할 때는 똑같이 맨 앞에 추
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td><strong><em>맨 마지막은 끝을 의미하는 nil이 있다.</em></strong></td>
+<td><strong><em>맨 마지막은 끝을 의미하는 <code>nil</code>이 있다.</em></strong></td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -528,7 +589,8 @@ cons와 conj는 리스트에 요소를 추가할 때는 똑같이 맨 앞에 추
 </table>
 </div>
 <div class="paragraph">
-<p>위에서 보는 것처럼 벡터가 assoc에 대해 동작하는 것을 보면, 벡터는 인덱스를 키로 하는 맵으로 취급할 수 있다.</p>
+<p>위에서 보는 것처럼 벡터가 <code>assoc</code>에 대해 동작하는 것을 보면, 벡터는 인덱스를 키로 하는
+맵으로 취급되는 것을 알 수 있다.</p>
 </div>
 </div>
 <div class="sect3">
@@ -542,7 +604,7 @@ cons와 conj는 리스트에 요소를 추가할 때는 똑같이 맨 앞에 추
 <span class="comment">;=&gt; {:a 1, :c 3}</span>
 
 
-(<span class="keyword">dissoc</span> {<span class="symbol">:a</span> <span class="integer">1</span> <span class="symbol">:b</span> <span class="integer">2</span> c<span class="error">:</span> <span class="integer">3</span>} <span class="symbol">:c</span> <span class="symbol">:b</span>) <span class="error">:</span> <span class="error">여</span><span class="error">러</span><span class="error">개</span><span class="error">의</span> <span class="error">키</span> <span class="error">제</span><span class="error">거</span><span class="keyword">.</span>
+(<span class="keyword">dissoc</span> {<span class="symbol">:a</span> <span class="integer">1</span> <span class="symbol">:b</span> <span class="integer">2</span> c<span class="error">:</span> <span class="integer">3</span>} <span class="symbol">:c</span> <span class="symbol">:b</span>) <span class="error">:</span> <span class="error">여</span><span class="error">러</span> <span class="error">개</span><span class="error">의</span> <span class="error">키</span> <span class="error">제</span><span class="error">거</span><span class="keyword">.</span>
 <span class="comment">;=&gt; {:a 1}</span></code></pre>
 </div>
 </div>
@@ -559,7 +621,7 @@ cons와 conj는 리스트에 요소를 추가할 때는 똑같이 맨 앞에 추
 <div class="sect3">
 <h4 id="_assoc_in">1.4.6. assoc-in</h4>
 <div class="paragraph">
-<p>클로저에서는 벡터와 맵을 특히 많이 쓴다. 그런데 벡터안에 맥이 있거나 혹은 맵안에 벡터가 있는 경우 추가/삭제를 하는 것이 매우 번거로와지는데, 이럴 때 손쉽게 사용할 수 있는 것이 <code>assoc-in</code> 함수이다. 이때 내포된 컬렉션의 키를 지정하기 위해 키들의 시퀀스를 사용한다.</p>
+<p>클로저에서는 벡터와 맵을 특히 많이 쓴다. 그런데 벡터 안에 맵이 있거나 또는 맵안에 벡터가 있는 경우 추가/삭제를 하는 것이 매우 번거로워지는데, 이럴 때 손쉽게 사용할 수 있는 것이 <code>assoc-in</code> 함수이다. 이때 내포된 컬렉션의 키를 지정하기 위해 키들의 시퀀스를 사용한다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -576,7 +638,7 @@ cons와 conj는 리스트에 요소를 추가할 때는 똑같이 맨 앞에 추
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>두번째 인자로 지정된 값을 세번째 인자로 덮어 쓴다. 두번째 인자 [:a :c]는 대상을 지정하기 위한 키들이다. 즉 :a는 m에서 {:c 1}를 지정하고, :c는 바로 앞에서 지정된 맵인 {:c 1}에서 1을 지정한다. 이렇게 지정된 값을 10으로 덮어쓴다.</td>
+<td>두 번째 인자로 지정된 값을 세 번째 인자로 덮어 쓴다. 두번째 인자 <code>[:a :c]</code>는 대상을 지정하기 위한 키들이다. 즉 <code>:a</code>는 <code>m</code>에서 <code>{:c 1}</code>를 지정하고, <code>:c</code>는 바로 앞에서 지정된 맵인 <code>{:c 1}</code>에서 <code>1</code>을 지정한다. 이렇게 지정된 값을 <code>10</code>으로 덮어쓴다.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -585,7 +647,7 @@ cons와 conj는 리스트에 요소를 추가할 때는 똑같이 맨 앞에 추
 </table>
 </div>
 <div class="paragraph">
-<p>assoc이 벡터에 대해서도 동작한 것처럼 assoc-in도 벡터에 대해 동작한다.</p>
+<p><code>assoc</code>이 벡터에 대해서도 동작한 것처럼 <code>assoc-in</code>도 벡터에 대해 동작한다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -670,10 +732,16 @@ cons와 conj는 리스트에 요소를 추가할 때는 똑같이 맨 앞에 추
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-반면 컬렉션에서 특정 요소의 인덱스를 구하려면 indexOf 자바 메소드를 호출하면 된다.
-     <code>(.indexOf '(1 2 3) 1) ;=&gt; 0</code><br>
-     <code>(.indexOf  [1 2 3] 2)  ;=&gt; 1</code><br>
-     <code>(.indexOf "abcd" "c") ;=&gt; 2</code>
+<div class="paragraph">
+<p>반면 컬렉션에서 특정 요소의 인덱스를 구하려면 <code>indexOf</code> 자바 메소드를 호출하면 된다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">.</span>indexOf '(<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>) <span class="integer">1</span>)   <span class="comment">;=&gt; 0</span>
+(<span class="keyword">.</span>indexOf  [<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>] <span class="integer">2</span>)   <span class="comment">;=&gt; 1</span>
+(<span class="keyword">.</span>indexOf <span class="string"><span class="delimiter">&quot;</span><span class="content">abcd</span><span class="delimiter">&quot;</span></span> <span class="string"><span class="delimiter">&quot;</span><span class="content">c</span><span class="delimiter">&quot;</span></span>)   <span class="comment">;=&gt; 2</span></code></pre>
+</div>
+</div>
 </td>
 </tr>
 </table>
@@ -682,7 +750,8 @@ cons와 conj는 리스트에 요소를 추가할 때는 똑같이 맨 앞에 추
 <div class="sect3">
 <h4 id="_get">1.5.2. get</h4>
 <div class="paragraph">
-<p><code>get</code>은 맵에서 특정 키에 해당하는 값을 반환한다. 만약 해당키가 없으면 nil을 반환하는데, 디폴트값이 주어졌으면 디폴트값을 반환한다.</p>
+<p><code>get</code>은 맵에서 특정 키에 해당하는 값을 반환한다. 만약 해당키가 없으면 <code>nil</code>을
+반환하는데, 디폴트값이 주어졌으면 디폴트값을 반환한다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -715,9 +784,15 @@ cons와 conj는 리스트에 요소를 추가할 때는 똑같이 맨 앞에 추
 <i class="fa icon-caution" title="Caution"></i>
 </td>
 <td class="content">
-인덱스가 없는 경우, nth는 예외를 던지고, get은 nil을 반환한다.<br>
-        <code>(nth [1 2 3] 5) ;&gt;&gt; java.lang.IndexOutOfBoundsException</code><br>
-        <code>(get [1 2 3] 5) ;=&gt; nil</code>
+<div class="paragraph">
+<p>인덱스가 없는 경우, nth는 예외를 던지고, get은 nil을 반환한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">nth</span> [<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>] <span class="integer">5</span>)   <span class="comment">;&gt;&gt; java.lang.IndexOutOfBoundsException</span>
+(<span class="keyword">get</span> [<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>] <span class="integer">5</span>)   <span class="comment">;=&gt; nil</span></code></pre>
+</div>
+</div>
 </td>
 </tr>
 </table>
@@ -750,7 +825,7 @@ cons와 conj는 리스트에 요소를 추가할 때는 똑같이 맨 앞에 추
 <div class="sect3">
 <h4 id="_get_in">1.5.3. get-in</h4>
 <div class="paragraph">
-<p>맵안의 맵처럼 내포된 맵을 참조하기 위해서는 <code>get-in</code>을 사용한다. 만약 해당값이 없으면 nil을, 디폴트값이 주어지면 디폴트 값을 반환한다.</p>
+<p>맵안의 맵처럼 내포된 맵을 참조하기 위해서는 <code>get-in</code>을 사용한다. 만약 해당값이 없으면 <code>nil</code>을, 디폴트값이 주어지면 디폴트 값을 반환한다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -808,7 +883,7 @@ cons와 conj는 리스트에 요소를 추가할 때는 똑같이 맨 앞에 추
 <div class="sect3">
 <h4 id="_contains">1.5.5. contains?</h4>
 <div class="paragraph">
-<p><code>get</code> 함수는 해당키가 없는 경우에 nil을 반환한다. 하지만 조사하려는 컬렉션에 nil 이 있는 경우 문제가 된다.</p>
+<p><code>get</code> 함수는 해당키가 없는 경우에 <code>nil</code>을 반환한다. 하지만 조사하려는 컬렉션에 <code>nil</code>이 있는 경우 문제가 된다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -823,11 +898,11 @@ cons와 conj는 리스트에 요소를 추가할 때는 똑같이 맨 앞에 추
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>반환값이 nil이므로 값이 없음을 의미하지만, 실제로는 인덱스 0에 nil이라는 값이 있는 것이다.</td>
+<td>반환값이 <code>nil</code>이므로 값이 없음을 의미하지만, 실제로는 인덱스 <code>0</code>에 <code>nil</code>이라는 값이 있는 것이다.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>반환값이 nil이므로 값이 없음을 의미하지만, 실제로는 :a 키에 nil 값이 있는 것이다.</td>
+<td>반환값이 <code>nil</code>이므로 값이 없음을 의미하지만, 실제로는 <code>:a</code> 키에 <code>nil</code> 값이 있는 것이다.</td>
 </tr>
 </table>
 </div>
@@ -845,17 +920,71 @@ cons와 conj는 리스트에 요소를 추가할 때는 똑같이 맨 앞에 추
 </div>
 </div>
 <div class="sect3">
-<h4 id="_직접_참조">1.5.6. 직접 참조</h4>
+<h4 id="_keys와_vals">1.5.6. keys와 vals</h4>
 <div class="paragraph">
-<p><code>get</code> 함수를 통하지 않고 직접 벡터, 맵, 집합으로부터 값을 읽을 수 있다. 이것이 가능한 이유는 클로저에서는 벡터, 맵, 집합이 함수처럼 동작할 수 있기 때문이다. (리스트 제외)</p>
+<p>맵의 경우, 키들만 뽑아내거나 혹은 값들만 뽑아내는 함수로 <code>keys</code>와 <code>vals</code>가 있다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">keys</span> {<span class="symbol">:a</span> <span class="integer">1</span> <span class="symbol">:b</span> <span class="integer">2</span> <span class="symbol">:c</span> <span class="integer">3</span>})
+<span class="comment">;=&gt; (:a :b :c)</span>
+
+(<span class="keyword">vals</span> {<span class="symbol">:a</span> <span class="integer">1</span> <span class="symbol">:b</span> <span class="integer">2</span> <span class="symbol">:c</span> <span class="integer">3</span>})
+<span class="comment">;=&gt; (1 2 3)</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_key와_val">1.5.7. key와 val</h4>
+<div class="paragraph">
+<p>사실 이것은 각 맵 엔트리(Entry)에 <code>key</code>와 <code>val</code>를 적용한 것과 같다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">map</span> <span class="keyword">key</span> {<span class="symbol">:a</span> <span class="integer">1</span> <span class="symbol">:b</span> <span class="integer">2</span> <span class="symbol">:c</span> <span class="integer">3</span>})
+<span class="comment">;=&gt; (:a :b :c)</span>
+
+(<span class="keyword">map</span> <span class="keyword">val</span> {<span class="symbol">:a</span> <span class="integer">1</span> <span class="symbol">:b</span> <span class="integer">2</span> <span class="symbol">:c</span> <span class="integer">3</span>})
+<span class="comment">;=&gt; (1 2 3)</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>key</code>와 <code>val</code>은 맵의 엔트리에만 적용된다. 맵의 엔트리는 clojure.lang.IPersistentVector를 구현하기 때문에 벡터처럼 표현되기는 하지만, <code>key</code>와 <code>val</code>이 벡터에 적용되지는 않는다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">first</span> {<span class="symbol">:a</span> <span class="integer">1</span> <span class="symbol">:b</span> <span class="integer">2</span>})
+<span class="comment">;=&gt; [:a 1]</span>
+
+(<span class="keyword">key</span> (<span class="keyword">first</span> {<span class="symbol">:a</span> <span class="integer">1</span> <span class="symbol">:b</span> <span class="integer">2</span>}))
+<span class="comment">;=&gt; :a</span>
+
+(<span class="keyword">val</span> (<span class="keyword">first</span> {<span class="symbol">:a</span> <span class="integer">1</span> <span class="symbol">:b</span> <span class="integer">2</span>}))
+<span class="comment">;=&gt; 1</span>
+
+(<span class="keyword">key</span> [<span class="symbol">:a</span> <span class="integer">1</span>])
+<span class="comment">;&gt;&gt; java.lang.ClassCastException: clojure.lang.PersistentVector cannot be cast to java.util.Map$Entry</span>
+
+(<span class="keyword">val</span> [<span class="symbol">:a</span> <span class="integer">1</span>])
+<span class="comment">;&gt;&gt; java.lang.ClassCastException: clojure.lang.PersistentVector cannot be cast to java.util.Map$Entry</span>
+
+(<span class="keyword">type</span> (<span class="keyword">first</span> {<span class="symbol">:a</span> <span class="integer">1</span> <span class="symbol">:b</span> <span class="integer">2</span>}))
+<span class="comment">;=&gt; clojure.lang.MapEntry</span>
+
+(<span class="keyword">vector?</span> (<span class="keyword">first</span> {<span class="symbol">:a</span> <span class="integer">1</span> <span class="symbol">:b</span> <span class="integer">2</span>}))
+<span class="comment">;=&gt; true</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_직접_참조">1.5.8. 직접 참조</h4>
+<div class="paragraph">
+<p><code>get</code> 함수를 통하지 않고 직접 벡터, 집합, 맵으로부터 값을 읽을 수 있다. 이것이 가능한 이유는 클로저에서는 벡터, 맵, 집합이 함수처럼 동작할 수 있기 때문이다. (리스트 제외)</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="clojure">([<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>] <span class="integer">1</span>)          <span class="comment">; 벡터일 경우, 인자 1은 인덱스로 동작</span>
 <span class="comment">;=&gt; 2</span>
-
-(#{<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>} <span class="integer">1</span>)         <span class="comment">; 집합일 경우, 인자 1은 키로서 동작 </span><i class="conum" data-value="1"></i><b>(1)</b>
-<span class="comment">;=&gt; 1</span>
 
 ({<span class="symbol">:a</span> <span class="integer">1</span> <span class="symbol">:b</span> <span class="integer">2</span>} <span class="symbol">:a</span>)     <span class="comment">; :a 키의 값을 읽는다</span>
 <span class="comment">;=&gt; 1</span>
@@ -863,24 +992,27 @@ cons와 conj는 리스트에 요소를 추가할 때는 똑같이 맨 앞에 추
 ({<span class="symbol">:a</span> <span class="integer">1</span> <span class="symbol">:b</span> <span class="integer">2</span>} <span class="symbol">:c</span>)     <span class="comment">; :c 키는 없다</span>
 <span class="comment">;=&gt; nil</span>
 
-({<span class="symbol">:a</span> <span class="integer">1</span> <span class="symbol">:b</span> <span class="integer">2</span>} <span class="symbol">:c</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">not-found</span><span class="delimiter">&quot;</span></span>)   <span class="comment">; 두 번째 인자는 디폴트값 </span><i class="conum" data-value="2"></i><b>(2)</b>
-<span class="comment">;=&gt; &quot;not-found&quot;</span></code></pre>
+({<span class="symbol">:a</span> <span class="integer">1</span> <span class="symbol">:b</span> <span class="integer">2</span>} <span class="symbol">:c</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">not-found</span><span class="delimiter">&quot;</span></span>)   <span class="comment">; 두 번째 인자는 디폴트값 </span><i class="conum" data-value="1"></i><b>(1)</b>
+<span class="comment">;=&gt; &quot;not-found&quot;</span>
+
+(#{<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>} <span class="integer">1</span>)         <span class="comment">; 집합일 경우, 인자 1은 키로서 동작 </span><i class="conum" data-value="2"></i><b>(2)</b>
+<span class="comment">;=&gt; 1</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>집합의 경우 이러한 용법은 그 집합에서의 특정값의 존재여부를 확인하는 방법으로 쓰인다. 실제로 상당히 요긴하게 쓰인다.</td>
+<td>맵의 경우, 디폴트값을 줄 수 있다.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>맵의 경우, 디폴트값을 줄 수 있다.</td>
+<td>집합의 경우 이러한 용법은 그 집합에서의 특정값의 존재 여부를 확인하는 방법으로 쓰인다. 실제로 상당히 요긴하게 쓰인다.</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>이러한 자료구조외에 키워드나 심볼등도 함수처럼 동작한다.</p>
+<p>이러한 자료구조 외에 키워드나 심볼 등도 함수처럼 동작한다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -892,7 +1024,7 @@ cons와 conj는 리스트에 요소를 추가할 때는 똑같이 맨 앞에 추
 </div>
 </div>
 <div class="paragraph">
-<p>보통 맵의 경우 위와 같은 방식으로 쓰는 것이 더 안전하다. 왜냐하면 함수가 인자로 맵을 받을 때, 때로 그 인자로 맵이 아닌 nil이 전달되는 경우가 심심치 않게 있는데, 그 인자를 함수로 호출하게 되면, nil을 함수로 호출하는 것이 되어 예외가 발생하기 때문이다.</p>
+<p>보통 맵의 경우 위와 같은 방식으로 쓰는 것이 더 안전하다. 왜냐하면 함수가 인자로 맵을 받을 때, 때로 그 인자로 맵이 아닌 <code>nil</code>이 전달되는 경우가 심심치 않게 있는데, 그 인자를 함수로 호출하게 되면, <code>nil</code>을 함수로 호출하는 것이 되어 예외가 발생하기 때문이다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -917,7 +1049,7 @@ cons와 conj는 리스트에 요소를 추가할 때는 똑같이 맨 앞에 추
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>m이 맵이 아니라 nil이면, 아무값도 없다는 의미로 nil을 반환하는 것은 정상적이다.</td>
+<td><code>m</code>이 맵이 아니라 <code>nil</code>이면, 아무값도 없다는 의미로 <code>nil</code>을 반환하는 것은 정상적이다.</td>
 </tr>
 </table>
 </div>
@@ -928,14 +1060,14 @@ cons와 conj는 리스트에 요소를 추가할 때는 똑같이 맨 앞에 추
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-어떤 것이 함수로 호출 가능한지 알아보는 방법은 ifn? 진위함수를 사용하는 것이다. 이 함수는 그 대상이 IFn 인터페이스를 구현했는지 여부를 확인한다. 클로저는 IFn 인터페이스를 구현한 것을 함수로서 호출한다. 실제로 키워드를 테스트해 보면, <code>(ifn? :a) ;&#8658; true</code>, 그리고 심볼을 테스트해 보면, <code>(ifn? 'a) ;&#8658; true</code> 이 된다. 물론 <code>(ifn? 3) ;&#8658; false</code>이다. 반면 진짜 함수의 구현 여부를 확인하려면 fn? 진위함수를 사용한다. 이 함수는 Fn 인터페이스를 구현했는지 여부를 확인한다.
+어떤 것이 함수로 호출 가능한지 알아보는 방법은 <code>ifn?</code> 진위함수를 사용하는 것이다. 이 함수는 그 대상이 IFn 인터페이스를 구현했는지 여부를 확인한다. 클로저는 IFn 인터페이스를 구현한 것을 함수로서 호출한다. 실제로 키워드를 테스트해 보면, <code>(ifn? :a) ;=> true</code>, 그리고 심볼을 테스트해 보면,  <code>(ifn? 'a) ;=> true</code> 이 된다. 물론  <code>(ifn? 3) ;=> false</code>이다. 반면 진짜 함수의 구현 여부를 확인하려면 <code>fn?</code> 진위함수를 사용한다. 이 함수는 Fn 인터페이스를 구현했는지 여부를 확인한다.
 </td>
 </tr>
 </table>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_고차함수에서_직접_참조_사용하기">1.5.7. 고차함수에서 직접 참조 사용하기</h4>
+<h4 id="_고차함수에서_직접_참조_사용하기">1.5.9. 고차함수에서 직접 참조 사용하기</h4>
 <div class="paragraph">
 <p>컬렉션, 키워드, 심볼 등이 함수처럼 동작하기 때문에, 이들을 고차함수(HOF, Higher Order Function)의 인자로 사용하면 코드가 매우 간결해져서, 클로저 프로그래밍에서 일상적으로 많이 사용된다.</p>
 </div>
@@ -971,16 +1103,26 @@ cons와 conj는 리스트에 요소를 추가할 때는 똑같이 맨 앞에 추
 <i class="fa icon-caution" title="Caution"></i>
 </td>
 <td class="content">
-여기서 주의할 점은 역시 nil이다. 고차함수의 인자로 사용된 컬렉션에 nil이 있는 경우에 의도한 바와는 다르게 동작할 수가 있다.<br>
-<br>
-<code>(remove #{5 7} (cons nil (range 5)))  ;&#8658; (nil 0 1 2 3 4)</code><br>
-<code>(remove #{5 7 nil} (cons nil (range 5)))  ;&#8658; (nil 0 1 2 3 4)</code><br>
-<br>
-만일 고차함수의 인자로 사용되는 컬렉션에 nil이 있는지 확실하지 않을 경우에는 contains?를 사용하는 것이 안전하다.<br>
-<br>
-<code>(remove #(contains? #{5 7 nil} %) (cons nil (range 5)))  ;&#8658; (0 1 2 3 4)</code><br>
-<br>
-이것은 false에 대해서도 마찮가지이다.
+<div class="paragraph">
+<p>여기서 주의할 점은 역시 nil이다. 고차함수의 인자로 사용된 컬렉션에 nil이 있는 경우에 의도한 바와는 다르게 동작할 수가 있다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">remove</span> #{<span class="integer">5</span> <span class="integer">7</span>} (<span class="keyword">cons</span> <span class="predefined-constant">nil</span> (<span class="keyword">range</span> <span class="integer">5</span>)))      <span class="comment">;=&gt; (nil 0 1 2 3 4)</span>
+(<span class="keyword">remove</span> #{<span class="integer">5</span> <span class="integer">7</span> <span class="predefined-constant">nil</span>} (<span class="keyword">cons</span> <span class="predefined-constant">nil</span> (<span class="keyword">range</span> <span class="integer">5</span>)))  <span class="comment">;=&gt; (nil 0 1 2 3 4)</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>만일 고차함수의 인자로 사용되는 컬렉션에 nil이 있는지 확실하지 않을 경우에는 <code>contains?</code>를 사용하는 것이 안전하다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">remove</span> #(<span class="keyword">contains?</span> #{<span class="integer">5</span> <span class="integer">7</span> <span class="predefined-constant">nil</span>} %) (<span class="keyword">cons</span> <span class="predefined-constant">nil</span> (<span class="keyword">range</span> <span class="integer">5</span>)))   <span class="comment">;=&gt; (0 1 2 3 4)</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>이것은 false에 대해서도 마찬지이다.</p>
+</div>
 </td>
 </tr>
 </table>
@@ -1108,7 +1250,7 @@ PersistentMap</div></td>
 </table>
 </div>
 <div class="sect2">
-<h3 id="_스택과_트리">1.7. 스택과 트리</h3>
+<h3 id="_스택_큐_트리">1.7. 스택 / 큐 / 트리</h3>
 <div class="paragraph">
 <p>리스트, 벡터, 맵, 집합을 보았다. 일반적으로 여러 다른 언어에서는 컬렉션으로 스택과 트리를 지원하지만, 클로저에서는 스택과 트리를 명시적인 자료구조로서 구현하여 제공하지는 않는다. 하지만, 리스트와 벡터를 통해서 스택과 트리를 처리할 수 있다.</p>
 </div>
@@ -1143,7 +1285,21 @@ PersistentMap</div></td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_트리">1.7.2. 트리</h4>
+<h4 id="_큐">1.7.2. 큐</h4>
+<div class="paragraph">
+<p>클로저는 PersistentQueue를 제공한다. 리터럴이나 명시적 생성함수가 없어서 자바 호출을 직접해야 한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">-&gt;</span> (clojure.lang.PersistentQueue/EMPTY)
+    (<span class="keyword">conj</span> <span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>)
+    <span class="keyword">pop</span>)
+<span class="comment">; =&gt; (2 3)</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_트리">1.7.3. 트리</h4>
 <div class="paragraph">
 <p>zipper를 통한 tree를 처리하는 방법을 설명할 것.</p>
 </div>
@@ -1176,7 +1332,7 @@ PersistentMap</div></td>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-12-28 12:46:18 KST
+Last updated 2015-12-31 10:41:47 KST
 </div>
 </div>
 </body>
