@@ -218,6 +218,18 @@ NOTE: 위의 두 코드를 보면 집합이나 맵이나 중복이 있으면 Dup
 ;=> [\a \b \c \d]
 ....
 
+
+``subvec``은 벡터에서 일부를 시작(닫힘)과 끝(열림)을 인덱스로 지정해서 뽑아낼 수 있다. 끝을 지정하지 않으면 벡터의 갯수가 기본으로 지정된다.
+
+[source]
+....
+(subvec [1 2 3 4 5 6 7] 2)
+;=> [3 4 5 6 7]
+
+(subvec [1 2 3 4 5 6 7] 2 4)
+;=> [3 4]
+....
+
 ``set``은 다른 컬렉션을 받아 집합을 만든다.
 
 [source]
@@ -904,8 +916,213 @@ PersistentMap
 
 zipper를 통한 tree를 처리하는 방법을 설명할 것.
 
+include::subs/zipper.adoc[]
+
 
 === 정렬
+
+
+==== sort와 sort-by
+
+``sort`` 함수는 컬렉션의 아이템을 순서에 따라 정렬한 시퀀스를 반환한다. 비교자(comparator)는 주어지지 않으면, 기본적으로 ``compare`` 함수를 사용한다. 만일 컬렉션이 자바 배열이면, 그 순서는 수정된다. 수정을 피하려면 복사본을 사용하면 된다.
+
+[source]
+....
+(def v [3 4 2 5 1])
+
+(sort v)  ;=> (1 2 3 4 5)
+
+(def ja (to-array v))
+(def jac (aclone jo))       ; jac는 ja의 복사본
+
+(seq jac)  ;=> (3 4 2 5 1)
+(sort jac) ;=> (1 2 3 4 5)
+(seq jac)  ;=> (1 2 3 4 5)  ; 순서가 수정되었다.
+
+(seq ja)   ;=> (3 4 2 5 1)  ; 원래 순서 그대로.
+....
+
+``sort`` 함수에 비교자를 주면 다음과 같이 역순으로 정렬할 수도 있다.
+
+[source]
+....
+(sort > v)
+;=> (5 4 3 2 1)
+
+(sort #(compare %2 %1) v)
+;=> (5 4 3 2 1)
+....
+
+``compare`` 함수는 기본으로 사용되는 비교자(Comparator)이다. 두 개의 인수 x와 y를 받는데, x > y 이면 양수, x = y 이면 0, x < y 이면 음수를 반환한다. 이 함수는 수, 문자, 문자열, 키워드, 심볼 등 단순값과 순서있는 컬렉션을 비교한다.
+
+[source]
+....
+(compare 1 20)            ;=> -1
+(compare :a :b)           ;=> -1
+(compare "ab" "abc")      ;=> -1
+(comapre nil 1)           ;=> -1
+
+(compare [0 1 2] [0 1 2]) ;=> 0
+(compare [1 2] [0 1 2])   ;=> -1
+(compare [1 2 3] [2 3])   ;=> 1
+....
+
+사실 compare는 내부적으로 java.util.Comparator의 compareTo를 이용한다. 따라서 Comparator 인퍼에이스를 구현한 모든 클래스의 인스턴스에 적용할 수 있다.
+
+``sort-by`` 함수는 ``sort``와 같은데, 첫 인수로 keyfn을 받아 컬렉션의 아이템에 적용해서 반환된 결과를 기준으로 정렬한다.
+
+[source]
+....
+(sort-by count ["aaa" "bb" "c"])
+;=> ("c" "bb" "aaa")
+
+(sort-by val > {:foo 7, :bar 3, :baz 5})
+;=> ([:foo 7] [:baz 5] [:bar 3])
+
+(def v [[1 :c] [2 :b] [3 :a]])
+
+(sort-by first v)
+;=> ([1 :c] [2 :b] [3 :a])
+
+(sort-by first v)
+;=> ([3 :a] [2 :b] [1 :c])
+
+(sort-by second v)
+;=> ([3 :a] [2 :b] [1 :c])
+
+(def m [{:id 2 :name "John" :age 31}
+        {:id 1 :name "Sam"  :age 24}
+        {:id 4 :name "Sara" :age 28}
+        {:id 3 :name "David" :age 19}])
+
+(sort-by :age m)
+;=> ({:id 3, :name "David", :age 19} {:id 1, :name "Sam", :age 24} {:id 4, :name "Sara", :age 28} {:id 2, :name "John", :age 31})
+
+(sort-by :id > m)
+;=> ({:id 4, :name "Sara", :age 28} {:id 3, :name "David", :age 19} {:id 2, :name "John", :age 31} {:id 1, :name "Sam", :age 24})
+
+(sort-by (juxt :id :age) m)
+;=> ({:id 1, :name "Sam", :age 24} {:id 2, :name "John", :age 31} {:id 3, :name "David", :age 19} {:id 4, :name "Sara", :age 28})
+....
+
+
+==== sorted-map와 sorted-set
+
+``sorted-map``과 ``sorted-set``은 ``hashed-map``과 ``hashed-set``과는 달리 `` 정렬된 컬렉션을 만든다.
+
+[source]
+....
+(sorted-map :z 1 :b 2 :a 3)
+;=> {:a 3, :b 2 :z 1}
+
+(into (sorted-map) {:b 2 :a 1})
+;=> {:a 1 :b 2}
+
+(apply sorted-map [:b 2 :a 1])
+;=> {:a 1 :b 2}
+
+(sorted-set 3 2 1)
+;=> #{1 2 3}
+
+(into (sorted-set) [2 3 1])
+;=> #(1 2 3)
+
+(apply sorted-set [2 3 1])
+;=> #(1 2 3)
+....
+
+==== sorted-map-by와 sorted-set-by
+
+``sorted-map-by``와 ``sorted-set-by``은 비교자를 첫 인수로 받는다는 점만 빼고는,  ``sorted-map``와 ``sorted-set`` 와 같다.
+
+[source]
+....
+(sorted-map-by > 1 "a", 2 "b", 3 "c")
+;=> {3 "c", 2 "b", 1 "a"}
+
+(into (sorted-map-by >)  {1 :a  2 :b  3 :c} )
+;=> {3 :c, 2 :b, 1 :a}
+
+(apply (sorted-map-by >)  [1 :a  2 :b  3 :c])
+;=> {3 :c, 2 :b, 1 :a}
+
+(sorted-set-by > 3 5 8 2 1)
+;=> #{8 5 3 2 1}
+
+(into (sorted-set-by >) [3 5 8 2 1])
+;=> #{8 5 3 2 1}
+
+(apply sorted-set-by > [3 5 8 2 1])
+;=> #{8 5 3 2 1}
+
+....
+
+==== reverse / rseq
+
+``reverse`` 함수는 컬렉션의 순서가 뒤집힌 시퀀스를 lazy가 아니다.
+
+[source]
+....
+(reverse '(1 2 3))
+;=> (3 2 1)
+....
+
+``rseq`` 함수는 컬렉션의 순서를 뒤집힌 시퀀스를 상수 시간에 반환한다. 컬렉션은 clojure.lang.Reversible 인터페이스를 구현한 벡터나 sorted-set, sorted-map 등 이어야 한다. 이것은 ``reversable?`` 진위함수로 확인할 수 있다.
+
+[source]
+....
+(reversible? ())            ;=> false
+(reversible? [])            ;=> true
+(reversible? {})            ;=> false
+(reversible? #{})           ;=> false
+(reversible? (sorted-map))  ;=> true
+(reversible? (sorted-set))  ;=> true
+
+(rseq '(1 2 3))
+;=> java.lang.ClassCastException: clojure.lang.PersistentList cannot be cast to clojure.lang.Reversible
+
+(rseq [1 2 3])
+;=> (3 2 1)
+
+(rseq (into (sorted-map) {:a 1 :b 2}))
+;=> ([:b 2] [:a 1])
+....
+
+
+==== subseq / rsubseq
+
+``subseq``는 정렬 컬렉션(``sorted?`` 진위함수로 true가 되는 컬렉션: sorted-map과 sorted-set)에서 특정 조건에 맞는 요소들만 추려서 정렬한 시퀀스를 반환한다. ``rsubseq``는 ``subseq``와 같은데 역전된 시퀀스를 반환한다. ``subseq``와 ``rsubseq``의 비교 대상은 컬렉션의 값이 아니라 키이다.
+
+[source]
+....
+(sorted? (sorted-map))  ;=> true
+(sorted? (sorted-set))  ;=> true
+(sorted? (sort [1 2]))  ;=> false
+....
+
+[source]
+....
+;; sorted-map에 적용하는 경우
+(def sm (sorted-map :z 37 :x 20 :y 71 :b 8 :a 13 :c 55))
+
+sm
+;=> {:a 13, :b 8, :c 55, :x 20, :y 71, :z 37}
+
+(subseq sm <= :c)
+;=> ([:a 13] [:b 8] [:c 55])
+
+(subseq sm > :b <= :y)
+;=> ([:c 55] [:x 20] [:y 71])
+
+(rsubseq sm > :b <= :y)
+;=> ([:y 71] [:x 20] [:c 55])
+
+
+;; sorted-set에 적용하는 경우
+(subseq (sorted-set 1 2 3 4) > 2)
+;=> (3 4)
+....
+
 
 
 
