@@ -8,6 +8,7 @@
 :stylesdir: ../
 :stylesheet: my-asciidoctor.css
 :toc: right
+:docinfo1:
 
 지난 장에서는 단순 자료형을 설명하였다. 이번 장에서는 복합 자료형 혹은 컬렉션을 설명한다.
 

@@ -8,6 +8,7 @@
 :linkcss:
 :stylesdir: ../
 :stylesheet: my-asciidoctor.css
+:docinfo1:
 
 
 클로저가 다른 리습 계열 언어들(Common Lisp, Scheme, Racket, ...)에 비해 갖는 장점들 중의

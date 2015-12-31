@@ -4,7 +4,7 @@
 :linkcss:
 :stylesdir: ../
 :stylesheet: my-asciidoctor.css
-
+:docinfo1:
 
 
 == 클로저 코드의 특징들

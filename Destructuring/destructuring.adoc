@@ -6,7 +6,7 @@
 :linkcss:
 :stylesdir: ../
 :stylesheet: my-asciidoctor.css
-
+:docinfo1:
 
 클로저는 데이터를 직접 다룬다. 데이터들은 주로 맵이나 벡터같은 컬렉션으로 구조화되어
 사용되는데, 컬렉션들은 추상 인터페이스를 통해서 개별 데이터에 접근하는 방법을
