@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.3">
-<title>컬렉션과 자료구조</title>
+<title>컬렉션과 시퀀스</title>
 <link rel="stylesheet" href="..//my-asciidoctor.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="..//coderay-asciidoctor.css">
@@ -21,20 +21,59 @@
 </head>
 <body class="article toc2 toc-right">
 <div id="header">
-<h1>컬렉션과 자료구조</h1>
+<h1>컬렉션과 시퀀스</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_자료구조_data_structures">1. 자료구조(Data Structures)</a>
+<li><a href="#_컬렉션">1. 컬렉션</a>
 <ul class="sectlevel2">
-<li><a href="#_자료구조_리터럴_literals">1.1. 자료구조 리터럴(Literals)</a></li>
-<li><a href="#_자료구조의_생성">1.2. 자료구조의 생성</a></li>
+<li><a href="#_컬렉션_리터럴_literals">1.1. 컬렉션 리터럴(Literals)</a></li>
+<li><a href="#_컬렉션의_생성">1.2. 컬렉션의 생성</a></li>
 <li><a href="#_seq">1.3. seq</a></li>
-<li><a href="#_자료구조에_요소_추가_삭제">1.4. 자료구조에 요소 추가/삭제</a></li>
-<li><a href="#_자료구조에서_요소_참조">1.5. 자료구조에서 요소 참조</a></li>
-<li><a href="#_자료구조_진위_함수_predicates">1.6. 자료구조 진위 함수(predicates)</a></li>
-<li><a href="#_스택_큐_트리">1.7. 스택 / 큐 / 트리</a></li>
-<li><a href="#_정렬">1.8. 정렬</a></li>
+<li><a href="#_컬렉션에_요소_추가_삭제">1.4. 컬렉션에 요소 추가/삭제</a>
+<ul class="sectlevel3">
+<li><a href="#_cons">1.4.1. cons</a></li>
+<li><a href="#_conj">1.4.2. conj</a></li>
+<li><a href="#_disj">1.4.3. disj</a></li>
+<li><a href="#_assoc">1.4.4. assoc</a></li>
+<li><a href="#_dissoc">1.4.5. dissoc</a></li>
+<li><a href="#_assoc_in">1.4.6. assoc-in</a></li>
+</ul>
+</li>
+<li><a href="#_컬렉션에서_요소_참조">1.5. 컬렉션에서 요소 참조</a>
+<ul class="sectlevel3">
+<li><a href="#_nth">1.5.1. nth</a></li>
+<li><a href="#_get">1.5.2. get</a></li>
+<li><a href="#_get_in">1.5.3. get-in</a></li>
+<li><a href="#_find">1.5.4. find</a></li>
+<li><a href="#_contains">1.5.5. contains?</a></li>
+<li><a href="#_keys와_vals">1.5.6. keys와 vals</a></li>
+<li><a href="#_key와_val">1.5.7. key와 val</a></li>
+<li><a href="#_직접_참조">1.5.8. 직접 참조</a></li>
+<li><a href="#_고차함수에서_직접_참조_사용하기">1.5.9. 고차함수에서 직접 참조 사용하기</a></li>
+</ul>
+</li>
+<li><a href="#_컬렉션_진위_함수_predicates">1.6. 컬렉션 진위 함수(predicates)</a></li>
+<li><a href="#_스택_큐_트리">1.7. 스택 / 큐 / 트리</a>
+<ul class="sectlevel3">
+<li><a href="#_스택">1.7.1. 스택</a></li>
+<li><a href="#_큐">1.7.2. 큐</a></li>
+<li><a href="#_지퍼_zipper">1.7.3. 지퍼(Zipper)</a>
+<ul class="sectlevel4">
+<li><a href="#_트리">트리</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_정렬">1.8. 정렬</a>
+<ul class="sectlevel3">
+<li><a href="#_sort와_sort_by">1.8.1. sort와 sort-by</a></li>
+<li><a href="#_sorted_map와_sorted_set">1.8.2. sorted-map와 sorted-set</a></li>
+<li><a href="#_sorted_map_by와_sorted_set_by">1.8.3. sorted-map-by와 sorted-set-by</a></li>
+<li><a href="#_reverse_rseq">1.8.4. reverse / rseq</a></li>
+<li><a href="#_subseq_rsubseq">1.8.5. subseq / rsubseq</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -49,25 +88,24 @@
 <div class="quoteblock">
 <blockquote>
 10개의 데이타 구조에 동작하는 10개의 함수보다는 한 개의 데이타 구조에 동작하는 100개의 함수가 더 좋다.
+ㅡ
+위 경구는 클로저에서 컬렉션, 특히 자료구조(Data Structures)의 설계적 측면을 가장 잘 표현한 것이다. 실제로 클로저는 단일한 추상적 자료구조와 이것을 다루는 100여 개의 코어 함수를 제공하는데, 이것은 클로저의 뼈대를 이루는 핵심적 토대로서, 그 밖에 다른 모든 언어적 기능들이 기본적으로 이러한 토대에 기반한다.
 </blockquote>
 <div class="attribution">
 &#8212; 앨런 펄리스(Alan J. Perlis)<br>
 <cite>프로그래밍 경구</cite>
 </div>
 </div>
-<div class="paragraph">
-<p>위 경구는 클로저에서 컬렉션, 특히 자료구조의 설계적 측면을 가장 잘 표현한 것이다. 실제로 클로저는 단일한 추상적 자료구조와 이것을 다루는 100여 개의 코어 함수를 제공하는데, 이것은 클로저의 뼈대를 이루는 핵심적 토대로서, 그 밖에 다른 모든 언어적 기능들이 기본적으로 이러한 토대에 기반한다.</p>
-</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_자료구조_data_structures">1. 자료구조(Data Structures)</h2>
+<h2 id="_컬렉션">1. 컬렉션</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>컬렉션은 여러 데이터를 하나의 덩어리로 묶어서 다루기 위한 것이다. 클로저는 컬렉션으로 사용할 수 있는 여러가지 자료구조를 제공하는데 다음과 같은 특징을 갖는다.</p>
+<p>컬렉션은 여러 데이터를 하나의 덩어리로 묶어서 다루기 위한 것이다. 클로저는 컬렉션으로 사용할 수 있는 여러가지 자료구조(Data Structures)를 제공하는데 다음과 같은 특징을 갖는다.</p>
 </div>
 <div class="ulist">
-<div class="title">클로저 자료구조의 특징</div>
+<div class="title">클로저 컬렉션의 특징</div>
 <ul>
 <li>
 <p>불변값이다(Immutable)</p>
@@ -99,17 +137,17 @@
 </ul>
 </div>
 <div class="paragraph">
-<p>클로저의 자료구조의 이러한 특성으로 인해 클로저는 다른 리스프(LISP)언어와는 구별된다.<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</sup> 또한 자료구조는 클로저가 함수형 프로그래밍 언어로서의 효율적이고 효과적으로 동작하는데 았어 매우 중요한 역할을 한다. 자료구조의 이러한 특성을 잘 아는 것은 그것을 잘 사용하는 것 만큼이나 중요하다. 앞으로 본 장을 통해서 위 특성들에 대해 자세히 살펴볼 것이다.</p>
+<p>클로저 컬렉션의 이러한 특성으로 인해 클로저는 다른 리스프(LISP)언어와는 구별된다.<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</sup> 또한 클로저 컬렉션은 클로저가 함수형 프로그래밍 언어로서의 효율적이고 효과적으로 동작하는데 았어 매우 중요한 역할을 한다. 자료구조의 이러한 특성을 잘 아는 것은 그것을 잘 사용하는 것 만큼이나 중요하다. 앞으로 본 장을 통해서 위 특성들에 대해 자세히 살펴볼 것이다.</p>
 </div>
 <div class="paragraph">
-<p>컬렉션으로서 데이터를 어떤 방식으로 묶느냐에 따라 클로저는 다음 4개의 자료구조를 제공한다.</p>
+<p>컬렉션으로서 데이터를 어떤 방식으로 묶느냐에 따라 클로저는 다음 4개의 컬레션을 제공한다.</p>
 </div>
 <div class="dlist">
-<div class="title">클로저 자료구조</div>
+<div class="title">클로저 컬렉션</div>
 <dl>
 <dt class="hdlist1">리스트</dt>
 <dd>
-<p>가장 단순한 자료구조로 순차 접근이 가능하다. 단일 연결 리스트로 되어 있다.</p>
+<p>가장 단순한 컬렉션으로 순차 접근이 가능하다. 단일 연결 리스트로 되어 있다.</p>
 </dd>
 <dt class="hdlist1">벡터</dt>
 <dd>
@@ -125,14 +163,28 @@
 </dd>
 </dl>
 </div>
-<div class="sect2">
-<h3 id="_자료구조_리터럴_literals">1.1. 자료구조 리터럴(Literals)</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>자료구조 리터럴은 자료구조를 어떻게 표기하는지를 나타내는 것이다. 다음은 리스트, 벡터, 맵, 집합의 리터럴 표기를 보여준다.</p>
+<p>클로저에서 제공하는 컬렉션은 리스트, 벡터, 맵, 집합이다. 그밖에 자바에서 제공하는 컬렉션도 있다. 또한 문자열도 컬렉션이다. 이 책에서는 특별한 언급이 없으면 컬렉션은 클로저의 컬렉션을 의미하한다.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_컬렉션_리터럴_literals">1.1. 컬렉션 리터럴(Literals)</h3>
+<div class="paragraph">
+<p>컬렉션 리터럴은 컬렉션을 어떻게 표기하는지를 나타내는 것이다. 다음은 리스트, 벡터, 맵, 집합의 리터럴 표기를 보여준다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="clojure"><span class="comment">;;; 자료구조는 여러가지 자료형의 단순값을 요소로 취할 수 있다.</span>
+<pre class="CodeRay highlight"><code data-lang="clojure"><span class="comment">;;; 컬렉션은 여러가지 자료형의 단순값을 요소로 취할 수 있다.</span>
 
 '(<span class="integer">1</span> <span class="float">1.0</span> <span class="symbol">:a</span> <span class="char">\a</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">a</span><span class="delimiter">&quot;</span></span>)  <span class="comment">; 리스트 리터럴 </span><i class="conum" data-value="1"></i><b>(1)</b>
 <span class="comment">;=&gt; (1 1.0 :a \a &quot;a&quot;)</span>
@@ -311,9 +363,9 @@
 </div>
 </div>
 <div class="sect2">
-<h3 id="_자료구조의_생성">1.2. 자료구조의 생성</h3>
+<h3 id="_컬렉션의_생성">1.2. 컬렉션의 생성</h3>
 <div class="paragraph">
-<p>리스트, 벡터, 집합, 맵 등 각 자료구조를 동적으로 생성하는 함수들이 있다.</p>
+<p>리스트, 벡터, 집합, 맵 등 각 컬렉션을 동적으로 생성하는 함수들이 있다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -381,6 +433,18 @@
 </div>
 </div>
 <div class="paragraph">
+<p><code>subvec</code>은 벡터에서 일부를 시작(닫힘)과 끝(열림)을 인덱스로 지정해서 뽑아낼 수 있다. 끝을 지정하지 않으면 벡터의 갯수가 기본으로 지정된다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">subvec</span> [<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span> <span class="integer">4</span> <span class="integer">5</span> <span class="integer">6</span> <span class="integer">7</span>] <span class="integer">2</span>)
+<span class="comment">;=&gt; [3 4 5 6 7]</span>
+
+(<span class="keyword">subvec</span> [<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span> <span class="integer">4</span> <span class="integer">5</span> <span class="integer">6</span> <span class="integer">7</span>] <span class="integer">2</span> <span class="integer">4</span>)
+<span class="comment">;=&gt; [3 4]</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
 <p><code>set</code>은 다른 컬렉션을 받아 집합을 만든다.</p>
 </div>
 <div class="listingblock">
@@ -422,12 +486,12 @@ tail은 또 다른 시퀀스이다. 클로저에서의 시퀀스에 대해서는
 </div>
 </div>
 <div class="sect2">
-<h3 id="_자료구조에_요소_추가_삭제">1.4. 자료구조에 요소 추가/삭제</h3>
+<h3 id="_컬렉션에_요소_추가_삭제">1.4. 컬렉션에 요소 추가/삭제</h3>
 <div class="paragraph">
-<p>클로저에서는 자료구조에 요소를 추가하거나 삭제하면, 기존 자료구조에 요소가 추가/삭제된 새로운 자료구조가 만들어진다. 기존 자료구조는 변하지 않고 그대로 있다. 자료구조는 불변이다(immutable). 이것은 기존 자료구조를 복사한 후 요소를 추가/삭제하는 것처럼 비효율적인 방식은 아니다. 구조 공유(structural sharing)이라는 기법을 통해 아주 효율적으로 불변성을 지원한다.</p>
+<p>클로저에서는 컬렉션에 요소를 추가하거나 삭제하면, 기존 컬렉션에 요소가 추가/삭제된 새로운 컬렉션이 만들어진다. 기존 컬렉션은 변하지 않고 그대로 있다. 컬렉션은 불변이다(immutable). 이것은 기존 컬렉션을 복사한 후 요소를 추가/삭제하는 것처럼 비효율적인 방식은 아니다. 구조 공유(structural sharing)이라는 기법을 통해 아주 효율적으로 불변성을 지원한다.</p>
 </div>
 <div class="paragraph">
-<p>이러한 자료구조의 불변성은 멀티스레딩에 근본적으로 안전한 프로그래밍을 가능하게 한다.</p>
+<p>이러한 컬렉션의 불변성은 멀티스레딩에 근본적으로 안전한 프로그래밍을 가능하게 한다.</p>
 </div>
 <div class="sect3">
 <h4 id="_cons">1.4.1. cons</h4>
@@ -669,7 +733,7 @@ tail은 또 다른 시퀀스이다. 클로저에서의 시퀀스에 대해서는
 </div>
 </div>
 <div class="sect2">
-<h3 id="_자료구조에서_요소_참조">1.5. 자료구조에서 요소 참조</h3>
+<h3 id="_컬렉션에서_요소_참조">1.5. 컬렉션에서 요소 참조</h3>
 <div class="sect3">
 <h4 id="_nth">1.5.1. nth</h4>
 <div class="paragraph">
@@ -1012,7 +1076,7 @@ tail은 또 다른 시퀀스이다. 클로저에서의 시퀀스에 대해서는
 </table>
 </div>
 <div class="paragraph">
-<p>이러한 자료구조 외에 키워드나 심볼 등도 함수처럼 동작한다.</p>
+<p>이러한 컬렉션 외에 키워드나 심볼 등도 함수처럼 동작한다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1130,9 +1194,9 @@ tail은 또 다른 시퀀스이다. 클로저에서의 시퀀스에 대해서는
 </div>
 </div>
 <div class="sect2">
-<h3 id="_자료구조_진위_함수_predicates">1.6. 자료구조 진위 함수(predicates)</h3>
+<h3 id="_컬렉션_진위_함수_predicates">1.6. 컬렉션 진위 함수(predicates)</h3>
 <div class="paragraph">
-<p>다음은 각 자료구조를 확인하는 진위함수들이다.</p>
+<p>다음은 각 컬렉션을 확인하는 진위함수들이다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1163,7 +1227,7 @@ tail은 또 다른 시퀀스이다. 클로저에서의 시퀀스에 대해서는
 </table>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 1. 자료구조 비교</caption>
+<caption class="title">Table 1. 컬렉션 비교</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -1252,7 +1316,7 @@ PersistentMap</div></td>
 <div class="sect2">
 <h3 id="_스택_큐_트리">1.7. 스택 / 큐 / 트리</h3>
 <div class="paragraph">
-<p>리스트, 벡터, 맵, 집합을 보았다. 일반적으로 여러 다른 언어에서는 컬렉션으로 스택과 트리를 지원하지만, 클로저에서는 스택과 트리를 명시적인 자료구조로서 구현하여 제공하지는 않는다. 하지만, 리스트와 벡터를 통해서 스택과 트리를 처리할 수 있다.</p>
+<p>리스트, 벡터, 맵, 집합을 보았다. 일반적으로 여러 다른 언어에서는 컬렉션으로 스택과 트리를 지원하지만, 클로저에서는 스택과 트리를 명시적인 컬렉션으로서 구현하여 제공하지는 않는다. 하지만, 리스트와 벡터를 통해서 스택과 트리를 처리할 수 있다.</p>
 </div>
 <div class="sect3">
 <h4 id="_스택">1.7.1. 스택</h4>
@@ -1299,15 +1363,230 @@ PersistentMap</div></td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_트리">1.7.3. 트리</h4>
+<h4 id="_지퍼_zipper">1.7.3. 지퍼(Zipper)</h4>
+<div class="sect4">
+<h5 id="_트리">트리</h5>
 <div class="paragraph">
-<p>zipper를 통한 tree를 처리하는 방법을 설명할 것.</p>
+<p>내용을 채워넣을 것.</p>
+</div>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_정렬">1.8. 정렬</h3>
+<div class="sect3">
+<h4 id="_sort와_sort_by">1.8.1. sort와 sort-by</h4>
+<div class="paragraph">
+<p><code>sort</code> 함수는 컬렉션의 아이템을 순서에 따라 정렬한 시퀀스를 반환한다. 비교자(comparator)가 주어지지 않으면, 기본적으로 <code>compare</code> 함수가 사용된다. 만일 컬렉션이 자바 배열이면, 그 순서는 수정된다. 수정을 피하려면 복사본을 사용한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">def</span> <span class="function">v</span> [<span class="integer">3</span> <span class="integer">4</span> <span class="integer">2</span> <span class="integer">5</span> <span class="integer">1</span>])
 
+(<span class="keyword">sort</span> v)  <span class="comment">;=&gt; (1 2 3 4 5)</span>
+
+(<span class="keyword">def</span> <span class="function">ja</span> (<span class="keyword">to-array</span> v))
+(<span class="keyword">def</span> <span class="function">jac</span> (<span class="keyword">aclone</span> jo))       <span class="comment">; jac는 ja의 복사본</span>
+
+(<span class="keyword">seq</span> jac)  <span class="comment">;=&gt; (3 4 2 5 1)</span>
+(<span class="keyword">sort</span> jac) <span class="comment">;=&gt; (1 2 3 4 5)</span>
+(<span class="keyword">seq</span> jac)  <span class="comment">;=&gt; (1 2 3 4 5)  ; 순서가 수정되었다.</span>
+
+(<span class="keyword">seq</span> ja)   <span class="comment">;=&gt; (3 4 2 5 1)  ; 원래 순서 그대로.</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>sort</code> 함수에 비교자를 주면 다음과 같이 역순으로 정렬할 수도 있다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">sort</span> <span class="keyword">&gt;</span> v)
+<span class="comment">;=&gt; (5 4 3 2 1)</span>
+
+(<span class="keyword">sort</span> #(<span class="keyword">compare</span> %2 %1) v)
+<span class="comment">;=&gt; (5 4 3 2 1)</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>compare</code> 함수는 기본으로 사용되는 비교자(Comparator)이다. 두 개의 인수 x와 y를 받는데, x &gt; y 이면 양수, x = y 이면 0, x &lt; y 이면 음수를 반환한다. 이 함수는 수, 문자, 문자열, 키워드, 심볼 등 단순값과 순서있는 컬렉션을 비교한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">compare</span> <span class="integer">1</span> <span class="integer">20</span>)            <span class="comment">;=&gt; -1</span>
+(<span class="keyword">compare</span> <span class="symbol">:a</span> <span class="symbol">:b</span>)           <span class="comment">;=&gt; -1</span>
+(<span class="keyword">compare</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">ab</span><span class="delimiter">&quot;</span></span> <span class="string"><span class="delimiter">&quot;</span><span class="content">abc</span><span class="delimiter">&quot;</span></span>)      <span class="comment">;=&gt; -1</span>
+(comapre <span class="predefined-constant">nil</span> <span class="integer">1</span>)           <span class="comment">;=&gt; -1</span>
+
+(<span class="keyword">compare</span> [<span class="integer">0</span> <span class="integer">1</span> <span class="integer">2</span>] [<span class="integer">0</span> <span class="integer">1</span> <span class="integer">2</span>]) <span class="comment">;=&gt; 0</span>
+(<span class="keyword">compare</span> [<span class="integer">1</span> <span class="integer">2</span>] [<span class="integer">0</span> <span class="integer">1</span> <span class="integer">2</span>])   <span class="comment">;=&gt; -1</span>
+(<span class="keyword">compare</span> [<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>] [<span class="integer">2</span> <span class="integer">3</span>])   <span class="comment">;=&gt; 1</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>사실 compare는 내부적으로 java.util.Comparator의 compareTo를 이용한다. 따라서 Comparator 인퍼에이스를 구현한 모든 클래스의 인스턴스에 적용할 수 있다.</p>
+</div>
+<div class="paragraph">
+<p><code>sort-by</code> 함수는 <code>sort</code>와 같은데, 첫 인수로 keyfn을 받아 컬렉션의 아이템에 적용해서 반환된 결과를 기준으로 정렬한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">sort-by</span> <span class="keyword">count</span> [<span class="string"><span class="delimiter">&quot;</span><span class="content">aaa</span><span class="delimiter">&quot;</span></span> <span class="string"><span class="delimiter">&quot;</span><span class="content">bb</span><span class="delimiter">&quot;</span></span> <span class="string"><span class="delimiter">&quot;</span><span class="content">c</span><span class="delimiter">&quot;</span></span>])
+<span class="comment">;=&gt; (&quot;c&quot; &quot;bb&quot; &quot;aaa&quot;)</span>
+
+(<span class="keyword">sort-by</span> <span class="keyword">val</span> <span class="keyword">&gt;</span> {<span class="symbol">:foo</span> <span class="integer">7</span>, <span class="symbol">:bar</span> <span class="integer">3</span>, <span class="symbol">:baz</span> <span class="integer">5</span>})
+<span class="comment">;=&gt; ([:foo 7] [:baz 5] [:bar 3])</span>
+
+(<span class="keyword">def</span> <span class="function">v</span> [[<span class="integer">1</span> <span class="symbol">:c</span>] [<span class="integer">2</span> <span class="symbol">:b</span>] [<span class="integer">3</span> <span class="symbol">:a</span>]])
+
+(<span class="keyword">sort-by</span> <span class="keyword">first</span> v)
+<span class="comment">;=&gt; ([1 :c] [2 :b] [3 :a])</span>
+
+(<span class="keyword">sort-by</span> <span class="keyword">first</span> v)
+<span class="comment">;=&gt; ([3 :a] [2 :b] [1 :c])</span>
+
+(<span class="keyword">sort-by</span> <span class="keyword">second</span> v)
+<span class="comment">;=&gt; ([3 :a] [2 :b] [1 :c])</span>
+
+(<span class="keyword">def</span> <span class="function">m</span> [{<span class="symbol">:id</span> <span class="integer">2</span> <span class="symbol">:name</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">John</span><span class="delimiter">&quot;</span></span> <span class="symbol">:age</span> <span class="integer">31</span>}
+        {<span class="symbol">:id</span> <span class="integer">1</span> <span class="symbol">:name</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">Sam</span><span class="delimiter">&quot;</span></span>  <span class="symbol">:age</span> <span class="integer">24</span>}
+        {<span class="symbol">:id</span> <span class="integer">4</span> <span class="symbol">:name</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">Sara</span><span class="delimiter">&quot;</span></span> <span class="symbol">:age</span> <span class="integer">28</span>}
+        {<span class="symbol">:id</span> <span class="integer">3</span> <span class="symbol">:name</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">David</span><span class="delimiter">&quot;</span></span> <span class="symbol">:age</span> <span class="integer">19</span>}])
+
+(<span class="keyword">sort-by</span> <span class="symbol">:age</span> m)
+<span class="comment">;=&gt; ({:id 3, :name &quot;David&quot;, :age 19} {:id 1, :name &quot;Sam&quot;, :age 24} {:id 4, :name &quot;Sara&quot;, :age 28} {:id 2, :name &quot;John&quot;, :age 31})</span>
+
+(<span class="keyword">sort-by</span> <span class="symbol">:id</span> <span class="keyword">&gt;</span> m)
+<span class="comment">;=&gt; ({:id 4, :name &quot;Sara&quot;, :age 28} {:id 3, :name &quot;David&quot;, :age 19} {:id 2, :name &quot;John&quot;, :age 31} {:id 1, :name &quot;Sam&quot;, :age 24})</span>
+
+(<span class="keyword">sort-by</span> (<span class="keyword">juxt</span> <span class="symbol">:id</span> <span class="symbol">:age</span>) m)
+<span class="comment">;=&gt; ({:id 1, :name &quot;Sam&quot;, :age 24} {:id 2, :name &quot;John&quot;, :age 31} {:id 3, :name &quot;David&quot;, :age 19} {:id 4, :name &quot;Sara&quot;, :age 28})</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_sorted_map와_sorted_set">1.8.2. sorted-map와 sorted-set</h4>
+<div class="paragraph">
+<p><code>sorted-map</code>과 <code>sorted-set</code>은 <code>hashed-map</code>과 <code>hashed-set</code>과는 달리 `` 정렬된 컬렉션을 만든다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">sorted-map</span> <span class="symbol">:z</span> <span class="integer">1</span> <span class="symbol">:b</span> <span class="integer">2</span> <span class="symbol">:a</span> <span class="integer">3</span>)
+<span class="comment">;=&gt; {:a 3, :b 2 :z 1}</span>
+
+(<span class="keyword">into</span> (<span class="keyword">sorted-map</span>) {<span class="symbol">:b</span> <span class="integer">2</span> <span class="symbol">:a</span> <span class="integer">1</span>})
+<span class="comment">;=&gt; {:a 1 :b 2}</span>
+
+(<span class="keyword">apply</span> <span class="keyword">sorted-map</span> [<span class="symbol">:b</span> <span class="integer">2</span> <span class="symbol">:a</span> <span class="integer">1</span>])
+<span class="comment">;=&gt; {:a 1 :b 2}</span>
+
+(<span class="keyword">sorted-set</span> <span class="integer">3</span> <span class="integer">2</span> <span class="integer">1</span>)
+<span class="comment">;=&gt; #{1 2 3}</span>
+
+(<span class="keyword">into</span> (<span class="keyword">sorted-set</span>) [<span class="integer">2</span> <span class="integer">3</span> <span class="integer">1</span>])
+<span class="comment">;=&gt; #(1 2 3)</span>
+
+(<span class="keyword">apply</span> <span class="keyword">sorted-set</span> [<span class="integer">2</span> <span class="integer">3</span> <span class="integer">1</span>])
+<span class="comment">;=&gt; #(1 2 3)</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_sorted_map_by와_sorted_set_by">1.8.3. sorted-map-by와 sorted-set-by</h4>
+<div class="paragraph">
+<p><code>sorted-map-by</code>와 <code>sorted-set-by</code>은 비교자를 첫 인수로 받는다는 점만 빼고는,  <code>sorted-map</code>와 <code>sorted-set</code> 와 같다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">sorted-map-by</span> <span class="keyword">&gt;</span> <span class="integer">1</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">a</span><span class="delimiter">&quot;</span></span>, <span class="integer">2</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">b</span><span class="delimiter">&quot;</span></span>, <span class="integer">3</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">c</span><span class="delimiter">&quot;</span></span>)
+<span class="comment">;=&gt; {3 &quot;c&quot;, 2 &quot;b&quot;, 1 &quot;a&quot;}</span>
+
+(<span class="keyword">into</span> (<span class="keyword">sorted-map-by</span> <span class="keyword">&gt;</span>)  {<span class="integer">1</span> <span class="symbol">:a</span>  <span class="integer">2</span> <span class="symbol">:b</span>  <span class="integer">3</span> <span class="symbol">:c</span>} )
+<span class="comment">;=&gt; {3 :c, 2 :b, 1 :a}</span>
+
+(<span class="keyword">apply</span> (<span class="keyword">sorted-map-by</span> <span class="keyword">&gt;</span>)  [<span class="integer">1</span> <span class="symbol">:a</span>  <span class="integer">2</span> <span class="symbol">:b</span>  <span class="integer">3</span> <span class="symbol">:c</span>])
+<span class="comment">;=&gt; {3 :c, 2 :b, 1 :a}</span>
+
+(<span class="keyword">sorted-set-by</span> <span class="keyword">&gt;</span> <span class="integer">3</span> <span class="integer">5</span> <span class="integer">8</span> <span class="integer">2</span> <span class="integer">1</span>)
+<span class="comment">;=&gt; #{8 5 3 2 1}</span>
+
+(<span class="keyword">into</span> (<span class="keyword">sorted-set-by</span> <span class="keyword">&gt;</span>) [<span class="integer">3</span> <span class="integer">5</span> <span class="integer">8</span> <span class="integer">2</span> <span class="integer">1</span>])
+<span class="comment">;=&gt; #{8 5 3 2 1}</span>
+
+(<span class="keyword">apply</span> <span class="keyword">sorted-set-by</span> <span class="keyword">&gt;</span> [<span class="integer">3</span> <span class="integer">5</span> <span class="integer">8</span> <span class="integer">2</span> <span class="integer">1</span>])
+<span class="comment">;=&gt; #{8 5 3 2 1}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_reverse_rseq">1.8.4. reverse / rseq</h4>
+<div class="paragraph">
+<p><code>reverse</code> 함수는 컬렉션의 순서가 뒤집힌 시퀀스를 lazy가 아니다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">reverse</span> '(<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>))
+<span class="comment">;=&gt; (3 2 1)</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>rseq</code> 함수는 컬렉션의 순서를 뒤집힌 시퀀스를 상수 시간에 반환한다. 컬렉션은 clojure.lang.Reversible 인터페이스를 구현한 벡터나 sorted-set, sorted-map 등 이어야 한다. 이것은 <code>reversable?</code> 진위함수로 확인할 수 있다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">reversible?</span> ())            <span class="comment">;=&gt; false</span>
+(<span class="keyword">reversible?</span> [])            <span class="comment">;=&gt; true</span>
+(<span class="keyword">reversible?</span> {})            <span class="comment">;=&gt; false</span>
+(<span class="keyword">reversible?</span> #{})           <span class="comment">;=&gt; false</span>
+(<span class="keyword">reversible?</span> (<span class="keyword">sorted-map</span>))  <span class="comment">;=&gt; true</span>
+(<span class="keyword">reversible?</span> (<span class="keyword">sorted-set</span>))  <span class="comment">;=&gt; true</span>
+
+(<span class="keyword">rseq</span> '(<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>))
+<span class="comment">;=&gt; java.lang.ClassCastException: clojure.lang.PersistentList cannot be cast to clojure.lang.Reversible</span>
+
+(<span class="keyword">rseq</span> [<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>])
+<span class="comment">;=&gt; (3 2 1)</span>
+
+(<span class="keyword">rseq</span> (<span class="keyword">into</span> (<span class="keyword">sorted-map</span>) {<span class="symbol">:a</span> <span class="integer">1</span> <span class="symbol">:b</span> <span class="integer">2</span>}))
+<span class="comment">;=&gt; ([:b 2] [:a 1])</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_subseq_rsubseq">1.8.5. subseq / rsubseq</h4>
+<div class="paragraph">
+<p><code>subseq</code>는 정렬 컬렉션(<code>sorted?</code> 진위함수로 true가 되는 컬렉션: sorted-map과 sorted-set)에서 특정 조건에 맞는 요소들만 추려서 정렬한 시퀀스를 반환한다. <code>rsubseq</code>는 <code>subseq</code>와 같은데 역전된 시퀀스를 반환한다. <code>subseq</code>와 <code>rsubseq</code>의 비교 대상은 컬렉션의 값이 아니라 키이다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">sorted?</span> (<span class="keyword">sorted-map</span>))  <span class="comment">;=&gt; true</span>
+(<span class="keyword">sorted?</span> (<span class="keyword">sorted-set</span>))  <span class="comment">;=&gt; true</span>
+(<span class="keyword">sorted?</span> (<span class="keyword">sort</span> [<span class="integer">1</span> <span class="integer">2</span>]))  <span class="comment">;=&gt; false</span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure"><span class="comment">;; sorted-map에 적용하는 경우</span>
+(<span class="keyword">def</span> <span class="function">sm</span> (<span class="keyword">sorted-map</span> <span class="symbol">:z</span> <span class="integer">37</span> <span class="symbol">:x</span> <span class="integer">20</span> <span class="symbol">:y</span> <span class="integer">71</span> <span class="symbol">:b</span> <span class="integer">8</span> <span class="symbol">:a</span> <span class="integer">13</span> <span class="symbol">:c</span> <span class="integer">55</span>))
+
+sm
+<span class="comment">;=&gt; {:a 13, :b 8, :c 55, :x 20, :y 71, :z 37}</span>
+
+(<span class="keyword">subseq</span> sm <span class="keyword">&lt;=</span> <span class="symbol">:c</span>)
+<span class="comment">;=&gt; ([:a 13] [:b 8] [:c 55])</span>
+
+(<span class="keyword">subseq</span> sm <span class="keyword">&gt;</span> <span class="symbol">:b</span> <span class="keyword">&lt;=</span> <span class="symbol">:y</span>)
+<span class="comment">;=&gt; ([:c 55] [:x 20] [:y 71])</span>
+
+(<span class="keyword">rsubseq</span> sm <span class="keyword">&gt;</span> <span class="symbol">:b</span> <span class="keyword">&lt;=</span> <span class="symbol">:y</span>)
+<span class="comment">;=&gt; ([:y 71] [:x 20] [:c 55])</span>
+
+
+<span class="comment">;; sorted-set에 적용하는 경우</span>
+(<span class="keyword">subseq</span> (<span class="keyword">sorted-set</span> <span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span> <span class="integer">4</span>) <span class="keyword">&gt;</span> <span class="integer">2</span>)
+<span class="comment">;=&gt; (3 4)</span></code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1332,7 +1611,7 @@ PersistentMap</div></td>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-12-31 10:41:47 KST
+Last updated 2016-01-01 02:00:05 KST
 </div>
 </div>
 </body>
