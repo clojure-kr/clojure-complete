@@ -27,7 +27,7 @@
 
 (double2 10)   ; => 20
 ....
-<1> 특수 형식(special form) ``fn``을 이용해 먼저 함수 객체를 생성한 후, 이 객체를
+<1> 특수 함수(special form) ``fn``을 이용해 먼저 함수 객체를 생성한 후, 이 객체를
     ``double``이라는 심볼에 바인딩한다.
 
 . 함수 객체를 함수의 인수로 전달할 수 있다.
@@ -73,7 +73,7 @@
 (double 10)   ; => 20
 (triple 10)   ; => 30
 ....
-<1> 함수를 동적으로 생성해 반환한다. 특수 형식 ``fn``이 수행될 때마다 새로운 함수 객체가
+<1> 함수를 동적으로 생성해 반환한다. 특수 함수 ``fn``이 수행될 때마다 새로운 함수 객체가
     생성된다.
 
 TIP: 특히 위의 두 번째와 세 번째 조건을 충족시키는 함수를 고차 함수(higher-order
@@ -88,11 +88,402 @@ TIP: 특히 위의 두 번째와 세 번째 조건을 충족시키는 함수를 
 불변형(immutable) 자료 구조를 기본적으로 지원해야 한다는 것이다.
 
 
+== 함수 정의하기
+
+이제 함수를 직접 정의해 보자.
+
+
+indexterm:[defn]
+
+=== defn
+
+클로저에서 함수를 정의하는 가장 일반적인 방법은 ``defn``을 이용하는 것이다.
+
+.defn
+[listing]
+----
+(defn name doc-string? metadata-map? [params*] prepost-map? body)
+(defn name doc-string? metadata-map? ([params*] prepost-map? body)+)
+
+prepost-map := {:pre  [pre-expr+]
+                :post [post-expr+]}
+----
+
+좀 복잡하게 보인다. 그래서 가장 간단한 예부터 차근차근 설명해 보겠다.
+
+[source]
+....
+(defn foo                   ; <1>
+  "세 개의 숫자를 곱한다."   ; <2>
+  [a b c]                   ; <3>
+  (* a b c))                ; <4>
+
+(foo 2 3 4)   ;=> 24
+....
+<1> 함수의 이름(name)이다.
+<2> 함수를 설명하는 doc-string이다.
+<3> 함수의 인수들(params)이다.
+<4> 함수의 몸체(body)이다.
+
+같은 이름을 사용하지만, 인수의 개수를 달리한 함수 본체를 여러 개 정의할 수도 있다. 이때
+정의된 함수들 중에서 어떤 함수 본체가 호출될지는 오직 인수의 개수에 의해서만 결정이 되고,
+타입은 전혀 고려의 대상이 아니다.
+
+[source]
+....
+(defn foo
+  "숫자를 곱한다."
+  ([a b]                                   ; <1>
+   (println "Called with 2 arguments.")
+   (* a b))
+  ([a b c]                                 ; <2>
+   (println "Called with 3 arguments.")
+   (* a b c)))
+
+(foo 2 3)
+;>> Called with 2 arguments.
+;=> 6
+
+(foo 2 3 4)
+;>> Called with 3 arguments.
+;=> 24
+....
+<1> 두 개의 인수가 주어질 때 호출되는 함수를 정의한다.
+<1> 세 개의 인수가 주어질 때 호출되는 함수를 정의한다.
+
+
+==== metadata-map을 사용한 경우
+
+[source]
+....
+(defn greet
+  "인사말을 전한다."                 ; <1>
+  {:tag String :other-meta-data 5}   ; <2>
+  [name]
+  (format "Hello, %s" name))
+
+(meta #'greet)
+;=> {:arglists ([name]), :tag java.lang.String, :other-meta-data 5, :line 10,
+;    :column 6, :file "*cider-repl localhost:53283*", :name greet, :ns #namespace[user]}
+....
+
+<1> 함수의 doc-string이다.
+<2> 함수의 ``metadata-map``이다.
+
+위의 코드는 아래의 코드와 동일한 결과를 낳는다.
+
+[source]
+....
+(defn ^{:tag String :other-meta-data 5}   ; <1>
+  greet
+  [name]
+  (format "Hello, %s" name))
+
+(meta #'greet)
+;=> {:tag java.lang.String, :other-meta-data 5, :arglists ([name]), :line 15,
+;    :column 6, :file "*cider-repl localhost:53283*", :name greet2, :ns #namespace[user]}
+....
+<1> var인 greet에 대한 metadata map이다.
+
+결과적으로 var인 ``greet``에 대한 metadata를 표기하는 방식을 두 가지 제공하고 있는
+셈이다. 그런데 실제로는 metadata를 표시할 때, 첫 번쨰 방식보다는 두 번쨰째 방식이 더 많이
+사용된다. 하지만, 표시해야 하는 metadata의 내용이 아주 많은 경우에는 첫 번째 방식이 두
+번째 방식보다 코드가 더 깔끔하게 보이는 장점은 있다.
+
+
+==== prepost-map을 사용한 경우
+
+`:pre` 뒤에는 함수를 실행하기 전에 그 인수를 검사(validation)하는 식들이 벡터 기호 안에
+나열될 수 있다. `:post` 뒤에는 함수가 반환한 값(이 값은 ``%``로 표기한다)을 검사하는
+식들이 벡터 기호 안에 나열될 수 있다. ``:pre``와 ``:post`` 둘 중에 한 개만 올 수도
+있다. 이 검사는 ``\*assert*``의 값이 ``true``일 때만 실행되고, ``false``일 때는 실행되지
+않는다. 게다가 이 검사는 내부적으로 `assert` 매크로를 이용해 구현되어 있어서,
+``\*assert*``의 값이 ``false``일 때는 아무것으로도 확장되지 않아, 실행시 아무런 부하도
+일으키지 않는다.
+ 
+[source]
+....
+*assert*   ;=> true
+
+(defn constrained-fn [f x]
+  {:pre  [(pos? x) (integer? x)]
+   :post [(= % (* 2 x)) (integer? %)]}
+  (f x))
+
+(constrained-fn #(* 2 %) 2)
+;=> 4
+
+(constrained-fn #(* 2 %) -2)
+;>> AssertionError Assert failed: (pos? x)
+
+(constrained-fn #(* 2 %) 2.0)
+;>> AssertionError Assert failed: (integer? x)
+
+(constrained-fn #(* 3 %) 2)
+;>> AssertionError Assert failed: (= % (* 2 x))
+
+;; *assert*를 false로 설정한다.
+(set! *assert* false)
+*assert*   ;=> false
+
+;; constrained-fn을 재컴파일해 주어야 한다. 검사할 때 내부적으로 이용되는 assert는
+;; 매크로이고, 매크로 확장은 컴파일 이전에 이루어지기 때문이다.
+(defn constrained-fn [f x]
+  {:pre  [(pos? x) (integer? x)]
+   :post [(= % (* 2 x)) (integer? %)]}
+  (f x))
+
+;; 이번에는 검사를 하지 않아 예외가 발생하지 않았다.
+(constrained-fn #(* 2 %) -2)
+;=> -4
+....
+
+
+==== defn-
+
+``defn-``로 함수를 정의하면, 이 함수는 해당 이름공간 내에서만 호출할 수 있는 함수가 된다.
+
+[source]
+....
+user>(defn- private-add [a b]
+        (+ a b))
+#'user/private-add
+
+user>  (private-add 5 6)
+11
+
+user> (ns my-new-namespace)
+nil
+
+my-new-namespace> (user/private-add 7 8)     ; <1>
+CompilerException java.lang.IllegalStateException: var: #'user/private-add is not public
+
+my-new-namespace> (#'user/private-add 7 8)   ; <2>
+15
+....
+<1> `user/private-add` 함수는 `user` 이름공간 밖에서는 호출할 수 없다.
+
+<2> 하지만 `user/private-add`의 varfootnote:[``#'``는 var의 reader 매크로이다.]를 통해서는
+    호출할 수 있다. 이것은 private 함수도 Unit Test를 실행할 때는 외부 이름공간에서
+    테스트될 필요가 있기 때문에 허용하고 있다.
+
+그리고 다음의 두 코드는 완전히 같은 일을 수행한다. 다시 말해, ``(defn- ...)``는 ``(defn
+^:private ...)``의 구문 단축형(syntactic sugar)이다.
+
+[source]
+....
+(defn- private-add [a b]
+  (+ a b))
+
+(defn ^:private private-add
+  [a b]
+  (+ a b))
+....
+
+
+=== fn
+
+indexterm:[fn]
+
+.fn 특수 형식
+[listing]
+----
+(fn name? [params*] prepost-map? exprs*)
+(fn name? ([params*] prepost-map? exprs*)+)
+----
+
+``fn``은 무명(anonymous)footnote:[일반적으로 anonymous function을 흔히들 익명 함수라고
+번역하고 있는데, '익명'은 이미 있는 이름을 '숨긴다'는 의미이기 때문에, '무명'으로 번역하는
+것이 옳다고 본다.]의 함수 객체를 생성하는 클로저의 특수 형식(special forms)이다.
+
+``defn``으로 함수를 다음과 같이 정의하면
+
+[source]
+....
+(defn add [a b] (+ a b))
+....
+
+실제로는 다음과 같은 방식footnote:[실제로는 훨씬 복잡하게 정의되어 있지만, 이곳에서는
+최대한으로 단순화했다.]으로 두 단계로 나뉘어 처리된다.
+
+[source]
+....
+(def add                   ; <2>
+  (fn [a b] (+ a b)))      ; <1>
+
+(add 1 2)   ;=> 3            <3>
+(add 3 4)   ;=> 7            <3>
+
+((fn [a b] (* a b)) 2 3)   ; <4>
+;=> 6
+....
+<1> ``fn``으로 무명의 함수 객체를 생성한다.
+<2> 생성된 무명의 함수 객체에 이름을 부여한다.
+<3> 이름이 부여된 함수는 같은 이름으로 여러 번 호출될 수 있다.
+<4> 여기서 ``fn``으로 생성된 함수는 이름이 없으므로, 다른 곳에서는 호출될 수 없고
+    이곳에서만 호출된 후 적절한 시점에 garbage collecting된다.
+
+위의 `fn` 특수 형식의 구문을 설명한 부분을 보면, ``fn``이 무명의 함수 객체를 생성하는 일을
+맡고 있음에도 불구하고, 선택적으로 이름을 붙일 수 있게 해 놓은 것을 알 수 있다. 무명
+함수가 이름을 가질 수 있다니 대체 이게 무슨 일이란 말인가 하고 생각할 수도 있지만, 그만한
+이유는 있다.
+
+첫 번째 이유는, ``fn``으로 정의한 함수가 `fn` 함수 내에서 자기 자신을 호출해야 하는 경우가
+종종 있기 때문이다. 이때 이름이 없다면 자기 자신을 다시 호출할 방법이 없게 된다.
+
+[source]
+....
+((fn fact [x]
+   (if (= x 0)
+     1
+     (* x (fact (dec x)))))
+ 5)
+;=> 120
+
+(fact 5)   ; <1>
+;>> CompilerException java.lang.RuntimeException: Unable to resolve symbol: fact in this context,
+....
+<1> `fn` 안에서 지정한 익명 함수 이름 ``fact``는 이 함수 안에서만 유효하다. 이 함수 밖에서
+    호출해서 예외가 발생했다.
+
+두 번째 이유는, 하나의 파일 안에서 ``fn``으로 정의한 무명 함수가 여러 개 있는데, 그 중에
+하나에서 에러가 발생하면, 디버깅할 때 어느 무명 함수에서 에러가 발생했는지 구분하기가
+힘들어진다. 이런 경우에 매 무명 함수마다 이름을 지정해 놓으면, 에러 메시지에 그 이름을
+함께 출력해 주므로 디비깅할 때 도움이 될 수 있기 때문이다. 예를 통해 확인해 보자.
+
+[source]
+....
+(reduce (fn [num] (inc num)) [1 2 3 4])     ; <1>
+(filter (fn [num] (even? num)) [1 2 3 4])   
+;>> ArityException Wrong number of args (2) passed to: user/eval12399/fn--12400   ; <2>
+....
+<1> ``reduce``의 첫 번째 인수는 두 개의 인수를 받는 함수이어야 하는데, 한 개를 받는 함수가
+    주어져 예외를 일으킨다.
+
+<2> 하지만, 에러 메시지에 나와 있는 함수명(pass:q[`fn--12400`])은 식별하기 힘든 이름을
+    반환하고 있어 어느 익무명 함수가 에러를 일으켰는지 구분하기 힘들다.
+
+위와 같은 경우에 각각의 무명 함수에 이름을 부여하면, 다음과 같이 좀 더 식별하기 쉬운
+함수명(pass:q[`fn-a--12408`])을 가진 에러 메시지가 출력된다.
+ 
+[source]
+....
+(reduce (fn fn-a [num] (inc num)) [1 2 3 4])
+(filter (fn fn-b [num] (even? num)) [1 2 3 4])
+;>> ArityException Wrong number of args (2) passed to: user/eval12407/fn-a--12408 
+....
+
+
+=== 함수 리터럴: #(...)
+
+indexterm:[함수 리터럴: #()]
+
+함수 리터럴 ``#()``을 사용하면, ``fn``을 사용하는 것보다 더 간결한 형태로 무명 함수를
+생성할 수 있다. 함수 리터럴 안에서 함수의 인수는 `%1`, `%2`, `%3`, ... 형식으로 표현된다.
+
+함수 인수 ``%1``은 숫자 1을 생략하고 ``%``처럼 사용할 수도 있는데, 일반적으로 다음과 같은
+코딩 스타일이 권장된다.
+
+인수가 한 개뿐인 무명 함수는 ``%``를 사용하는 것이 좋다.  
+
+[source]
+....
+;; good
+#(Math/round %)
+
+;; bad
+#(Math/round %1)
+....
+
+인수가 두 개 이상인 무명 함수는 ``%1``을 사용하는 것이 좋다.
+
+[source]
+....
+;; good
+#(Math/pow %1 %2)
+
+;; bad
+#(Math/pow % %2)
+....
+
+함수 리터럴의 경우에는, ``%&``를 통해서 가변 인수(vararg)를 받는다.
+
+[source]
+....
+(#(apply max %&) 1 2 3)
+;=> 3
+....
+
+.``fn``과 함수 리터럴 ``#()``의 차이  
+[sidebar]
+****
+``fn``과 함수 리터럴 ``#()``은 둘다 익명 함수를 반환한다는 공통점이 있지만 다음과 같은
+차이점도 있다.
+
+첫 번째 차이점은 ``fn``은 암묵적으로 코드 블럭을 감싸는 ``(do ...)``가 들어가 있어서
+함수의 본체에 여러 개의 식을 나열할 수 있지만, 함수 리터럴 ``#()``은 그렇지 않아서 여러
+개의 식을 나열하려면 명시적으로 ``(do ...)``로 감싸 주어야만 한다.
+ 
+[source]
+....
+((fn [x]
+   (println x)
+   (* x 2))
+ 5)
+;>> 5
+;=> 10
+
+(#(do (println %)
+      (* % 2))
+ 5)
+;>> 5
+;=> 10
+....
+
+두 번째 차이점은, ``fn``은 중접해 사용할 수 있지만, 함수 리터럴 ``#()``은 중첩해서 사용할
+수 없다.
+
+[source]
+....
+((fn [a] 
+  ((fn [b] (* a b))
+   (inc a)))
+ 2)
+;=> 6
+
+;; 위의 코드를 함수 리터럴을 사용해서 표현했다.
+((#(* % %)   ; <1>
+  (inc %))
+ 2)
+;>> CompilerException java.lang.RuntimeException: Unable to resolve symbol: % in this context
+....
+
+<1> 첫 번째 `%` 기호는 위의 코드의 ``a``를, 두 번째 `%` 기호는 위의 코드의 ``b``를 염두에
+    두고 코드를 작성했지만, 이 `%` 기호가 내부 무명 함수의 인수인지, 외부 무명 함수의
+    인수인지를 구별할 방법이 달리 없기 때문에, 함수 리터럴의 중첩은 허용되지 않는다.
+****
+
+
+
+
+
+
+
+ 
+
+
+   
+
+
+
+
+
+
 == 주요 함수들
 
 아래의 함수들 중 일부는 반환값으로 변환자(transducer)를 반환한다. 변환자에 대해서는
-link:../Transducers/transducers.html[변환자] 장에서 자세히 설명할 것이므로, 이곳에서는
-함수 설명의 완결성을 위해 단순히 사용 예를 보여주는 데 그칠 것이다.
+link:../Transducers/transducers.html[변환자] 장에서 자세히 설명할 것이므로, 변환자를
+반환하는 예는 생략할 것이다.
 
 === map/mapv/map-indexed
 
@@ -141,11 +532,13 @@ value)을 통해 해결한다.
 ==== map
 indexterm:[map]
 
-.map 형식
+.map 함수
 [listing]
 ----
-(map f coll*)
-=> lazy-seq
+(map f)       => transducer
+(map f coll+) => lazy-seq
+
+f := (fn [element] ...)
 ----
 
 `map` 함수는 다음과 같이 수학에서 한 집합에서 다른 집합으로 바꾸는 작업을 한다. ``f``는
@@ -251,22 +644,9 @@ b             ;=> [0 1 2 3 4]
 ;>> ArityException: Wrong number of args (3) passed to: core/inc
 ....
 
-``map``은 함수인 인수 한 개만을 받을 때에는 변환자(transducer)를 반환한다. 당장은 다음의
-예제가 이해가 안되더라도 일단은 그냥 넘어
-가자. link:../Transducers/transducers.html[변환자] 장에서 자세히 설명할 것이다.
-
-[source]
-....
-(map inc)
-;=> #function[clojure.core/map$fn--4549]
-
-(transduce (map inc) + (range 5))
-;=> 55
-....
-
-마지막으로 초보자들이 `map` 함수를 사용할 때 종종 겪는 실수를 한 가지 언급하고자
-한다. 그것은 바로 ``map``의 첫 번째 함수 인수 자리에 부수 효과(side effects)를 일으키는
-함수를 사용하는 데서 비롯되는 실수이다. 이것은 lazy-seq를 반환하는 모든 클로저 함수에 해당하는
+마지막으로 초보자들이 `map` 함수를 사용할 때 종종 겪는 실수를 한 가지 언급하겠다. 그것은
+바로 ``map``의 첫 번째 함수 인수 자리에 부수 효과(side effects)를 일으키는 함수를 사용하는
+데서 비롯되는 실수이다. 이것은 lazy-seq를 반환하는 모든 클로저 함수에 해당하는
 이야기이기도 하다.
 
 다음의 예제를 실행하면, 기대와는 달리 숫자 ``1 2 3``이 화면에 출력되지 않는다. 그 이유는
@@ -347,23 +727,22 @@ indexterm:[run!]
 ;=> [1 2 3 4]
 ....
 
+
 ==== mapv
 
 indexterm:[mapv]
  
-.mapv 형식
+.mapv 함수
 [listing]
 ----
-(mapv f coll+)
-=> vector
+(mapv f coll+) => vector
 ----
 
-또는 `mapv` 함수를 이용할 수도 있다. `mapv` 함수는 lazy-seq를 반환하는 `map` 함수와는 달리
-벡터 자료형을 반환한다. 클로저에서 지연 평가(lazy evaluation)가 일어나는 유일한 자료형은
-lazy-seq이다. 다시 말해, lazy-seq 자료형을 제외한 모든 자료형은 즉시 평가(eager
-evaluation)가 일어난다. 따라서 `mapv` 함수는 벡터 자료형을 반환하므로 지연 평가가 일어나지
-않고 즉시 평가(eager evaluation)가 일어나게 되어, 함수 인수 `f` 자리에 부수 효과가
-일어나는 함수가 올 수 있다.
+`mapv` 함수는 lazy-seq를 반환하는 `map` 함수와는 달리 벡터 자료형을 반환한다. 클로저에서
+지연 평가(lazy evaluation)가 일어나는 유일한 자료형은 lazy-seq이다. 다시 말해, lazy-seq
+자료형을 제외한 모든 자료형은 즉시 평가(eager evaluation)가 일어난다. 따라서 `mapv` 함수는
+벡터 자료형을 반환하므로 지연 평가가 일어나지 않고 즉시 평가(eager evaluation)가 일어나게
+되어, 함수 인수 `f` 자리에 부수 효과가 일어나는 함수가 올 수 있다.
 
 [source]
 ....
@@ -380,14 +759,16 @@ evaluation)가 일어난다. 따라서 `mapv` 함수는 벡터 자료형을 반�
 
 indexterm:[map-indexed]
  
-.map-indexed 형식
+.map-indexed 함수
 [listing]
 ----
-(map-indexed f coll*)
-=> lazy-seq
+(map-indexed f)       => transducer
+(map-indexed f coll+) => lazy-seq
+
+f := (fn [index element] ...)
 ----
 
-``map-indexed``는 함수 인수인 ``f``가 `[index item]` 형식의 두 개의 인수를 받게 된다는
+``map-indexed``는 함수 인수인 ``f``가 `[index item]` 함수의 두 개의 인수를 받게 된다는
 점을 제외하고는 `map` 함수와 동일하다. 이 함수는 현재 처리하고 있는 ``coll``의 요소가
 ``coll``의 몇 번째 항목인지 알고 싶을 때 사용하면 유용하다.
 
@@ -404,11 +785,11 @@ indexterm:[map-indexed]
 
 indexterm:[filter]
 
-.filter 형식
+.filter 함수
 [listing]
 ----
-(filter pred coll?)
-=> lazy-seq
+(filter pred)       => transducer
+(filter pred coll?) => lazy-seq
 ----
 
 `filter` 함수는 ``coll``의 요소 ``element``에 대해 ``(pred element)``가 논리적 참인
@@ -444,8 +825,7 @@ indexterm:[filterv]
 
 [listing]
 ----
-(filterv pred coll)
-=> vector
+(filterv pred coll) => vector
 ----
   
 `filterv` 함수는 ``map``과 `mapv` 함수의 관계와 같다. 즉, lazy-seq를 반환하는 `filter`
@@ -467,8 +847,8 @@ indexterm:[remove]
 
 [listing]
 ----
-(remove pred coll?)
-=> lazy-seq
+(remove pred)       => transducer
+(remove pred coll) => lazy-seq
 ----
 
 ``remove``는 ``filter``와 정반대이다. 즉, ``coll``의 요소 ``element``에 대해 ``(pred
@@ -490,10 +870,10 @@ indexterm:[reduce]
  
 ==== reduce
 
-.reduce 형식
+.reduce 함수
 [listing]
 ----
-(reduce f init coll)
+(reduce f init? coll)
 
 f := (fn [acc element] ...)
      이 함수의 첫 번쨰 인수인 acc에 누적(accumulation)된 값이 담기고,
@@ -598,7 +978,7 @@ init := 초기값
 
 indexterm:[reduce-kv]
 
-.reduce-kv 형식
+.reduce-kv 함수
 [listing]
 ----
 (reduce-kv f init coll)
@@ -634,11 +1014,10 @@ element]``의 2개가 아니라 ``[acc key value]``의 3개이다. 그리고 ``i
 
 indexterm:[reductions]
 
-.reductions 형식
+.reductions 함수
 [listing]
 ----
-(reductions f init? coll)
-=> lazy-seq
+(reductions f init? coll) => lazy-seq
 ----
 
 이 함수는 `reduce` 함수의 '초기값'과 '매 단계별 누적값들'을 모두 담은 lazy-seq를
@@ -664,7 +1043,7 @@ indexterm:[reductions]
 
 indexterm:[apply]
 
-.apply 형식
+.apply 함수
 [listing]
 ----
 (apply f element* coll)
@@ -750,8 +1129,77 @@ indexterm:[apply]
 나가는 용도로, 두 번째 인수는 새로운 요소의 값을 받아들이는 용도로 사용된다.
 ****
 
+=== keep/keep-indexed
 
-// keep keep-indexed for doseq dotimes concat mapcat 
+==== keep
+
+indexterm:[keep] 
+
+.keep 함수
+[listing]
+----
+(keep f)      => transdducer
+(keep f coll) => lazy-seq
+
+f := (fn [element] ...)
+----
+
+`keep` 함수는 ``coll``의 각 ``element``에 대해 ``(f element)``을 수행한 후, 그 반환값이
+``nil``이 아닌 값들만을 담은 lazy-seq를 반환한다.
+
+예를 들어, 컬렉션 ``[0 1 2 3 4 5]``의 값들 중에서 홀수들만을 취해 그 수를 제곱하고 싶을 떄
+는 ``keep`` 함수를 이용해 다음과 같이 하면 된다.
+
+[source]
+....
+(keep (fn [num]
+        (when (odd? num) (* num num)))
+      [0 1 2 3 4 5])
+;=> (1 9 25)
+....
+
+이런 경우 ``map`` 함수를 이용하면 다음과 같은 원하지 않는 결과도 반환하게 된다. 
+
+[source]
+....
+(map (fn [num]
+        (when (odd? num) (* num num)))
+     [0 1 2 3 4 5])
+;=> (nil 1 nil 9 nil 25)
+....
+
+결론적으로 말하자면, `map` 함수는 첫 번째 인수인 함수 ``f``가 어떤 값을 반환하느냐에 상관
+없이 무조건 입력값에 해당하는 개수만큼의 결과값을 반환하지만, `keep` 함수는 입력값들
+중에서 처리를 원하지 않는 값들의 경우에는 일부러 nil을 반환하는 것을 통해, 처리를 원치
+않는 값들을 결과값에 포함되지 않도록 할 수 있다.
+
+
+==== keep-indexed
+
+indexterm:[keep-indexed] 
+
+.keep-indexed 함수
+[listing]
+----
+(keep-indexed f)      => transdducer
+(keep-indexed f coll) => lazy-seq
+
+f := (fn [index element] ...)
+----
+   
+``keep-indexed``는 함수 인수 ``f``가 ``coll``의 ``index``와 ``element`` 두 개의 인수를
+받는다는 점을 제외하고는 `keep` 함수와 동일하다.
+
+[source]
+....
+(keep-indexed (fn [index num]
+                (if (pos? num) index))
+              [-9 0 29 -7 45 3 -8])
+;=> (2 4 5)
+....
+
+
+// for doseq dotimes concat mapcat 
 // partion/partition-all/partition-by group-by split/split-at/split-with distinct 
 // some not-any? every? not-every?
 // complement partial comp

@@ -39,7 +39,7 @@ github가 asciidoc 형식의 문서 내용 중 일부를 html 형식으로 제�
 . link:Simple-Values/simple-values.adoc[단순값]
 . link:Flow-Controls/flow-controls.adoc[제어 구조]
 . link:Collections-and-Sequences/collections-and-sequences.adoc[컬렉션과 시퀀스]
-. Functions and Functional Programming
+. 함수형 프로그래밍
 . link:Destructuring/destructuring.adoc[구조분해(Destructuring)]
 . 변환자(Transducers)
 . link:Java-Interoperability/java-interoperability.adoc[자바 코드 가져다쓰기(Java Interoperability)]
@@ -64,7 +64,7 @@ github가 asciidoc 형식의 문서 내용 중 일부를 html 형식으로 제�
 
 //. link:Why-Clojure/why-clojure.adoc[Why Clojure?]
 //. link:Collections-and-Sequences/collections-and-sequences.adoc[Collections and Sequences]
-//. link:Functions-and-Functional-Programming/functions-and-functional-programming.adoc[Functions and Functional Programming]
+//. link:Functional-Programming/functional-programming.adoc[함수형 프로그래밍]
 //. link:Transducers/transducers.adoc[Transducers]
 //. link:Metadata/metadata.adoc[Metadata]
 //. link:State-Management-and-Parallel-Programming/state-management-and-parallel-programming.adoc[State Management and Parallel Programming]
