@@ -18,9 +18,23 @@
   ga('send', 'pageview');
 </script>
 </head>
-<body class="article">
+<body class="article toc2 toc-right">
 <div id="header">
 <h1>Funcions and Functional Programming</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_함수형_언어란_무엇인가">1. 함수형 언어란 무엇인가?</a></li>
+<li><a href="#_주요_함수들">2. 주요 함수들</a>
+<ul class="sectlevel2">
+<li><a href="#_map_mapv_map_indexed">2.1. map/mapv/map-indexed</a></li>
+<li><a href="#_filter_filterv_remove">2.2. filter/filterv/remove</a></li>
+<li><a href="#_reduce_reduce_kv_reductions">2.3. reduce/reduce-kv/reductions</a></li>
+<li><a href="#_apply">2.4. apply</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 <div id="content">
 <div class="sect1">
@@ -151,9 +165,9 @@
 <h2 id="_주요_함수들">2. 주요 함수들</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>아래의 함수들 중 일부는 반환값으로 transducer를 반환한다. transducer에 대해서는
-<a href="../Transducers/transducers.html">Transducers</a> 장에서 자세히 설명할 것이므로,
-이곳에서는 함수 설명의 완결성을 위해 단순히 사용 예를 보여주는 데 그칠 것이다.</p>
+<p>아래의 함수들 중 일부는 반환값으로 변환자(transducer)를 반환한다. 변환자에 대해서는
+<a href="../Transducers/transducers.html">변환자</a> 장에서 자세히 설명할 것이므로, 이곳에서는
+함수 설명의 완결성을 위해 단순히 사용 예를 보여주는 데 그칠 것이다.</p>
 </div>
 <div class="sect2">
 <h3 id="_map_mapv_map_indexed">2.1. map/mapv/map-indexed</h3>
@@ -344,9 +358,9 @@ b             <span class="comment">;=&gt; [0 1 2 3 4]</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><code>map</code>은 함수인 인수 한 개만을 받을 때에는 transducer를 반환한다. 당장은 다음의 예제가
-이해가 안되더라도 일단은 그냥 넘어 가자. <a href="../Transducers/transducers.html">Transducers</a>
-장에서 자세히 설명할 것이다.</p>
+<p><code>map</code>은 함수인 인수 한 개만을 받을 때에는 변환자(transducer)를 반환한다. 당장은 다음의
+예제가 이해가 안되더라도 일단은 그냥 넘어
+가자. <a href="../Transducers/transducers.html">변환자</a> 장에서 자세히 설명할 것이다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -914,7 +928,7 @@ element]</code>의 2개가 아니라 <code>[acc key value]</code>의 3개이다.
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-12-31 13:24:28 KST
+Last updated 2015-12-31 16:10:39 KST
 </div>
 </div>
 </body>

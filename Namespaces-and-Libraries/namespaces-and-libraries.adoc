@@ -7,6 +7,8 @@
 :stylesdir: ../
 :stylesheet: my-asciidoctor.css
 :docinfo1:
+:toc: right
+
 
 indexterm:[이름공간] indexterm:[namespace]
 

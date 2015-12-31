@@ -5,6 +5,7 @@
 :stylesdir: ../
 :stylesheet: my-asciidoctor.css
 :docinfo1:
+:toc: right
 
 
 == 클로저 코드의 특징들

@@ -7,7 +7,7 @@
 :stylesdir: ../
 :stylesheet: my-asciidoctor.css
 :docinfo1:
-:toc:
+:toc: right
 
 
 이 장에서는 `Windows 7` (64비트 버전)에 클로저 개발 환경을 설치하는 예를 보여준다. 다른

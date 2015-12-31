@@ -7,6 +7,8 @@
 :stylesdir: ../
 :stylesheet: my-asciidoctor.css
 :docinfo1:
+:toc: right
+
 
 == 함수형 언어란 무엇인가?
 
@@ -88,9 +90,9 @@ TIP: 특히 위의 두 번째와 세 번째 조건을 충족시키는 함수를 
 
 == 주요 함수들
 
-아래의 함수들 중 일부는 반환값으로 transducer를 반환한다. transducer에 대해서는
-link:../Transducers/transducers.html[Transducers] 장에서 자세히 설명할 것이므로,
-이곳에서는 함수 설명의 완결성을 위해 단순히 사용 예를 보여주는 데 그칠 것이다.
+아래의 함수들 중 일부는 반환값으로 변환자(transducer)를 반환한다. 변환자에 대해서는
+link:../Transducers/transducers.html[변환자] 장에서 자세히 설명할 것이므로, 이곳에서는
+함수 설명의 완결성을 위해 단순히 사용 예를 보여주는 데 그칠 것이다.
 
 === map/mapv/map-indexed
 
@@ -249,9 +251,9 @@ b             ;=> [0 1 2 3 4]
 ;>> ArityException: Wrong number of args (3) passed to: core/inc
 ....
 
-``map``은 함수인 인수 한 개만을 받을 때에는 transducer를 반환한다. 당장은 다음의 예제가
-이해가 안되더라도 일단은 그냥 넘어 가자. link:../Transducers/transducers.html[Transducers]
-장에서 자세히 설명할 것이다.
+``map``은 함수인 인수 한 개만을 받을 때에는 변환자(transducer)를 반환한다. 당장은 다음의
+예제가 이해가 안되더라도 일단은 그냥 넘어
+가자. link:../Transducers/transducers.html[변환자] 장에서 자세히 설명할 것이다.
 
 [source]
 ....

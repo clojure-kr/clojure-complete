@@ -5,6 +5,7 @@
 :stylesdir: ../
 :stylesheet: my-asciidoctor.css
 :docinfo1:
+:toc: right
 
 [preface]
 

@@ -11,7 +11,7 @@
 :stylesheet: my-asciidoctor.css
 
 
-=== Version: &nbsp; 2015-12-16
+=== Version: &nbsp; 2015-12-31
 
 [sidebar]
 ****
@@ -31,30 +31,36 @@ github가 asciidoc 형식의 문서 내용 중 일부를 html 형식으로 제�
 다음의 목차에서 링크가 아직 걸려 있지 않은 장은 앞으로 채워 나갈 예정입니다.
 
 :leveloffset: 1
-. Why Clojure?
+
 . link:Preface/preface.adoc[Preface]
-. link:Development-Environments/development-environments.adoc[Development Environments]
+. 왜 클로저인가?
+. link:Development-Environments/development-environments.adoc[개발 환경]
 . link:Start/start.adoc[클로저 시작하기]
-. link:Simple-Values/simple-values.adoc[Simple Values]
-. link:Flow-Controls/flow-controls.adoc[Flow Controls]
-. Collections and Sequences
+. link:Simple-Values/simple-values.adoc[단순값]
+. link:Flow-Controls/flow-controls.adoc[제어 구조]
+. link:Collections-and-Sequences/collections-and-sequences.adoc[컬렉션과 시퀀스]
 . Functions and Functional Programming
-. link:Destructuring/destructuring.adoc[Destructuring(구조분해)]
-. Transducers
-. link:Java-Interoperability/java-interoperability.adoc[Java Interoperability]
-. Metadata
-. link:Namespaces-and-Libraries/namespaces-and-libraries.adoc[Namespace and Libraries]
-. State Management and Parallel Programming
+. link:Destructuring/destructuring.adoc[구조분해(Destructuring)]
+. 변환자(Transducers)
+. link:Java-Interoperability/java-interoperability.adoc[자바 코드 가져다쓰기(Java Interoperability)]
+. link:Namespaces-and-Libraries/namespaces-and-libraries.adoc[이름공간과 라이브러리]
+. 상태 관리와 동시성
 . core.async
-. Multimedthos and Hierarchies
-. Protocols, Records and Types
-. Macros
-. Numerics and Mathematics
-. Project Management
-. Testing
-. Type Checking
-. Database Programming
-. Web Programming
+. 멀티메소드와 상속
+. 프로토콜과 레코드
+. 매크로
+. 수학
+. 날짜와 시간
+. 입출력: 파일과 디렉토리
+. 프로젝트 관리
+. 예외 처리
+. 테스팅
+. 타입 검사
+. 데이타베이스 프로그래밍
+. 통신 및 웹 프로그래밍
+. 파서
+. 문자 인코딩
+. GUI 프로그래밍
 
 //. link:Why-Clojure/why-clojure.adoc[Why Clojure?]
 //. link:Collections-and-Sequences/collections-and-sequences.adoc[Collections and Sequences]

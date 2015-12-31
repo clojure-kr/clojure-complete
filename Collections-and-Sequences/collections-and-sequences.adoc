@@ -956,7 +956,11 @@ PersistentMap
 
 zipper를 통한 tree를 처리하는 방법을 설명할 것.
 
+:leveloffset: 1
+
 include::subs/zipper.adoc[]
+
+:leveloffset: 0
 
 
 === 정렬
