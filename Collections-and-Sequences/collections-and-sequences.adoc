@@ -953,8 +953,11 @@ PersistentMap
 ....
 
 
-// ==== 트리
-:leveloffset: 3
+==== 트리
+
+트리는 zipper를 통해 구현된다.
+
+:leveloffset: 4
 include::subs/zipper.adoc[]
 :leveloffset: 0
 
@@ -1164,5 +1167,149 @@ sm
 ....
 
 
+.비교함수
+****
+``compare`` 함수는 정렬과 관련된 모든 클로저 코어 함수들에서 사용되는 디폴트 비교함수이다. 이 함수는 내부적으로는 java.lang.Comparable 인터페이스의 compareTo 함수를 사용한다. 따라서 Comparable 인터페이스를 구현한 값들은 모두 compare의 대상이 될 수 있다. ``nil``은 가장 낮은 값으로 평가된다.
 
+``instance?`` 함수로 Comparable 인터페이스를 구현했는지 여부를 확인해 볼 수 있다.
+
+[source]
+....
+(instance? java.lang.Comparable 1)              ;=> true
+(instance? java.lang.Comparable :a)             ;=> true
+(instance? java.lang.Comparable \a)             ;=> true
+(instance? java.lang.Comparable "abcd")         ;=> true
+(instance? java.lang.Comparable 'a)             ;=> true
+(instance? java.lang.Comparable [])             ;=> true
+
+(instance? java.lang.Comparable ())             ;=> false
+(instance? java.lang.Comparable {})             ;=> false
+(instance? java.lang.Comparable #{})            ;=> false
+(instance? java.lang.Comparable (sorted-map))   ;=> false
+(instance? java.lang.Comparable (sorted-set))   ;=> false
+....
+
+만약 ``compare`` 함수가 비교할 수 없는 값들이 있다면, 비교 함수를 직접 만들어야 할 것이다. 다음은 비교 함수를 만드는데 필요한 가이드를 제시한다.
+
+우선 ``compare`` 함수 자체를 활용해 보는 것이다. 예를 들어 다음은 역전된 순서로 비교한다.
+
+[source]
+....
+(sort [4 2 3 1])
+;=> (1 2 3 4)
+
+(sort #(compare %2 %1) [4 2 3 1])
+;=> (4 3 2 1)
+....
+
+다음은 한 번에 여러가지 항목들을 비교한다.
+
+[source]
+....
+(def john1 {:name "John", :salary 35000.00, :company "Acme" })
+(def mary  {:name "Mary", :salary 35000.00, :company "Mars Inc" })
+(def john2 {:name "John", :salary 40000.00, :company "Venus Co" })
+(def john3 {:name "John", :salary 30000.00, :company "Asteroids-R-Us" })
+(def people [john1 mary john2 john3])
+
+(defn by-salary-name-co2 [x y]
+  (compare [(:salary y) (:name x) (:company x)]
+           [(:salary x) (:name y) (:company y)]))
+
+(pprint (sort by-salary-name-co2 people))
+;=> ({:name "John", :salary 40000.0, :company "Venus Co"}
+     {:name "John", :salary 35000.0, :company "Acme"}
+     {:name "Mary", :salary 35000.0, :company "Mars Inc"}
+     {:name "John", :salary 30000.0, :company "Asteroids-R-Us"})
+....
+
+벡터는 길이가 길면 큰 값인데, 길이가 같으면 내부값들 차례로 비교해서 결정한다.
+
+*2단 비교 함수*
+
+자바의 Comparable 인터페이스는 3단 비교 방식으로, 크면 양의 정수, 작으면 음의 정수, 같으면 0을 반환한다. 하지만 true/false를 반환하는 진위함수를 2단 비교 함수로 사용할 수 있다. 이미 `<`, `>`, `\<=`, `>=` 등의 진위함수들이 사용되는 것을 보았을 것이다. 이런 진위함수는 다음과 같은 방식으로 쉽게 3단 비교가 가능하다. 만약 진위함수가 x와 y를 비교해서 true를 반환하면 -1을, 그렇지 않으면 순서를 바꿔서 다시 y와 x를 비교해서 true를 반환하면 1을, 그렇지 않으면 0을 반환하는 것이다. 아래의 코드가 그 예시를 보여준다.
+
+[source]
+....
+(if (bool-cmp-fn x y)    ; 처음에는 x y 순서로 비교한다.
+  -1     ; x < y
+  (if (bool-cmp-fn y x)  ; 다음에는 y x 순서로 비교한다.
+    1    ; x > y
+    0))  ; x = y
+....
+
+``comparator``는 2단 비교 함수를 3단 비교 함수로 바꾸어준다.
+
+[source]
+....
+(def 3-way-less-than (comparator <))
+
+(3-way-less-than 1 2)  ;=> -1
+(3-way-less-than 2 1)  ;=> 1
+(3-way-less-than 1 1)  ;=> 0
+....
+
+비교함수로 사용되는 클로저의 코어 함수들은 Comparator 인터페이스를 이미 구현했기 때문에, 정렬 관련 작업을 하는 클로저 코어 함수들은 이런 비교함수들을 받아서 내부적으로 2단 비교 함수를 받아서 이런식으로 3단 비교 함수 바꿔서 사용한다.
+
+*주의: 값의 일부만 비교하면 문제가 될 수 있다*
+
+[source]
+....
+(defn by-2nd [a b]
+  (compare (second a) (second b)))  ; 튜플의 두 번째 요소만 검사한다.
+
+(sorted-set-by by-2nd ["a" 1] ["b" 1] ["c" 1])   <1>
+;=> #{["a" 1]}
+....
+<1> 두 번째 요소가 모두 1로 같기 때문에 처음 ``["a" 1]``이 집합에 들어간 후, 나머지들은 중복이라서 포함되지 못한 것이다.
+
+만일 이때 ``compare``를 ``\<=``로 바꿘주면 포함되기는 하지만 다른 문제가 발행한다.
+
+[source]
+....
+(defn by-2nd-<= [a b]
+  (<= (second a) (second b)))  ; compare 대신 <=로 바꾸었다.
+
+(def sset (sorted-set-by by-2nd-<= ["a" 1] ["b" 1] ["c" 1]))   <1>
+
+sset
+;=> #{["c" 1] ["b" 1] ["a" 1]}
+
+(sset ["c" 1])  <2>
+;=> nil
+(sset ["b" 1])
+;=> nil
+(sset ["a" 1])
+;=> nil
+....
+<1> ``["a" 1]``이 ``["b" 1]`` 보다 작다라는 검사에서 true가 되기 때문에, 이제 집합에 포함되기는 한다.
+<2> 하지만 ``["c" 1]`` 끼리 검사할 때도 작다라는 검사에서 true가 되기 때문에, 집합에 값이 있어도 찾지를 못한다.
+
+*주의: 비교 함수에 ``-``를 사용해서 값이 차이로 비교할 때 문제가 될 수 있다*
+
+``compare`` 함수가 3단 비교로서, 크면 양의 정수, 작으면 음의 정수, 같으면 0을 반환하기 때문에 두 수를 다음과 같이 ``-`` 함수를 사용해서 구현할 수도 있을 것이다.
+
+[source]
+....
+(sort #(- %1 %2) [4 2 3 1])
+;=> (1 2 3 4)
+....
+
+이렇게 ``-`` 사용하게 되면 예기치 않은 문제가 발생할 수 있다. 예를 들어 다음과 같이 자바 Int 값의 최소값과 최대값이 비교 대상이 되는 경우이다.
+
+[source]
+....
+(sort #(- %1 %2) [0 1 Integer/MIN_VALUE Integer/MAX_VALUE 3 4])
+;=> (0 1 3 4 2147483647 -21474836)
+....
+
+다음으로는 실수를 비교하는 경우이다. 3단 비교함수는 자바의 32비트 Int로 반환하는데, 1보다 작은 실수는 Int로 변환되면서 0으로 캐스팅되기 때문에, 모두 같다고 비교하게 된다.
+
+[source]
+....
+(sort #(- %1 %2) [1.0 0.9 0.8 0.7])
+;=> (1.0 0.9 0.8 0.7)
+....
+
+****
 
