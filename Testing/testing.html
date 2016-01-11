@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.3">
+<title>Testing</title>
+<link rel="stylesheet" href="..//my-asciidoctor.css">
+<link rel="stylesheet" href="..//coderay-asciidoctor.css">
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-71804757-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</head>
+<body class="article toc2 toc-right">
+<div id="header">
+<h1>Testing</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_deftest_is">1. deftest &amp; is</a></li>
+<li><a href="#_are">2. are</a></li>
+<li><a href="#_testing">3. testing</a></li>
+<li><a href="#_exception_테스트">4. exception 테스트</a></li>
+<li><a href="#_fixture_사용하기">5. fixture 사용하기</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>프로그램을 개발하는데 있어, TDD(Test Driven Development) 방법론은, 테스트와 프로그램
+개발을 병행함으로써, 이미 작성된 모든 프로그램 코드의 무결성을 그때 그때 확인해 가며
+개발을 진행할 수 있기 때문에, 나중에 발견될 수도 있는 버그 처리 과정을 미리 방지하게 해
+준다. 아울러 테스트 코드 자체가 프로그램 코드의 훌륭한 실행 예제를 제공하므로, 해당 API의
+문서화의 효과도 볼 수 있다.</p>
+</div>
+<div class="paragraph">
+<p>언뜻 생각하기에는, 프로그램 코드와 테스트 코드를 둘 다 작성하다 보면, 시간이 더 걸리는 것
+아니냐는 생각을 할 수도 있는데, 실제의 경험상으로는 그 반대다. 테스트 코드를 작성하며
+코딩을 진행하면, 본 코드를 작성할 때 테스트를 염두에 두고 코드를 짜게 된다. 그 결과
+테스트에 용이한 보다 단순하고 논리적인 코드를 작성하게 되어, 프로그램의 유지/보수에 더
+용이한 생산적인 코드를 낳게 된다. 아울러 코드를 개선할 때마다 테스트 코드를 실행함으로써,
+이전에 작성한 모든 코드들과의 호환성을 미리 검증하는 과정을 매번 거치치 되므로, 버그를
+미연에 방지해 주는 효과까지 곁들어지게 되어, 결과적으로는 프로젝트를 더 짧은 시간 안에
+완료할 수 있게 해 즌다. 코딩하는 시간보다 디버깅하는 시간이 훨씬 더 많이 든다는 것을 이미
+경험해 본 프로그래머라면 위의 주장이 쉽게 납득되리라 본다.</p>
+</div>
+<div class="paragraph">
+<p>클로저는 <code>clojure.test</code> 패키지에 TDD를 지원하는 기능이 준비되어 있다.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_deftest_is">1. deftest &amp; is</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>대부분의 테스트 코드는 <code>deftest</code> 매크로와 <code>is</code> 매크로를 이용해 작성한다.</p>
+</div>
+<div class="listingblock">
+<div class="title">deftest 매크로</div>
+<div class="content">
+<pre>(deftest name expr+)
+  name := test name을 지정한다.
+  expr := 실제 test 코드가 작성되는 자리.</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">is 매크로</div>
+<div class="content">
+<pre>(is predicate message?)
+  predicate := 참 또는 거짓을 반환하는 form.
+  message := predicate이 거짓을 반환할 경우, 출력할 메시지.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>is</code> 매크로는, 테스트 실패시 출력할 메시지를, 두 번째 인수에 지정할 수도 있다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure"><span class="comment">;; file: myproject/test/myproject/core_test.clj</span>
+(<span class="keyword">ns</span> <span class="namespace">myproject.core-test</span>
+  (<span class="symbol">:use</span> [clojure.test]))
+
+(deftest add
+  (is (<span class="keyword">=</span> <span class="integer">4</span> (<span class="keyword">+</span> <span class="integer">2</span> <span class="integer">2</span>)))
+  (is (<span class="keyword">=</span> <span class="integer">2</span> (<span class="keyword">+</span> <span class="integer">2</span> <span class="integer">0</span>)) <span class="string"><span class="delimiter">&quot;</span><span class="content">adding zero doesn't change value</span><span class="delimiter">&quot;</span></span>))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>lein test</code> 명령을 내리면, <code>myproject/test</code> 폴더 아래의 모든 테스트 파일들을 읽어 들여
+실행한다. 각 테스트 파일 안의 모든 <code>deftest</code> 문을 실행한 후, 그 결과를 보고한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ lein test
+
+lein test myproject.core-test
+
+Ran 1 tests containing 2 assertions.
+0 failures, 0 errors.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>위에서는 test 1건, assertion 2건을 처리해 실패 0건, 에러 0건이 발생했음을 보고하고 있다.</p>
+</div>
+<div class="paragraph">
+<p>이번에는 의도적으로 테스트 실패를 유도해 보자.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">myproject.core-test</span>
+  (<span class="symbol">:use</span> [clojure.test]))
+
+(deftest add
+  (is (<span class="keyword">=</span> <span class="integer">4</span> (<span class="keyword">+</span> <span class="integer">2</span> <span class="integer">2</span>)))
+  (is (<span class="keyword">=</span> <span class="integer">2</span> (<span class="keyword">+</span> <span class="integer">2</span> <span class="integer">0</span>)) <span class="string"><span class="delimiter">&quot;</span><span class="content">adding zero doesn't change value</span><span class="delimiter">&quot;</span></span>)
+  (is (<span class="keyword">=</span> <span class="integer">9</span> (<span class="keyword">+</span> <span class="integer">4</span> <span class="integer">4</span>)))                            <span class="comment">; error here</span>
+  (is (<span class="keyword">=</span> <span class="integer">7</span> (<span class="keyword">+</span> <span class="integer">2</span> <span class="integer">4</span>)) <span class="string"><span class="delimiter">&quot;</span><span class="content">2 + 4 should return 6</span><span class="delimiter">&quot;</span></span>))   <span class="comment">; error here</span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ lein test
+
+lein test myproject.core-test
+
+lein test :only myproject.core-test/add
+
+FAIL in (add) (core_test.clj:7)
+expected: (= 9 (+ 4 4))
+  actual: (not (= 9 8))
+
+lein test :only myproject.core-test/add
+
+FAIL in (add) (core_test.clj:8)
+2 + 4 should return 6
+expected: (= 7 (+ 2 4))
+  actual: (not (= 7 6))
+
+Ran 1 tests containing 4 assertions.
+2 failures, 0 errors.
+Tests failed.</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_are">2. are</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">are 매크로</div>
+<div class="content">
+<pre>(are argv expr arg*)</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>clojure.test</code>는 <code>is</code> 매크로 외에도 <code>are</code> 매크로를 제공한다. 이름을 통해 예상할 수
+있겠지만, 하나의 <code>are</code> 매크로는 여러 개의 <code>is</code> 매크로를 대신할 수 있다.</p>
+</div>
+<div class="paragraph">
+<p>방금 전에 든 예를, <code>are</code> 매크로를 사용해 재작성해 보면 다음과 같다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">myproject.core-test</span>
+  (<span class="symbol">:use</span> [clojure.test]))
+
+(deftest add
+  (are [sum x y] (<span class="keyword">=</span> sum (<span class="keyword">+</span> x y))
+        <span class="integer">4</span> <span class="integer">2</span> <span class="integer">2</span>
+        <span class="integer">2</span> <span class="integer">2</span> <span class="integer">0</span>
+        <span class="integer">9</span> <span class="integer">4</span> <span class="integer">4</span>
+        <span class="integer">7</span> <span class="integer">2</span> <span class="integer">4</span>))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>즉, <code>sum</code>에 4, <code>x</code>에 2, <code>y</code>에 2가 각각 대입된 후, <code>(= sum (+ x y))</code>가 수행됨을 알
+수 있다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ lein test
+
+lein test myproject.core-test
+
+lein test :only myproject.core-test/add
+
+FAIL in (add) (core_test.clj:5)
+expected: (= 9 (+ 4 4))
+  actual: (not (= 9 8))
+
+lein test :only myproject.core-test/add
+
+FAIL in (add) (core_test.clj:5)
+expected: (= 7 (+ 2 4))
+  actual: (not (= 7 6))
+
+Ran 1 tests containing 4 assertions.
+2 failures, 0 errors.
+Tests failed.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>are</code> 매크로는, 실제로는 여러 개의 <code>is</code> 매크로로 확장된다. 확장된 모습을 살펴보자.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">macroexpand</span> '(are [sum x y] (<span class="keyword">=</span> sum (<span class="keyword">+</span> x y))
+                   <span class="integer">4</span> <span class="integer">2</span> <span class="integer">2</span>
+                   <span class="integer">2</span> <span class="integer">2</span> <span class="integer">0</span>
+                   <span class="integer">9</span> <span class="integer">4</span> <span class="integer">4</span>
+                   <span class="integer">7</span> <span class="integer">2</span> <span class="integer">4</span>))
+<span class="comment">; =&gt; (do</span>
+<span class="comment">;      (clojure.test/is (= 4 (+ 2 2)))</span>
+<span class="comment">;      (clojure.test/is (= 2 (+ 2 0)))</span>
+<span class="comment">;      (clojure.test/is (= 9 (+ 4 4)))</span>
+<span class="comment">;      (clojure.test/is (= 7 (+ 2 4))))</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>is</code> 매크로로 모두 확장된 것을 직접 확인할 수 있다.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_testing">3. testing</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">testing 매크로</div>
+<div class="content">
+<pre>(testing string expr+)</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>testing</code> 매크로는, 테스트를 그룹화하기 위한 용도로 사용되고, 테스트가 실패할 경우 출력할
+메시지를 지정할 수 있다. <code>deftest</code> 매크로 안에서 사용되어야 하며, 중첩될 수 있다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">myproject.core-test</span>
+  (<span class="symbol">:use</span> [clojure.test]))
+
+(deftest arithmetic
+  (testing <span class="string"><span class="delimiter">&quot;</span><span class="content">Addition</span><span class="delimiter">&quot;</span></span>
+    (testing <span class="string"><span class="delimiter">&quot;</span><span class="content">with positive integers</span><span class="delimiter">&quot;</span></span>
+      (is (<span class="keyword">=</span> <span class="integer">4</span> (<span class="keyword">+</span> <span class="integer">2</span> <span class="integer">2</span>)))
+      (is (<span class="keyword">=</span> <span class="integer">7</span> (<span class="keyword">+</span> <span class="integer">3</span> <span class="integer">4</span>))))
+    (testing <span class="string"><span class="delimiter">&quot;</span><span class="content">with negative integers</span><span class="delimiter">&quot;</span></span>
+      (is (<span class="keyword">=</span> <span class="integer">-5</span> (<span class="keyword">+</span> <span class="integer">-2</span> <span class="integer">-2</span>)))             <span class="comment">; error here</span>
+      (is (<span class="keyword">=</span> <span class="integer">-1</span> (<span class="keyword">+</span> <span class="integer">3</span> <span class="integer">-4</span>))) )))</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ lein test
+
+lein test myproject.core-test
+
+lein test :only myproject.core-test/arithmetic
+
+FAIL in (arithmetic) (core_test.clj:10)
+Addition with negative integers
+expected: (= -5 (+ -2 -2))
+  actual: (not (= -5 -4))
+
+Ran 1 tests containing 4 assertions.
+1 failures, 0 errors.
+Tests failed.</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_exception_테스트">4. exception 테스트</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>form</code>에서 던진 예외가, <code>exception-class</code>와 일치하고, 함께 전달된 메시지가
+<code>message</code>와 일치하면 테스트를 통과하고, 그렇지 않으면 테스트가 실패한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>(thrown? exception-class form)
+(thrown? exception-class message form)
+
+exception-class :=  form에서 발생이 예상되는 예외 클래스명
+message := 예외가 발생할 떄, 함께 전달되는 메시지, 정규식 문자열로 표시
+form := 예외를 발생하는 form</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>is</code> 매크로 내에서, 예외가 실제로 발생하는 지를 테스트할 수 있다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">myproject.core-test</span>
+  (<span class="symbol">:use</span> [clojure.test]))
+
+(deftest divide-by-zero
+  <span class="comment">;; ArithmeticException 예외를 발생하므로, 테스트 통과</span>
+  (is (thrown? ArithmeticException (<span class="keyword">/</span> <span class="integer">1</span> <span class="integer">0</span>)))
+
+  <span class="comment">;; ArithmeticException 예외를 발생하지 않으므로, 테스트 실패</span>
+  (is (thrown? ArithmeticException (<span class="keyword">/</span> <span class="integer">1</span> <span class="integer">2</span>)))
+
+  <span class="comment">;; ArithmeticException 예외를 발생하고, 이때 전달되는 메시지가 일치하므로</span>
+  <span class="comment">;; 테스트 통과</span>
+  (is (thrown-with-msg? ArithmeticException <span class="regexp"><span class="delimiter">#&quot;</span><span class="content">Divide by zero</span><span class="delimiter">&quot;</span></span>
+                        (<span class="keyword">/</span> <span class="integer">2</span> <span class="integer">0</span>) ))
+
+  <span class="comment">;; ArithmeticException 예외가 발생하지만, 이때 전달되는 메시지가 일치 안하므로</span>
+  <span class="comment">;; 테스트 실패</span>
+  (is (thrown-with-msg? ArithmeticException <span class="regexp"><span class="delimiter">#&quot;</span><span class="content">Incorrect message</span><span class="delimiter">&quot;</span></span>
+                        (<span class="keyword">/</span> <span class="integer">2</span> <span class="integer">0</span>) ))
+
+  <span class="comment">;; ArithmeticException 예외를 발생하지 않으므로, 테스트 실패</span>
+  (is (thrown-with-msg? ArithmeticException <span class="regexp"><span class="delimiter">#&quot;</span><span class="content">Divide by zero</span><span class="delimiter">&quot;</span></span>
+                        (<span class="keyword">/</span> <span class="integer">1</span> <span class="integer">3</span>) )))</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ lein test
+
+lein test myproject.core-test
+
+lein test :only myproject.core-test/divide-by-zero
+
+FAIL in (divide-by-zero) (core_test.clj:9)
+expected: (thrown? ArithmeticException (/ 1 2))
+  actual: nil
+
+lein test :only myproject.core-test/divide-by-zero
+
+FAIL in (divide-by-zero) (core_test.clj:18)
+expected: (thrown-with-msg? ArithmeticException #"Incorrect message" (/ 2 0))
+  actual: #error {
+ :cause "Divide by zero"
+ :via
+ [{:type java.lang.ArithmeticException
+   :message "Divide by zero"
+   :at [clojure.lang.Numbers divide "Numbers.java" 158]}]
+ :trace
+ [[clojure.lang.Numbers divide "Numbers.java" 158]
+  [clojure.lang.Numbers divide "Numbers.java" 3808]
+  [myproject.core_test$fn__194$fn__202 invoke "core_test.clj" 19]
+  [myproject.core_test$fn__194 invoke "core_test.clj" 18]
+  [clojure.test$test_var$fn__7670 invoke "test.clj" 704]
+  ......]}
+
+lein test :only myproject.core-test/divide-by-zero
+
+FAIL in (divide-by-zero) (core_test.clj:22)
+expected: (thrown-with-msg? ArithmeticException #"Divide by zero" (/ 1 3))
+  actual: nil
+
+Ran 1 tests containing 5 assertions.
+3 failures, 0 errors.
+Tests failed.</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_fixture_사용하기">5. fixture 사용하기</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>테스트 코드를 작성하다 보면, 테스트 실행 직전 또는 직후에 실행되어야 하는 코드가
+있을 수 있다. 이때 필요한 것이 바로 fixture이다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>(use-fixtures :once fixture+)
+(use-fixtures :each fixture+)
+
+:once := 테스트 파일 전체에 걸쳐, fixture들을 지정된 순서대로 딱 한번만 수행한다.
+:each := deftest 문을 실행할 떄마다, fixture들을 지정된 순서대로 메번 수행한다.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>:once</code> 옵션의 경우를 먼저 살펴보자.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">myproject.core-test</span>
+  (<span class="symbol">:use</span> [clojure.test]))
+
+(<span class="keyword">defn</span> <span class="function">fixture-1</span> [f]
+  (<span class="keyword">println</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">:once fixutre-1 started.</span><span class="delimiter">&quot;</span></span>)
+  <span class="comment">; other codes here ...</span>
+  (f)
+  (<span class="keyword">println</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">:once fixutre-1 ended.</span><span class="delimiter">&quot;</span></span>)
+  <span class="comment">; another codes here ...</span>
+)
+
+(<span class="keyword">defn</span> <span class="function">fixture-2</span> [f]
+  (<span class="keyword">println</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">:once fixture-2 started.</span><span class="delimiter">&quot;</span></span>)
+  <span class="comment">; other codes here ...</span>
+  (f)
+  (<span class="keyword">println</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">:once fixture-2 ended.</span><span class="delimiter">&quot;</span></span>)
+  <span class="comment">; another codes here ...</span>
+)
+
+(use-fixtures <span class="symbol">:once</span> fixture-1 fixture-2)
+
+(deftest add
+  (is (<span class="keyword">=</span> <span class="integer">3</span> (<span class="keyword">+</span> <span class="integer">1</span> <span class="integer">2</span>)))
+  (is (<span class="keyword">=</span> <span class="integer">8</span> (<span class="keyword">+</span> <span class="integer">3</span> <span class="integer">5</span>))))
+
+(deftest subtract
+  (is (<span class="keyword">=</span> <span class="integer">5</span> (<span class="keyword">-</span> <span class="integer">10</span> <span class="integer">5</span>)))
+  (is (<span class="keyword">=</span> <span class="integer">2</span> (<span class="keyword">-</span> <span class="integer">7</span>  <span class="integer">5</span>))))</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ lein test
+
+lein test myproject.core-test
+:once fixutre-1 started.
+:once fixture-2 started.
+:once fixture-2 ended.
+:once fixutre-1 ended.
+
+Ran 2 tests containing 4 assertions.
+0 failures, 0 errors.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>테스트 종료시, 지정한 fixture 함수의 순서가 역순으로 실행되는 것에 주의하라.</p>
+</div>
+<div class="paragraph">
+<p>이번에는 <code>:each</code> 옵션의 경우를 살펴보자.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">myproject.core-test</span>
+  (<span class="symbol">:use</span> [clojure.test]))
+
+(<span class="keyword">defn</span> <span class="function">fixture-1</span> [f]
+  (<span class="keyword">println</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">:each fixutre-1 started.</span><span class="delimiter">&quot;</span></span>)
+  <span class="comment">; other codes here ...</span>
+  (f)
+  (<span class="keyword">println</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">:each fixutre-1 ended.</span><span class="delimiter">&quot;</span></span>)
+  <span class="comment">; another codes here ...</span>
+)
+
+(<span class="keyword">defn</span> <span class="function">fixture-2</span> [f]
+  (<span class="keyword">println</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">:each fixture-2 started.</span><span class="delimiter">&quot;</span></span>)
+  <span class="comment">; other codes here ...</span>
+  (f)
+  (<span class="keyword">println</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">:each fixture-2 ended.</span><span class="delimiter">&quot;</span></span>)
+  <span class="comment">; another codes here ...</span>
+)
+
+(use-fixtures <span class="symbol">:each</span> fixture-1 fixture-2)
+
+(deftest add
+  (is (<span class="keyword">=</span> <span class="integer">3</span> (<span class="keyword">+</span> <span class="integer">1</span> <span class="integer">2</span>)))
+  (is (<span class="keyword">=</span> <span class="integer">8</span> (<span class="keyword">+</span> <span class="integer">3</span> <span class="integer">5</span>))))
+
+(deftest subtract
+  (is (<span class="keyword">=</span> <span class="integer">5</span> (<span class="keyword">-</span> <span class="integer">10</span> <span class="integer">5</span>)))
+  (is (<span class="keyword">=</span> <span class="integer">2</span> (<span class="keyword">-</span> <span class="integer">7</span>  <span class="integer">5</span>))))</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ lein test
+
+lein test myproject.core-test
+:each fixutre-1 started.
+:each fixture-2 started.
+:each fixture-2 ended.
+:each fixutre-1 ended.
+:each fixutre-1 started.
+:each fixture-2 started.
+:each fixture-2 ended.
+:each fixutre-1 ended.
+
+Ran 2 tests containing 4 assertions.
+0 failures, 0 errors.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>deftest</code> 문이 실행될 때마다, <code>:each</code> 옵션 뒤에 지정한 fixture들이 지정된 순서대로
+실행되는 것을 확인할 수 있다.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2016-01-11 13:07:31 KST
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,436 @@
+= Testing
+:source-language: clojure
+:source-highlighter: coderay
+:sectnums:
+:imagesdir: ../img
+:linkcss:
+:stylesdir: ../
+:stylesheet: my-asciidoctor.css
+:docinfo1:
+:toc: right
+
+프로그램을 개발하는데 있어, TDD(Test Driven Development) 방법론은, 테스트와 프로그램
+개발을 병행함으로써, 이미 작성된 모든 프로그램 코드의 무결성을 그때 그때 확인해 가며
+개발을 진행할 수 있기 때문에, 나중에 발견될 수도 있는 버그 처리 과정을 미리 방지하게 해
+준다. 아울러 테스트 코드 자체가 프로그램 코드의 훌륭한 실행 예제를 제공하므로, 해당 API의
+문서화의 효과도 볼 수 있다.
+
+언뜻 생각하기에는, 프로그램 코드와 테스트 코드를 둘 다 작성하다 보면, 시간이 더 걸리는 것
+아니냐는 생각을 할 수도 있는데, 실제의 경험상으로는 그 반대다. 테스트 코드를 작성하며
+코딩을 진행하면, 본 코드를 작성할 때 테스트를 염두에 두고 코드를 짜게 된다. 그 결과
+테스트에 용이한 보다 단순하고 논리적인 코드를 작성하게 되어, 프로그램의 유지/보수에 더
+용이한 생산적인 코드를 낳게 된다. 아울러 코드를 개선할 때마다 테스트 코드를 실행함으로써,
+이전에 작성한 모든 코드들과의 호환성을 미리 검증하는 과정을 매번 거치치 되므로, 버그를
+미연에 방지해 주는 효과까지 곁들어지게 되어, 결과적으로는 프로젝트를 더 짧은 시간 안에
+완료할 수 있게 해 즌다. 코딩하는 시간보다 디버깅하는 시간이 훨씬 더 많이 든다는 것을 이미
+경험해 본 프로그래머라면 위의 주장이 쉽게 납득되리라 본다.
+
+클로저는 `clojure.test` 패키지에 TDD를 지원하는 기능이 준비되어 있다.
+
+== deftest & is
+
+대부분의 테스트 코드는 `deftest` 매크로와 `is` 매크로를 이용해 작성한다. 
+
+.deftest 매크로
+[listing]
+----
+(deftest name expr+)
+  name := test name을 지정한다.
+  expr := 실제 test 코드가 작성되는 자리.
+----
+
+.is 매크로
+[listing]
+----
+(is predicate message?)
+  predicate := 참 또는 거짓을 반환하는 form.
+  message := predicate이 거짓을 반환할 경우, 출력할 메시지.
+----
+
+`is` 매크로는, 테스트 실패시 출력할 메시지를, 두 번째 인수에 지정할 수도 있다.
+
+[source]
+....
+;; file: myproject/test/myproject/core_test.clj
+(ns myproject.core-test
+  (:use [clojure.test]))
+
+(deftest add
+  (is (= 4 (+ 2 2)))
+  (is (= 2 (+ 2 0)) "adding zero doesn't change value"))
+....
+
+`lein test` 명령을 내리면, `myproject/test` 폴더 아래의 모든 테스트 파일들을 읽어 들여
+실행한다. 각 테스트 파일 안의 모든 `deftest` 문을 실행한 후, 그 결과를 보고한다.
+
+[listing]
+----
+$ lein test
+
+lein test myproject.core-test
+
+Ran 1 tests containing 2 assertions.
+0 failures, 0 errors.
+----
+
+위에서는 test 1건, assertion 2건을 처리해 실패 0건, 에러 0건이 발생했음을 보고하고 있다.
+
+이번에는 의도적으로 테스트 실패를 유도해 보자.
+
+[source]
+....
+(ns myproject.core-test
+  (:use [clojure.test]))
+
+(deftest add
+  (is (= 4 (+ 2 2)))
+  (is (= 2 (+ 2 0)) "adding zero doesn't change value")
+  (is (= 9 (+ 4 4)))                            ; error here
+  (is (= 7 (+ 2 4)) "2 + 4 should return 6"))   ; error here
+....
+
+[listing]
+----
+$ lein test
+
+lein test myproject.core-test
+
+lein test :only myproject.core-test/add
+
+FAIL in (add) (core_test.clj:7)
+expected: (= 9 (+ 4 4))
+  actual: (not (= 9 8))
+
+lein test :only myproject.core-test/add
+
+FAIL in (add) (core_test.clj:8)
+2 + 4 should return 6
+expected: (= 7 (+ 2 4))
+  actual: (not (= 7 6))
+
+Ran 1 tests containing 4 assertions.
+2 failures, 0 errors.
+Tests failed.
+----
+
+
+== are
+
+.are 매크로
+[listing]
+----
+(are argv expr arg*)
+----
+
+``clojure.test``는 `is` 매크로 외에도 `are` 매크로를 제공한다. 이름을 통해 예상할 수
+있겠지만, 하나의 `are` 매크로는 여러 개의 `is` 매크로를 대신할 수 있다.
+
+방금 전에 든 예를, `are` 매크로를 사용해 재작성해 보면 다음과 같다.
+
+[source]
+....
+(ns myproject.core-test
+  (:use [clojure.test]))
+
+(deftest add
+  (are [sum x y] (= sum (+ x y))
+        4 2 2
+        2 2 0
+        9 4 4
+        7 2 4))
+....
+
+즉, ``sum``에 4, ``x``에 2, ``y``에 2가 각각 대입된 후, ``(= sum (+ x y))``가 수행됨을 알
+수 있다.
+
+[listing]
+----
+$ lein test
+
+lein test myproject.core-test
+
+lein test :only myproject.core-test/add
+
+FAIL in (add) (core_test.clj:5)
+expected: (= 9 (+ 4 4))
+  actual: (not (= 9 8))
+
+lein test :only myproject.core-test/add
+
+FAIL in (add) (core_test.clj:5)
+expected: (= 7 (+ 2 4))
+  actual: (not (= 7 6))
+
+Ran 1 tests containing 4 assertions.
+2 failures, 0 errors.
+Tests failed.
+----
+
+`are` 매크로는, 실제로는 여러 개의 `is` 매크로로 확장된다. 확장된 모습을 살펴보자.
+
+[source]
+....
+(macroexpand '(are [sum x y] (= sum (+ x y))
+                   4 2 2
+                   2 2 0
+                   9 4 4
+                   7 2 4))
+; => (do 
+;      (clojure.test/is (= 4 (+ 2 2)))
+;      (clojure.test/is (= 2 (+ 2 0)))
+;      (clojure.test/is (= 9 (+ 4 4)))
+;      (clojure.test/is (= 7 (+ 2 4))))
+....
+
+`is` 매크로로 모두 확장된 것을 직접 확인할 수 있다.
+
+
+== testing
+
+.testing 매크로
+[listing]
+----
+(testing string expr+)
+----
+
+`testing` 매크로는, 테스트를 그룹화하기 위한 용도로 사용되고, 테스트가 실패할 경우 출력할
+메시지를 지정할 수 있다. `deftest` 매크로 안에서 사용되어야 하며, 중첩될 수 있다.
+
+[source]
+....
+(ns myproject.core-test
+  (:use [clojure.test]))
+
+(deftest arithmetic
+  (testing "Addition"
+    (testing "with positive integers"
+      (is (= 4 (+ 2 2)))
+      (is (= 7 (+ 3 4))))
+    (testing "with negative integers"
+      (is (= -5 (+ -2 -2)))             ; error here
+      (is (= -1 (+ 3 -4))) )))
+....
+
+[listing]
+----
+$ lein test
+
+lein test myproject.core-test
+
+lein test :only myproject.core-test/arithmetic
+
+FAIL in (arithmetic) (core_test.clj:10)
+Addition with negative integers
+expected: (= -5 (+ -2 -2))
+  actual: (not (= -5 -4))
+
+Ran 1 tests containing 4 assertions.
+1 failures, 0 errors.
+Tests failed.
+----
+
+
+== exception 테스트
+
+``form``에서 던진 예외가, ``exception-class``와 일치하고, 함께 전달된 메시지가
+``message``와 일치하면 테스트를 통과하고, 그렇지 않으면 테스트가 실패한다.
+
+[listing]
+----
+(thrown? exception-class form)
+(thrown? exception-class message form)
+
+exception-class :=  form에서 발생이 예상되는 예외 클래스명
+message := 예외가 발생할 떄, 함께 전달되는 메시지, 정규식 문자열로 표시
+form := 예외를 발생하는 form
+----
+
+`is` 매크로 내에서, 예외가 실제로 발생하는 지를 테스트할 수 있다.
+
+[source]
+....
+(ns myproject.core-test
+  (:use [clojure.test]))
+
+(deftest divide-by-zero
+  ;; ArithmeticException 예외를 발생하므로, 테스트 통과
+  (is (thrown? ArithmeticException (/ 1 0)))
+
+  ;; ArithmeticException 예외를 발생하지 않으므로, 테스트 실패
+  (is (thrown? ArithmeticException (/ 1 2)))
+
+  ;; ArithmeticException 예외를 발생하고, 이때 전달되는 메시지가 일치하므로
+  ;; 테스트 통과
+  (is (thrown-with-msg? ArithmeticException #"Divide by zero"
+                        (/ 2 0) ))
+
+  ;; ArithmeticException 예외가 발생하지만, 이때 전달되는 메시지가 일치 안하므로
+  ;; 테스트 실패
+  (is (thrown-with-msg? ArithmeticException #"Incorrect message"
+                        (/ 2 0) ))
+
+  ;; ArithmeticException 예외를 발생하지 않으므로, 테스트 실패
+  (is (thrown-with-msg? ArithmeticException #"Divide by zero"
+                        (/ 1 3) )))
+....
+
+[listing]
+----
+$ lein test
+
+lein test myproject.core-test
+
+lein test :only myproject.core-test/divide-by-zero
+
+FAIL in (divide-by-zero) (core_test.clj:9)
+expected: (thrown? ArithmeticException (/ 1 2))
+  actual: nil
+
+lein test :only myproject.core-test/divide-by-zero
+
+FAIL in (divide-by-zero) (core_test.clj:18)
+expected: (thrown-with-msg? ArithmeticException #"Incorrect message" (/ 2 0))
+  actual: #error {
+ :cause "Divide by zero"
+ :via
+ [{:type java.lang.ArithmeticException
+   :message "Divide by zero"
+   :at [clojure.lang.Numbers divide "Numbers.java" 158]}]
+ :trace
+ [[clojure.lang.Numbers divide "Numbers.java" 158]
+  [clojure.lang.Numbers divide "Numbers.java" 3808]
+  [myproject.core_test$fn__194$fn__202 invoke "core_test.clj" 19]
+  [myproject.core_test$fn__194 invoke "core_test.clj" 18]
+  [clojure.test$test_var$fn__7670 invoke "test.clj" 704]
+  ......]}
+
+lein test :only myproject.core-test/divide-by-zero
+
+FAIL in (divide-by-zero) (core_test.clj:22)
+expected: (thrown-with-msg? ArithmeticException #"Divide by zero" (/ 1 3))
+  actual: nil
+
+Ran 1 tests containing 5 assertions.
+3 failures, 0 errors.
+Tests failed.
+----
+
+
+== fixture 사용하기
+
+테스트 코드를 작성하다 보면, 테스트 실행 직전 또는 직후에 실행되어야 하는 코드가
+있을 수 있다. 이때 필요한 것이 바로 fixture이다.
+
+[listing]
+----
+(use-fixtures :once fixture+)
+(use-fixtures :each fixture+)
+
+:once := 테스트 파일 전체에 걸쳐, fixture들을 지정된 순서대로 딱 한번만 수행한다.
+:each := deftest 문을 실행할 떄마다, fixture들을 지정된 순서대로 메번 수행한다.
+----
+
+`:once` 옵션의 경우를 먼저 살펴보자.
+
+[source]
+....
+(ns myproject.core-test
+  (:use [clojure.test]))
+
+(defn fixture-1 [f]
+  (println ":once fixutre-1 started.")
+  ; other codes here ...
+  (f)
+  (println ":once fixutre-1 ended.")
+  ; another codes here ...
+)
+
+(defn fixture-2 [f]
+  (println ":once fixture-2 started.")
+  ; other codes here ...  
+  (f)
+  (println ":once fixture-2 ended.")
+  ; another codes here ...
+)
+
+(use-fixtures :once fixture-1 fixture-2)
+
+(deftest add
+  (is (= 3 (+ 1 2)))
+  (is (= 8 (+ 3 5))))
+
+(deftest subtract
+  (is (= 5 (- 10 5)))
+  (is (= 2 (- 7  5))))
+....
+
+[listing]
+----
+$ lein test
+
+lein test myproject.core-test
+:once fixutre-1 started.
+:once fixture-2 started.
+:once fixture-2 ended.
+:once fixutre-1 ended.
+
+Ran 2 tests containing 4 assertions.
+0 failures, 0 errors.
+----
+
+테스트 종료시, 지정한 fixture 함수의 순서가 역순으로 실행되는 것에 주의하라.
+
+이번에는 `:each` 옵션의 경우를 살펴보자.
+
+[source]
+....
+(ns myproject.core-test
+  (:use [clojure.test]))
+
+(defn fixture-1 [f]
+  (println ":each fixutre-1 started.")
+  ; other codes here ...
+  (f)
+  (println ":each fixutre-1 ended.")
+  ; another codes here ...
+)
+
+(defn fixture-2 [f]
+  (println ":each fixture-2 started.")
+  ; other codes here ...  
+  (f)
+  (println ":each fixture-2 ended.")
+  ; another codes here ...
+)
+
+(use-fixtures :each fixture-1 fixture-2)
+
+(deftest add
+  (is (= 3 (+ 1 2)))
+  (is (= 8 (+ 3 5))))
+
+(deftest subtract
+  (is (= 5 (- 10 5)))
+  (is (= 2 (- 7  5))))
+....
+
+[listing]
+----
+$ lein test
+
+lein test myproject.core-test
+:each fixutre-1 started.
+:each fixture-2 started.
+:each fixture-2 ended.
+:each fixutre-1 ended.
+:each fixutre-1 started.
+:each fixture-2 started.
+:each fixture-2 ended.
+:each fixutre-1 ended.
+
+Ran 2 tests containing 4 assertions.
+0 failures, 0 errors.
+----
+
+`deftest` 문이 실행될 때마다, `:each` 옵션 뒤에 지정한 fixture들이 지정된 순서대로
+실행되는 것을 확인할 수 있다.
