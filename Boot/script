@@ -1,0 +1,10 @@
+#!/usr/bin/env boot
+
+(set-env! :dependencies '[[clj-time "0.11.0"]])
+
+(require '[clojure.string :as str]
+         '[clj-time.core :as time])
+
+(defn -main [& args]
+  (println (str/upper-case "hello, world! The time is") (time/now))
+  (System/exit 0))

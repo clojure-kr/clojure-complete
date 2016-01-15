@@ -1,0 +1,237 @@
+= Boot
+:source-highlighter: coderay
+:source-language: clojure
+:sectnums:
+:icons: font
+:imagesdir: ../img
+:linkcss:
+:stylesdir: ../
+:stylesheet: my-asciidoctor.css
+
+Boot는 Leiningen을 대체할 수 있는 build tool이다.
+
+Leiningen에서는 원하는 작업들을 `project.clj` 파일의 `defproject` '매크로' 안에
+기술한다. 따라서 이 매크로가 정해준 방식 이외의 방법으로 원하는 작업을 수행하기 힘들다는
+단점이 있다. 하지만 미리 정해진 방식이 있으므로, 개발자가 일일이 설정해 줄 일이 상대적으로
+적다는 장점도 있다.
+
+반면에, Boot는 원하는 작업들을 `build.boot` 파일 안에서 '함수'로 정의해 수행할 수
+있다. 따라서 자신이 원하는 작업들을 함수형 방식으로 조합해서 사용하는 것이
+가능하다. 따라서 개발자가 세세하게 설정해 줄 수 있는 장점도 있는 반면에, 그에 따라 제대로
+사용하기 위해서는 개발자가 알아야 할 것도 많다는 단점도 있다. 하지만 Boot가 제공하는 더
+많은 유연함과 확장성으로 인해, 현재는 Boot가 Leiningen에 비해 어리지만 시간이 지날수록
+Leiningen 사용자가 Boot로 많이 넘어 올 것으로 예상된다.
+
+
+== Boot의 특징
+
+예를 들어, Leiningen에서는 다음의 두 작업을 실행하면, JVM을 두 번 호출하게 된다.
+
+[listing]
+----
+$ lein clean
+$ lein compile
+----
+
+반면에, Boot에서는 여러 개의 작업을 수행하더라도 한 개의 JVM에서 실행되므로, 여러 작업을
+연이어 수행할 필요가 있을 때 JVM 로딩 시간으로 인한 지연을 피할 수 있다.
+
+그리고 Boot에서는 fileset이라는 개념을 새로 도입했다. 이것은 한 개의 작업을 실행한 결과로
+나오는 출력 파일들에 immutable이라는 개념을 적용한 것이다.
+
+[listing]
+----
+입력값      --> 함수       --> 출력값
+입력 파일들 --> 작업(task) --> 출력 파일들 
+----
+
+우리가 잘 알고 있는 클로저 함수들은 imutable 자료형을 다룬다. 마찬가지로 Boot는 한 개의
+작업을 수행할 때, 입력 파일들에 대해 어떤 작업을 수행한 후, 그 결과를 그 입력 파일들에
+다시 덮어쓰지 않는다. 대신에, 그 전의 입력 파일들(fileset)은 임시 디렉토리(~/.boot/tmp)
+아래에 먼저 저장해 놓는다. 그리고 그 입력 파일들에 작업을 수행한 결과 파일들을 target
+디렉토리(디폴트는 target)에 저장한다. 이러한 과정이 여러 개의 작업에 대해 반복적으로
+수행된다.
+
+
+== Boot의 설치
+
+먼저 다음의 과정을 따라 Boot를 설치해 보자. (설치 시점: 2015-12-24)
+
+.Windows
+* wget 설치는 link:../Development-Environments/development-environments.html#\_wget_설치[이곳]을 참조한다.
+[listing]
+----
+c:\> wget https://github.com/boot-clj/boot-bin/releases/download/2.4.2/boot.exe
+C:\> move boot.exe %SystemRoot%
+----
+
+.Unix, Linux, OSX
+[listing]
+----
+$ wget https://github.com/boot-clj/boot-bin/releases/download/2.4.2/boot.sh
+$ mv boot.sh boot
+$ chmod a+x boot
+$ sudo mv boot /usr/local/bin
+----
+
+.OSX with Homebrew
+[listing]
+----
+$ brew install boot-clj
+----
+
+위와 같이 설치한 후, 다음의 명령을 실행해 다음과 같은 화면이 나오면 설치에 성공한
+것이다. 처음 실행하는 경우, boot 실행에 필요한 여러 라비브러리들을 함께 다운로드하므로
+시간이 좀 걸린다.
+  
+[listing]
+----
+$ boot
+Downloading https://github.com/boot-clj/boot/releases/download/2.4.2/boot.jar...done.
+Running for the first time: updating to latest version.
+Retrieving boot-2.5.2.jar from https://clojars.org/repo/
+Retrieving clojure-1.7.0.jar from https://repo1.maven.org/maven2/
+#https://github.com/boot-clj/boot
+#Thu Dec 24 12:32:40 KST 2015
+BOOT_CLOJURE_NAME=org.clojure/clojure
+BOOT_VERSION=2.5.2
+BOOT_CLOJURE_VERSION=1.7.0
+
+$ boot -h
+Downloading https://github.com/boot-clj/boot/releases/download/2.5.2/boot.jar...done.
+Retrieving dynapath-0.2.3.jar from https://clojars.org/repo/
+Retrieving pod-2.5.2.jar from https://clojars.org/repo/
+Retrieving shimdandy-impl-1.2.0.jar from https://repo1.maven.org/maven2/
+Retrieving core-2.5.2.jar from https://clojars.org/repo/
+Retrieving worker-2.5.2.jar from https://clojars.org/repo/
+Retrieving aether-2.5.2.jar from https://clojars.org/repo/
+......
+
+Usage:   boot OPTS <task> TASK_OPTS <task> TASK_OPTS ...
+
+OPTS:    -a --asset-paths PATH       Add PATH to set of asset directories.
+         -b --boot-script            Print generated boot script for debugging.
+         -B --no-boot-script         Ignore boot script in current directory.
+         -C --no-colors              Remove ANSI escape codes from printed output.
+         -d --dependencies SYM:VER   Add dependency to project (eg. -d foo/bar:1.2.3).
+         -e --set-env KEY=VAL        Add KEY => VAL to project env map.
+         -h --help                   Print basic usage and help info.
+         -P --no-profile             Skip loading of profile.boot script.
+         -r --resource-paths PATH    Add PATH to set of resource directories.
+         -q --quiet                  Suppress output from boot itself.
+         -s --source-paths PATH      Add PATH to set of source directories.
+         -t --target-path PATH       Set the target directory to PATH.
+         -T --no-target              Don't automatically write files to the target directory.
+         -u --update                 Update boot to latest release version.
+         -v --verbose                More error info (-vv more verbose, etc.)
+         -V --version                Print boot version info.
+
+Tasks:   add-repo                    Add all files in project git repo to fileset.
+         aot                         Perform AOT compilation of Clojure namespaces.
+         checkout                    Checkout dependencies task.
+         help                        Print usage info and list available tasks.
+         install                     Install project jar to local Maven repository.
+         jar                         Build a jar file for the project.
+         javac                       Compile java sources.
+         pom                         Create project pom.xml file.
+         push                        Deploy jar file to a Maven repository.
+         repl                        Start a REPL session for the current project.
+         show                        Print project/build info (e.g. dependency graph, etc).
+         sift                        Transform the fileset, matching paths against regexes.
+         speak                       Audible notifications during build.
+         target                      Writes output files to the given directory on the filesystem.
+         uber                        Add jar entries from dependencies to fileset.
+         wait                        Wait before calling the next handler.
+         war                         Create war file for web deployment.
+         watch                       Call the next handler when source files change.
+         web                         Create project web.xml file.
+         zip                         Build a zip file for the project.
+
+Env:     BOOT_AS_ROOT                Set to 'yes' to allow boot to run as root.
+         BOOT_CLOJURE_VERSION        The version of Clojure boot will provide (1.7.0).
+         BOOT_CLOJURE_NAME           The artifact name of Clojure boot will provide (org.clojure/clojure).
+         BOOT_COLOR                  Set to 'no' to turn colorized output off.
+         BOOT_EMIT_TARGET            Set to 'no' to disable automatic writing to target directory.
+         BOOT_FILE                   Build script name (build.boot).
+         BOOT_GPG_COMMAND            System gpg command (gpg).
+         BOOT_HOME                   Directory where boot stores global state (~/.boot).
+         BOOT_JAVA_COMMAND           Specify the Java executable (java).
+         BOOT_JVM_OPTIONS            Specify JVM options (Unix/Linux/OSX only).
+         BOOT_LOCAL_REPO             The local Maven repo path (~/.m2/repository).
+         BOOT_VERSION                Specify the version of boot core to use.
+         BOOT_WARN_DEPRECATED        Set to 'no' to suppress deprecation warnings.
+
+Files:   ./boot.properties           Specify boot options for this project.
+         BOOT_HOME/boot.properties   Specify global boot options.
+         BOOT_HOME/profile.boot      A script to run before running the build script.
+
+Do `boot <task> -h` to see usage info and TASK_OPTS for <task>.
+----
+
+
+== Boot update하기
+
+`boot -u` 명령을 실행하면 최신 버전의 boot로 update할 수 있다. 아래의 예에서는 이미
+최신버전이어서 update가 이루어지지 않고 있댜.
+
+[listing]
+----
+$ boot -u
+#http://boot-clj.com
+#Thu Dec 24 12:48:41 KST 2015
+BOOT_CLOJURE_NAME=org.clojure/clojure
+BOOT_CLOJURE_VERSION=1.7.0
+BOOT_VERSION=2.5.2
+----
+
+== task 설명 보기
+
+해당 작업에 대한 옵션이나 설명을 보려면 ``boot <task-name> -h``를 실행한다.
+
+[listing]
+----
+$ boot watch -h
+Call the next handler when source files change.
+
+Debouncing time is 10ms by default.
+
+Options:
+  -h, --help     Print this help info.
+  -q, --quiet    Suppress all output from running jobs.
+  -v, --verbose  Print which files have changed.
+  -M, --manual   Use a manual trigger instead of a file watcher.
+----
+
+
+== REPL 실행하기
+
+[listing]
+----
+$ boot repl
+nREPL server started on port 46131 on host 127.0.0.1 - nrepl://127.0.0.1:46131
+REPL-y 0.3.7, nREPL 0.2.12
+Clojure 1.7.0
+Java HotSpot(TM) 64-Bit Server VM 1.8.0_66-b17
+        Exit: Control+D or (exit) or (quit)
+    Commands: (user/help)
+        Docs: (doc function-name-here)
+              (find-doc "part-of-name-here")
+Find by Name: (find-name "part-of-name-here")
+      Source: (source function-name-here)
+     Javadoc: (javadoc java-object-or-class-here)
+    Examples from clojuredocs.org: [clojuredocs or cdoc]
+              (user/clojuredocs name-here)
+              (user/clojuredocs "ns-here" "name-here")
+boot.user=> (+ 1 2)
+3
+boot.user=> (exit)
+Bye for now!
+
+$  
+----
+
+== boot show
+
+== boot watch
+
+watch는 source-paths에 지정된 파일들이 변경되는 것을 감시한다.
