@@ -31,8 +31,8 @@
 있다. 따라서 자신이 원하는 작업들을 함수형 방식으로 조합해서 사용하는 것이
 가능하다. 따라서 개발자가 세세하게 설정해 줄 수 있는 장점도 있는 반면에, 그에 따라 제대로
 사용하기 위해서는 개발자가 알아야 할 것도 많다는 단점도 있다. 하지만 Boot가 제공하는 더
-많은 유연함과 확장성으로 인해, 현재는 Boot가 Leiningen에 비해 어리지만 시간이 지날수록
-Leiningen 사용자가 Boot로 많이 넘어 올 것으로 예상된다.</p>
+많은 유연함과 확장성으로 인해, 현재는 Boot 프로젝트가 Leiningen에 비해 늦게 시작했지만,
+시간이 지날수록 Leiningen 사용자가 Boot로 많이 넘어 올 것으로 예상된다.</p>
 </div>
 </div>
 </div>
@@ -63,12 +63,12 @@ $ lein compile</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>우리가 잘 알고 있는 클로저 함수들은 imutable 자료형을 다룬다. 마찬가지로 Boot는 한 개의
+<p>우리가 잘 알고 있는 클로저 함수들은 immutable 자료형을 다룬다. 마찬가지로 Boot는 한 개의
 작업을 수행할 때, 입력 파일들에 대해 어떤 작업을 수행한 후, 그 결과를 그 입력 파일들에
-다시 덮어쓰지 않는다. 대신에, 그 전의 입력 파일들(fileset)은 임시 디렉토리(~/.boot/tmp)
-아래에 먼저 저장해 놓는다. 그리고 그 입력 파일들에 작업을 수행한 결과 파일들을 target
-디렉토리(디폴트는 target)에 저장한다. 이러한 과정이 여러 개의 작업에 대해 반복적으로
-수행된다.</p>
+다시 덮어쓰지 않는다. 그 대신에, 각 버전의 출력 파일들(fileset)을 임시
+디렉토리(~/.boot/tmp) 아래에 보관해 둔다. 이러한 과정이 여러 개의 작업들을 대상으로
+반복적으로 수행된다. 그리고 그 입력 파일들에 작업을 수행한 최종 결과 파일들을 target
+디렉토리(디폴트는 target)에 복사해 놓는다.</p>
 </div>
 </div>
 </div>
@@ -76,7 +76,7 @@ $ lein compile</pre>
 <h2 id="_boot의_설치">2. Boot의 설치</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>먼저 다음의 과정을 따라 Boot를 설치해 보자. (설치 시점: 2015-12-24)</p>
+<p>먼저 다음의 과정을 따라 Boot를 설치해 보자. (설치 시점: 2016-01-15)</p>
 </div>
 <div class="ulist">
 <div class="title">Windows</div>
@@ -88,14 +88,14 @@ $ lein compile</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>c:\&gt; wget https://github.com/boot-clj/boot-bin/releases/download/2.4.2/boot.exe
+<pre>c:\&gt; wget https://github.com/boot-clj/boot-bin/releases/download/2.5.2/boot.exe
 C:\&gt; move boot.exe %SystemRoot%</pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">Unix, Linux, OSX</div>
 <div class="content">
-<pre>$ wget https://github.com/boot-clj/boot-bin/releases/download/2.4.2/boot.sh
+<pre>$ wget https://github.com/boot-clj/boot-bin/releases/download/2.5.2/boot.sh
 $ mv boot.sh boot
 $ chmod a+x boot
 $ sudo mv boot /usr/local/bin</pre>
@@ -109,13 +109,13 @@ $ sudo mv boot /usr/local/bin</pre>
 </div>
 <div class="paragraph">
 <p>위와 같이 설치한 후, 다음의 명령을 실행해 다음과 같은 화면이 나오면 설치에 성공한
-것이다. 처음 실행하는 경우, boot 실행에 필요한 여러 라비브러리들을 함께 다운로드하므로
+것이다. 처음 실행하는 경우, boot 실행에 필요한 여러 라이브러리들을 함께 다운로드하므로
 시간이 좀 걸린다.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre>$ boot
-Downloading https://github.com/boot-clj/boot/releases/download/2.4.2/boot.jar...done.
+Downloading https://github.com/boot-clj/boot/releases/download/2.5.2/boot.jar...done.
 Running for the first time: updating to latest version.
 Retrieving boot-2.5.2.jar from https://clojars.org/repo/
 Retrieving clojure-1.7.0.jar from https://repo1.maven.org/maven2/
@@ -272,7 +272,133 @@ $</pre>
 <div class="sect1">
 <h2 id="_boot_show">6. boot show</h2>
 <div class="sectionbody">
-
+<div class="sect2">
+<h3 id="__c_classpath">6.1. -c, --classpath</h3>
+<div class="paragraph">
+<p>현재 프로젝트의 classpath를 보여 준다. 다음의 출력 결과는 일부는 생략하고, 보기 좋게
+정리한 것이다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ boot show -c
+/usr/lib/jvm/java-8-oracle/jre/lib/ext/nashorn.jar:
+/usr/lib/jvm/java-8-oracle/jre/lib/ext/jfxrt.jar:
+/usr/lib/jvm/java-8-oracle/jre/lib/ext/cldrdata.jar:
+/usr/lib/jvm/java-8-oracle/jre/lib/ext/sunjce_provider.jar:
+......</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="__e_env">6.2. -e, --env</h3>
+<div class="paragraph">
+<p>현재 프로젝트의 <code>env</code> 정보를 출력해 준다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ boot show -e
+{:watcher-debounce 10,
+ :dependencies
+ [[org.clojure/clojure "1.7.0"]
+  [org.clojure/clojurescript "1.7.228"]
+  [cljsjs/d3 "3.5.7-1"]
+  [reagent "0.5.1"]
+  [domina "1.0.3"]
+  [datascript "0.13.3"]
+  [posh "0.3.3.1"]
+  [philoskim/debux "0.1.0"]
+  [adzerk/boot-cljs "1.7.170-3" :scope "test"]
+  [pandeiro/boot-http "0.7.0" :scope "test"]
+  [adzerk/boot-reload "0.4.2" :scope "test"]
+  [adzerk/boot-cljs-repl "0.3.0" :scope "test"]
+  [com.cemerick/piggieback "0.2.1" :scope "test"]
+  [weasel "0.7.0" :scope "test"]
+  [org.clojure/tools.nrepl "0.2.12" :scope "test"]
+  [adzerk/boot-test "1.0.7" :scope "test"]
+  [crisptrutski/boot-cljs-test "0.2.1" :scope "test"]],
+ :directories
+ #{"/home/philos/.boot/cache/tmp/home/philos/work/chart/emh/f0sqpx"
+   "/home/philos/.boot/cache/tmp/home/philos/work/chart/emh/-rcsl8f"
+   "/home/philos/.boot/cache/tmp/home/philos/work/chart/emh/-grrwi1"
+   "/home/philos/.boot/cache/tmp/home/philos/work/chart/emh/62mkia"},
+ :source-paths #{"src/cljs"},
+ :resource-paths #{"html"},
+ :asset-paths #{},
+ :target-path "target",
+ :repositories
+ [["clojars" {:url "https://clojars.org/repo/"}]
+  ["maven-central" {:url "https://repo1.maven.org/maven2"}]],
+ :config
+ {"BOOT_CLOJURE_NAME" "org.clojure/clojure", "BOOT_JVM_OPTIONS" "-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xverify:none", "BOOT_FILE" "build.boot", "BOOT_CLOJURE_VERSION" "1.7.0", "BOOT_VERSION" "2.5.5"}}</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="__u_updates">6.3. -u, --updates</h3>
+<div class="paragraph">
+<p><code>build.boot</code> 파일의 <code>set-env!</code> 함수의 <code>:dependencies</code>에 지정한 라이브러리들보다 더 최신
+버전이 있으면 일단 <code>~/.m2/repository</code> 디렉토리에 내려 받아 놓은 후, 최신 버전의 목록을
+보여 준다. 이를 확인한 후에, 위의 <code>:dependencies</code>의 해당 라이브러리 버전을 수작업으로
+직접 바꾸어 주어야 한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ boot show -u
+Retrieving clojure-1.8.0-RC5.jar from https://repo1.maven.org/maven2/
+Retrieving clojure-1.4.0.jar from https://clojars.org/repo/
+Retrieving datascript-0.14.0.jar from https://clojars.org/repo/
+Retrieving boot-cljs-1.7.228-1.jar from https://clojars.org/repo/
+Retrieving boot-reload-0.4.4.jar from https://clojars.org/repo/
+[org.clojure/clojure "1.8.0-RC5"]
+[reagent "0.6.0-alpha"]
+[datascript "0.14.0"]
+[adzerk/boot-cljs "1.7.228-1" :scope "test"]
+[adzerk/boot-reload "0.4.4" :scope "test"]
+[adzerk/boot-test "1.1.0" :scope "test"]</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="__p_pedantic">6.4. -p, --pedantic</h3>
+<div class="paragraph">
+<p>각 라이브러리가 의존하고 있는 라이브러리의 버전이 상이할 떄, 각 라이브러리들이 어느 버전의
+라이브러리들에 의존하고 있는지를 일목요연하게 보여준다. 아래의 출력 결과에서 일부 내용은
+생략했다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ boot show -p
+[✔] org.clojure/clojure
+    ✘ 1.7.0-RC1
+      weasel
+    ✔ 1.7.0
+      posh
+      reagent
+      org.clojure/clojure
+      org.clojure/clojurescript
+      philoskim/debux
+    ✘ 1.6.0
+      com.cemerick/piggieback
+    ✘ 1.4.0
+      domina
+    ✘ 1.2.0
+      org.clojure/tools.nrepl
+[✔] org.clojure/clojurescript
+    ✔ 1.7.228
+      org.clojure/clojurescript
+    ✘ 1.7.170
+      posh
+    ✘ 1.7.48
+      reagent
+    ✘ 0.0-3308
+      weasel
+      philoskim/debux
+    ✘ 0.0-3165
+      com.cemerick/piggieback
+......</pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -286,7 +412,7 @@ $</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-01-15 14:39:22 KST
+Last updated 2016-01-15 17:45:58 KST
 </div>
 </div>
 </body>

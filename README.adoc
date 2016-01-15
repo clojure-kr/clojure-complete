@@ -32,7 +32,7 @@ github가 asciidoc 형식의 문서 내용 중 일부를 html 형식으로 제�
 
 :leveloffset: 1
 
-. link:Preface/preface.adoc[Preface]
+. link:Preface/preface.adoc[서문]
 . 왜 클로저인가?
 . link:Development-Environments/development-environments.adoc[개발 환경]
 . link:Start/start.adoc[클로저 시작하기]
@@ -61,6 +61,7 @@ github가 asciidoc 형식의 문서 내용 중 일부를 html 형식으로 제�
 . 파서
 . 문자 인코딩
 . GUI 프로그래밍
+. link:Boot/boot.adoc[Boot 사용하기]
 
 //. link:Why-Clojure/why-clojure.adoc[Why Clojure?]
 //. link:Collections-and-Sequences/collections-and-sequences.adoc[Collections and Sequences]

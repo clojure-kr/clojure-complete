@@ -55,6 +55,7 @@ commit은 수시로 이루어지지만, 버전 번호는 큰 변화가 있다고
 . 파서
 . 문자 인코딩
 . GUI 프로그래밍
+. <<Boot/boot.html#, Boot 사용하기>>
 ****
 
 //. <<Why-Clojure/why-clojure.html#, Why Clojure?>>
