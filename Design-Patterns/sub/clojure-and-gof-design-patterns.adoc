@@ -1,0 +1,13 @@
+= Clojure and GOF Design Patterns
+:source-highlighter: coderay
+:source-language: clojure
+:sectnums:
+:icons: font
+:imagesdir: ../img
+:linkcss:
+:stylesdir: ../
+:stylesheet: my-asciidoctor.css
+:docinfo1:
+:toc: right
+
+== GOF Design Patterns
