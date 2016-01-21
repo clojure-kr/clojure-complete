@@ -1,63 +1,78 @@
-= Clojure and GOF Design Patterns
-:source-highlighter: coderay
-:source-language: clojure
-:sectnums!:
-:icons: font
-:imagesdir: ../img
-:linkcss:
-:stylesdir: ../
-:stylesheet: my-asciidoctor.css
-:docinfo1:
-:toc: right
-
-== GOF Design Patterns
+Clojure Design Patterns
+클로저 디자인 패턴
 
 Quick overview of the classic Design Patterns in Clojure
+기존의 디자인 패턴을 클로저의 관점에서 조명하기
 
 Disclaimer: Most patterns are easy to implement because we use dynamic typing, functional programming and, of course, Clojure. Some of them look wrong and ugly. It's okay. All characters are fake, coincidences are accidental.
+고지 사항: 클로저는 동적 타입 언어이자 함수형 프로그래밍 언어여서, 대부분의 패턴은 클로저로 쉽게 구현될 수 있다. 일부 구현은 부적절하고 부자연스럽게 보일 수도 있지만, 크게 문제될 것은 없다. 이 글에 등장하는 인물은 모두 가공의 인물이다. 특정인과 일치할 수도 있지만, 우연일 뿐이다.   
+  
+Index
+목차
 
-=== Intro
+Intro
+Episode 1. Command
+Episode 2. Strategy
+Episode 3. State
+Episode 4. Visitor
+Episode 5. Template Method
+Episode 6. Iterator
+Episode 7. Memento
+Episode 8. Prototype
+Episode 9. Mediator
+Episode 10. Observer
+Episode 11. Interpreter
+Episode 12. Flyweight
+Episode 13. Builder
+Episode 14. Facade
+Episode 15. Singleton
+Episode 16. Chain of Responsibility
+Episode 17. Composite
+Episode 18. Factory Method
+Episode 19. Abstract Factory
+Episode 20. Adapter
+Episode 21. Decorator
+Episode 22. Proxy
+Episode 23. Bridge
+Cheatsheet
+Cast
+
+
+Intro
+도입
 
 Our programming language is fucked up.
 That's why we need design patterns.
+우리가 사용하는 프로그래밍 언어는 개판이다. 
+그래서 디자인 패턴이 필요하게 된다.
 
--- Anonymous
-
-
-[quote,Anonymous]
-____
-Our programming language is fucked up. +
-That's why we need design patterns.
-____
-
-
+-- Anonymous 
+-- 익명의 프로그래머가
 
 Two modest programmers Pedro Veel and Eve Dopler are solving common software engineering problems and applying design patterns.
+평범한 두 프로그래머 페트로 빌(Pedro Veel)과 이브 도플러(Eve Dopler)가 흔히 부딪히는 소프트웨어 문제를 해결하며 디자인 패턴을 적용하고 있다.
 
-=== Episode 1. Command
+Episode 1. Command
+에피소드 1. 커맨드 패턴
 
+<상황>
 Leading IT service provider "Serpent Hill & R.E.E" acquired new project for USA customer. First delivery is a register, login and logout functionality for their brand new site.
+중견 IT 서비스 회사 Serpent Hill & R.E.E는 미국 소비자들을 대상으로 하는 새로운 프로젝트를 수주했다. 첫 번째로 할 일은 새로운 사이트의 회원 가입과 로그인, 로그아웃을 처리하는 것이다.
+</상황>
 
 Pedro: Oh, that's easy. You just need a Command interface...
+페드로: 아! 그건 쉬어요. `Command` 인터페이스가 필요하네요.
 
-[horizontal]
-Pedro:: Oh, that's easy. You just need a Command interface...
-
-[source,java]
-....
+<자바>
 interface Command {
   void execute();
 }
-....
-
+</자바>
 
 Pedro: Every action should implement this interface and define specific execute behaviour.
+페드로: 모든 클래스에서 이 인터페이스를 구현하고 `execute` 메소드를 정의하면 됩니다.
 
-[horizontal]
-Pedro:: Every action should implement this interface and define specific execute behaviour.
-
-[source]
-....
+<자바>
 public class LoginCommand implements Command {
 
   private String user;
@@ -73,7 +88,9 @@ public class LoginCommand implements Command {
     DB.login(user, password);
   }
 }
+</자바>
 
+<자바>
 public class LogoutCommand implements Command {
 
   private String user;
@@ -87,60 +104,110 @@ public class LogoutCommand implements Command {
     DB.logout(user);
   }
 }
-....
+</자바>
 
 Pedro: Usage is simple as well.
+페드로: 사용법도 간단합니다.
 
+<자바>
 (new LoginCommand("django", "unCh@1ned")).execute();
 (new LogoutCommand("django")).execute();
-Pedro: What do you think, Eve?
-Eve: Why are you using redundant wrapping into LoginCommand and just don't call DB.login?
-Pedro: It's important to wrap here, because now we can operate on generic Command objects.
-Eve: For what purpose?
-Pedro: Delayed call, logging, history tracking, caching, plenty of usages.
-Eve: Ok, how about that?
+</자바>
 
+
+Pedro: What do you think, Eve?
+페드로: 어떻게 생각해요, 이브?
+
+Eve: Why are you using redundant wrapping into LoginCommand and just don't call DB.login?
+이브: 단순히 ``DB.login``을 호출하지 않고, 굳이 `LoginCommand` 안에 감싸는 거죠?
+
+Pedro: It's important to wrap here, because now we can operate on generic Command objects.
+페드로: 여기서 감싸서 호출하는 건 중요해요. 그래야 좀 더 추상화된 `Command` 객체를 대상으로 작업을 수행할 수 있거든요.
+
+Eve: For what purpose?
+이브: 왜 그래야 하죠?
+
+Pedro: Delayed call, logging, history tracking, caching, plenty of usages.
+페드로: 지연 호출이나, 로그 기록, 기록 추적, 캐싱 등등을 하기 위해서죠.
+
+Eve: Ok, how about that?
+이브: 그런 용도를 위해서라면 이건 어때요?
+
+<클로저>
 (defn execute [command]
   (command))
 
 (execute #(db/login "django" "unCh@1ned"))
 (execute #(db/logout "django"))
-Pedro: What the hell this hash sign?
-Eve: A shortcut for javaish
+</클로저>
 
+Pedro: What the hell this hash sign?
+페드로: 이 해시(#) 기호는 도대체 뭐죠?
+
+Eve: A shortcut for javaish
+이브: 다음의 자바 코드의 단축형으로 보면 되요.
+
+<자바>
 new SomeInterfaceWithOneMethod() {
   @Override
   public void execute() {
     // do
   }
 };
-Pedro: Just like Command interface...
-Eve: Or if you want - no-hash solution.
+</자바>
 
+Pedro: Just like Command interface...
+페드로: `Command` 인터페이스처럼 보이네요.
+
+Eve: Or if you want - no-hash solution.
+이브: 원한다면, 다음과 같이 해시 기호 없이 구현할 수도 있어요.
+
+<클로저>
 (defn execute [command & args]
   (apply command args))
 
 (execute db/login "django" "unCh@1ned")
+</클로저>
+
 Pedro: And how do you save function for delayed call in that case?
+페드로: 이 경우에 지연 호출을 위해 함수를 보관하려면 어떻게 해야 하나요?
+
 Eve: Answer yourself. What do you need to call a function?
+이브: 스스로에게 물어 보면 알 수 있어요. 함수를 호출하려면 무엇이 필요하죠?
+
 Pedro: Its name...
+페드로: 함수 이름이죠.
+
 Eve: And?
+이브: 그리고요?
+
 Pedro: ...arguments.
+페드로: 함수의 인수들이겠죠.
+
 Eve: Bingo. All you do is saving a pair (function-name, arguments) and call it whenever you want using (apply function-name arguments)
+이브: 맞았어요! 단순히 ``function-name``과 ``arguments``를 보관해 두었다가 언제든 원할 때 `(apply function-name arguments)` 형식으로 호출하면 되요.
+
 Pedro: Hmm... Looks simple.
+페드로: 음... 간단해 보이네요.
+
 Eve: Definitely, Command is just a function.
+이브: 물론이죠. ``Command``는 단순히 함수일 뿐이니까요.
+
 
 Episode 2. Strategy
+에피소드 2. 전략 패턴
 
+<상황>
 Sven Tori pays a lot of money to see a page with list of users. But users must be sorted by name and users with subscription must appear before all other users. Obviously, because they pay. Reverse sorting should keep subscripted users on top.
+</상황>
 
 Pedro: Ha, just call Collections.sort(users, comparator) with custom comparator.
 Eve: How would you implement custom comparator?
 Pedro: You need to take Comparator interface and provide implementation for compare(Object o1, Object o2) method. Also you need another implementation for ReverseComparator
 Eve: Stop talking, show me the code!
 
+<자바>
 class SubsComparator implements Comparator<User> {
-
   @Override
   public int compare(User u1, User u2) {
     if (u1.isSubscription() == u2.isSubscription()) {
@@ -2474,3 +2541,4 @@ mishadoff
 Code Golf: New Year Tree →← Littlepot: Autofilled Cache
 
 random thoughts about programming, math and life | mishadoff Design by Mark Reid | Powered by Jekyll
+
