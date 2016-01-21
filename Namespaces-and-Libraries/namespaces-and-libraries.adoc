@@ -722,6 +722,51 @@ my-new-namespace> (* 4 5)
 20
 ....
 
+`in-ns` 함수의 또다른 용도는, 하나의 이름 공간으로 많은 기능을 제공하고 싶을 때이다. 예를
+들어, 하나의 이름공간에 제공하고자 하는 코드가 10,000 라인에 이른다고 가정해보자. 이것을
+더 작은 이름 공간 단위로 나누어 제공하는 것이 더 바람직하겠지만, 경우에 따라서는 하나의
+이름 공간으로 제공하고 싶은 경우도 있을 수 있다footnote:[이런 대표적인 예가
+``clojure.pprint`` 이름공간이다.]. 이런 경우 하나의 파일 안에 모든 코드를 작성해 놓으면
+코드의 관리와 유지/보수가 어려워지게 된다. 이럴 때 `in-ns` 함수를 `load` 함수와 함께
+다음과 같이 이용할 수 있다.
+
+.very-huge-namespace.clj
+[source]
+....
+(ns very-huge-namespace)
+
+......
+(load "small-part-1")
+(load "small-part-2")
+......
+....
+
+.small-part-1.clj
+[source]
+....
+(ns small-part-1)
+
+(in-ns 'very-huge-namespace)
+
+;; small-part-1 code here
+.......
+....
+
+.small-part-2.clj
+[source]
+....
+(ns small-part-2)
+
+(in-ns 'very-huge-namespace)
+
+;; small-part-2 code here
+.......
+....
+
+
+
+
+
 
    
 
