@@ -1799,11 +1799,20 @@ Pedro: Pretty the same.
 
 Feverro O'Neal complains that we have a lot of different styles for UI.
 Force one per application UI configuration.
+페베로 오닐은 UI에 너무 다양한 스타일 있다고 불평한다.
+어플리케이션 UI 구성당 하나만 쓰도록 하자.
 
 Pedro: But wait, there was requirement to save UI style per user.
-Eve: Probably it was changed.
-Pedro: Ok, then we should just save configuration to Singleton and use it from all the places.
+페드로: 하지만 잠깐만요, 유저마다 UI 스타일을 저장하라는 요구사항이 있었죠.
 
+Eve: Probably it was changed.
+이브: 아마도 그게 변했지요.
+
+Pedro: Ok, then we should just save configuration to Singleton and use it from all the places.
+페드로: 오케이, 그러면 구성을 싱글톤에 저장하고 모든 곳에서 싱글톤을 사용하면 돼요.
+
+[source, java]
+....
 public final class UIConfiguration {
   public static final UIConfiguration INSTANCE = new UIConfiguration("ui.config");
 
@@ -1829,35 +1838,86 @@ public final class UIConfiguration {
     return fontStyle;
   }
 }
-Pedro: That way all configuration will be shared across the UIs.
-Eve: Yes, but...why so much code?
-Pedro: We guarantee that only one instance of UIConfiguration will exist.
-Eve: Let me ask you: what's the difference between singleton and global varaible.
-Pedro: What?
-Eve: ...the difference between singleton and global variable.
-Pedro: Java does not support global variables.
-Eve: But UIConfiguration.INSTANCE is global variable.
-Pedro: Well, sort of.
-Eve: Your code is just simple def in clojure.
+....
 
+Pedro: That way all configuration will be shared across the UIs.
+페드로: 저런식으로 모든 구성 정보가 UI들 사이에서 공유되는 거죠.
+
+Eve: Yes, but...why so much code?
+이브: 네, 하지만... 코드가 왜 이리 많죠?
+
+Pedro: We guarantee that only one instance of UIConfiguration will exist.
+페드로: ``UIConfiguration``의 인스턴스가 오직 하나만 존재하도록 보장한거죠.
+
+Eve: Let me ask you: what's the difference between singleton and global varaible.
+이브: 물어볼게요: 싱글톤과 전역변수의 차이가 뭐죠?
+
+Pedro: What?
+페드로: 뭐라구요?
+
+Eve: ...the difference between singleton and global variable.
+이브: ...싱글톤과 전역 변수의 차이요.
+
+Pedro: Java does not support global variables.
+페드로: 자바는 전역변수를 지원하지 않아요.
+
+Eve: But UIConfiguration.INSTANCE is global variable.
+이브: 하지만 ``UIConfiguration.INSTANCE``는 전역변수에요.
+
+Pedro: Well, sort of.
+페드로: 글쎄요, 비슷하긴 하죠.
+
+Eve: Your code is just simple def in clojure.
+이브: 저 자바 코드는 클로저에서는 그냥 단지 def일 뿐이죠.
+
+[source, clojure]
+....
 (def ui-config (load-config "ui.config"))
 
 (defn load-config [config-file]
   ;; process config file and return map with configuratios
   {:bg-style "black" :font-style "Arial"})
+....
+
 Pedro: But, how do you change the style?
+페드로: 하지만, 스타일을 어떻게 바꾸죠?
+
 Eve: The same way you will change it in your code.
+이브: 자바에서 하는 것과 똑같은 방식으로요.
+
 Pedro: Uhm... Ok, we need a simple tweak. Make UIConfiguration.loadConfig is public and call it when the configuration changes.
+페드로: 음... 오케이, 살짝 바꿔볼게요. ``UIConfiguration.loadConfig``를 public으로 만들고 구성이 바뀌면 호출하는 한다면.
+
 Eve: Then we make ui-config an atom and call swap! when configuration changes.
+이브: 그러면 ``ui-config``를 아톰으로 하고, 구성이 바뀌면 ``swap!``을 호출하면 되요.
+
 Pedro: But atoms are useful only in concurrent environment.
+페드로: 하지만 아톰은 병행 프로그래밍 상황에서만 유용하잖아요.
+
 Eve: First, yes, they useful, but NOT only in concurrent environment. Second, atom read is not as slow as you think. Third, it changes the state of UI configuration atomically
+이브: 첫째, 맞아요, 유용하죠, 하지만 병행 프로그래밍 상황에만 그런건 아니에요. 둘째, 아톰을 읽는 것은 생각만큼 느리지 않아요. 셋째, 아톰은 UI 구성을 원자적으로 상태를 바꾸죠.
+
 Pedro: It is redundant for such simple example.
+페드로: 저런 단순한 예제에 대해서는 좀 과분하네요.
+
 Eve: No, it is not. There is a posibility that UI configuration changes and some renders read new backgroundStyle, but old fontStyle
+이브: 아니요, 그렇지 않아요. UI 구성이 바뀔 때 랜더러들이 ``backgroundStyle``는 바뀐 것으로, 하지만 ``fontStyle``은 이전 것으로 읽을 가능성이 있어요.
+
 Pedro: Ok, use synchronized for loadConfig
+페드로: 오케이, ``loadConfig``에 ``synchronized``를 사용하면 되겠네요.
+
 Eve: Then you must use synchonized on getters as well, it is slow.
+이브: 그러면 getter들에도 ``synchonized``를 사용해야 하는데, 그러면 느리죠.
+
 Pedro: There is still Double-Checked Locking idiom
+페드로:  Double-Checked Locking 이디엄을 쓰면 되요.
+
 Eve: Double-checked locking is clever but broken
+이브: Double-Checked Locking은 똑똑하긴한데, 깨질 수 있죠.
+
 Pedro: Ok, I give up, you won.
+페드로: 오케이, 포기, 당신이 이겼어요.
+
 
 Episode 16: Chain Of Responsibility
 
