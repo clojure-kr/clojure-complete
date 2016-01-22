@@ -5,8 +5,8 @@ Quick overview of the classic Design Patterns in Clojure
 기존의 디자인 패턴을 클로저의 관점에서 조명하기
 
 Disclaimer: Most patterns are easy to implement because we use dynamic typing, functional programming and, of course, Clojure. Some of them look wrong and ugly. It's okay. All characters are fake, coincidences are accidental.
-고지 사항: 클로저는 동적 타입 언어이자 함수형 프로그래밍 언어여서, 대부분의 패턴은 클로저로 쉽게 구현될 수 있다. 일부 구현은 부적절하고 부자연스럽게 보일 수도 있지만, 크게 문제될 것은 없다. 이 글에 등장하는 인물은 모두 가공의 인물이다. 특정인과 일치할 수도 있지만, 우연일 뿐이다.   
-  
+고지 사항: 클로저는 동적 타입 언어이자 함수형 프로그래밍 언어여서, 대부분의 패턴은 클로저로 쉽게 구현될 수 있다. 일부 구현은 부적절하고 부자연스럽게 보일 수도 있지만, 크게 문제될 것은 없다. 이 글에 등장하는 인물은 모두 가공의 인물이다. 특정인과 일치할 수도 있지만, 우연일 뿐이다.
+
 Index
 목차
 
@@ -43,10 +43,10 @@ Intro
 
 Our programming language is fucked up.
 That's why we need design patterns.
-우리가 사용하는 프로그래밍 언어는 개판이다. 
+우리가 사용하는 프로그래밍 언어는 개판이다.
 그래서 디자인 패턴이 필요하게 된다.
 
--- Anonymous 
+-- Anonymous
 -- 익명의 프로그래머가
 
 Two modest programmers Pedro Veel and Eve Dopler are solving common software engineering problems and applying design patterns.
@@ -242,7 +242,7 @@ Collections.sort(users, new ReverseSubsComparator());
 Pedro: Could you do the same?
 Eve: Yeah, something like that
 
-(sort (comparator 
+(sort (comparator
        (fn [u1 u2]
          (cond
           (= (:subscription u1)
@@ -465,7 +465,7 @@ class Activity extends Item {
 Eve: To use it you may call
 
 Item i = new Message();
-Visitor v = new PDFVisitor(); 
+Visitor v = new PDFVisitor();
 i.accept(v);
 Eve: And everything works fine. Moreover, you can add new operations for activities and messages by just defining new visitors and without changing their code.
 Pedro: That's really useful. But implementation is tough, it is the same for clojure?
@@ -666,7 +666,7 @@ Eve: It's fixable, just define this call once, and give it alias
     :attack       mage-attack))
 Eve: Or use multimethods, it's even better.
 
-(defmulti move 
+(defmulti move
   (fn [character location] (:class character)))
 
 (defmethod move :mage [character location]
@@ -810,7 +810,7 @@ Eve: Originator, caretaker, memento - looks as a bunch of nouns, but actually it
 
 (def textbox (atom {}))
 
-(defn init-textbox [] 
+(defn init-textbox []
  (reset! textbox {:text ""
                   :color :BLACK
                   :width 100}))
@@ -919,7 +919,7 @@ Eve: Every time you modify object, you get a fresh new immutable copy of your da
       :brands        ["Adidas" "GAP"]})
 
 ;; return new object
-(assoc registration-prototype 
+(assoc registration-prototype
      :name "Mia Vallace"
      :email "tomato@gmail.com"
      :weight 52
@@ -1010,7 +1010,7 @@ Eve: Ok...let's look...your mediator is responsible for saving users and sending
                  (map #(receive % text) users))}))
 
 (defn add-user [u]
-    (swap! mediator 
+    (swap! mediator
       (fn [m]
         (update-in m [:users] conj u))))
 
@@ -1135,8 +1135,8 @@ Eve Sure, but we can improve solution a bit using clojure watches.
 
 (add-watch
   user
-  :money-tracker 
-  (fn [k r os ns] 
+  :money-tracker
+  (fn [k r os ns]
     (if (< 100 (- (:balance ns) (:balance os)))
       (notify))))
 Pedro: Why is that better?
@@ -1271,13 +1271,13 @@ Eve: I suppose you've heard concept Code is Data, that's a lot easier in clojure
   (str (count s) ":" s))
 
 (defmethod interpret clojure.lang.PersistentVector [v]
-  (str "l" 
+  (str "l"
        (apply str (map interpret v))
        "e"))
 
 (defmethod interpret clojure.lang.PersistentArrayMap [m]
-  (str "d" 
-       (apply str (map (fn [[k v]] 
+  (str "d"
+       (apply str (map (fn [[k v]]
                          (str (interpret k)
                               (interpret v))) m))
        "e"))
@@ -1371,16 +1371,31 @@ Pedro: That's awesome!
 Eve: Of course, but remember if your function has side-effects, memoization is bad idea.
 
 Episode 13: Builder
+에피소드 13: 빌더
 
 Tuck Brass complains that his old automatic coffee-making system is very slow in usage. Customers can't wait long enough and going away.
+턱 브라스는 자동 커피 메이커 시스템이 오래되서 너무 느리다고 불평한다. 고객들은 기다리지 못해 그냥 가버린다.
 
 Pedro: Need to understand what's the problem exactly?
+페드로: 문제가 정확히 무엇인지 이해할 필요가 있나?
+
 Eve: I've researched, system is old, written in COBOL and built around expert system question-answer. They were very popular long time ago.
+이브: 연구해 봤는데, 시스템이 낡았구요, 코볼로 작성된 질의-응답 전문가 시스템으로 구축되어 있어요. 그것은 예전에는 아주 인기가 있었었죠.
+
 Pedro: What do you mean by "question-answer"
+페드로: "질의-응답"이 무슨 의미에요?
+
 Eve: There is operator in front of terminal. System asks: "Do yo want to add water?", operator answers "Yes". Then system asks again: "Do you want to add coffee", operator answers "Yes" and so forth.
+이브: 터미날 앞에 사람이 있어요. 시스템이 "물을 추가할까요?" 라고 물으면, 사람이 "네"라고 답해요. 그러면 시스템이 다시 "커피를 추가할까요?" 라고 물으면, 사람이 "네"라고 답하죠. 뭐 이런 식이죠.
+
 Pedro: It's a nightmare, I just want coffee with milk. Why they don't use predefined options: coffee with milk, coffee with sugar and so on.
+페드로: 악몽이로군요, 난 단지 밀크 커피를 원할 뿐인데요. 왜 사전에 준비된 옵션을 사용하지 않죠: 밀크 커피, 설탕 커피 등등.
+
 Eve: Because it is the raisin of the system: customer can make coffee with any set of ingridients by themselves
+이브: 시스템에 대한 과신 때문이죠: 컴퓨터가 스스로 재료를 혼합해서 커피를 만들 수 있다는 거죠.
+
 Pedro: Okay, let's fix it with Builder pattern.
+페드로: 오케이, 알겠어요. Builder 패턴으로 고쳐봅시다.
 
 public class Coffee {
   private String coffeeName; // required
@@ -1452,6 +1467,7 @@ public class Coffee {
   }
 }
 Pedro: As you see, you can't instantiate Coffee class easily, you need to set parameters with nested Builder class
+페드로: 보다시피, 커피 클래스의 인스턴스를 만드는게 쉽지 않아요, 내포된 Builder 클래스로 파라미터를 설정할 필요가 있죠.
 
 Coffee c = new Coffee.Builder()
         .setCoffeeName("Royale Coffee")
@@ -1460,10 +1476,18 @@ Coffee c = new Coffee.Builder()
         .setMilk(10)
         .setCinnamon(3)
         .make();
+
 Pedro: Calling to method make checks all required parameters, and could validate and throw an exception if object is in inconsistent state.
+페드로: 메소드를 호출하면 모든 필수 파라미터를 검사를 하는데, 검증하다가 객체가 뭔가 모순적 상태가 되면 예외를 던지죠.
+
 Eve: Awesome functionality, but why so verbose?
+이브: 멋진 기능이긴 한데요, 왜 그리 장황하죠?
+
 Pedro: Beat it.
+페드로: 어디 해보시죠.
+
 Eve: A piece of cake, clojure supports optional arguments, everything what builder pattern is about.
+이브: 껌이죠, 클로저는 옵션 파라미터를 제공하는데, 그게 빌더 패턴의 모든 것이죠.
 
 (defn make-coffee [name amount water
                    & {:keys [milk sugar cinnamon]
@@ -1474,10 +1498,18 @@ Eve: A piece of cake, clojure supports optional arguments, everything what build
 (make-coffee "Royale Coffee" 15 100
              :milk 10
              :cinnamon 3)
+
 Pedro: Aha, you have three required parameters and three optionals, but required parameters still without names.
+페드로: 아하, 파라미터 3개는 필수이고 나머지는 옵션들이긴 한데, 필수 파라미터에는 이름이 없군요.
+
 Eve: What do you mean?
+이브: 무슨 말이죠?
+
 Pedro: From the client call I see number 15 but I have no idea what it might be.
+페드로: 함수 호출할 때 파라미터 15를 넘기는데, 그게 무엇을 의미하는지 전혀 모르쟎아요.
+
 Eve: Agreed. Then, let's make all parameters are named and add precondition for required, the same way you do with the builder.
+이브: 맞네요. 그러면 모든 파라미터에 이름을 짓고, 사전 조건을 걸어보죠. 그럼 당신이 한 것과 똑같죠.
 
 (defn make-coffee
   [& {:keys [name amount water milk sugar cinnamon]
@@ -1485,7 +1517,7 @@ Eve: Agreed. Then, let's make all parameters are named and add precondition for 
   {:pre [(not (empty? name))
          (> amount 0)
          (> water 0)]}
-  ;; definition goes here        
+  ;; definition goes here
   )
 
 (make-coffee :name "Royale Coffee"
@@ -1493,13 +1525,27 @@ Eve: Agreed. Then, let's make all parameters are named and add precondition for 
              :water 100
              :milk 10
              :cinnamon 3)
+
 Eve: As you see all parameters are named and all required params are checked in :pre constraint. If constraints are violated AssertionError is thrown.
+이브: 보다시피 모든 파라미터에 이름이 있고, 필수 파라미터는 :pre 제약으로 검사되고 있죠. 제약이 위반되면 AssertionError가 발생하죠.
+
 Pedro: Interesting, :pre is a part of a language?
+페드로: 재밌네요. :pre는 언어의 일부인가요?
+
 Eve: Sure, it's just a simple assertion. There is also :post constraint, with the similar effect.
+이브: 그렇죠. 단지 간단한 어써션이에요. :post 제약도 있는데, 비슷하죠.
+
 Pedro: Hm, okay. But as you know Builder pattern often used as a mutable datastucture, StringBuilder for example.
+페드로: 흠, 오케이. 하지만 알다시피 빌더 패턴은 가변 자료구조에 자주 사용되죠. 예를 들어, StringBuilder가 있어요.
+
 Eve: It's not a part of clojure philosophy to use mutables, but if you really want, no problem. Just create a new class with deftype and do not forget to use volatile-mutable on the properties you want to mutate.
+이브: 가변 데이타를 사용하는 것은 클로저의 철학과는 맞지 않지만, 굳이 가변 데이타를 사용해야 한다면, 문제 없어요. deftype으로 클래스를 만든 다음, 변경하려는 속성에 일시적 가변 변수를 사용하면 되요.
+
 Pedro: Where is the code?
+페드로: 코드를 보여주시죠.
+
 Eve: Here is example of custom implementation of mutable StringBuilder in clojure. It has a lot of drawbacks and limitations but you've got the idea.
+이브: 여기 가변 StringBuilder를 클로저로 구현한 예제에요. 단점도 있고 제한적이지만, 아이디어를 얻을 수 있어요.
 
 ;; interface
 (defprotocol IStringBuilder
@@ -1509,7 +1555,7 @@ Eve: Here is example of custom implementation of mutable StringBuilder in clojur
 ;; implementation
 (deftype ClojureStringBuilder [charray ^:volatile-mutable last-pos]
     IStringBuilder
-    (append [this s] 
+    (append [this s]
       (let [cs (char-array s)]
         (doseq [i (range (count cs))]
           (aset charray (+ last-pos i) (aget cs i))))
@@ -1526,7 +1572,9 @@ Eve: Here is example of custom implementation of mutable StringBuilder in clojur
 (to-string sb) => "Toby Wong"
 (append sb " ")
 (append sb "Toby Chung") => "Toby Wang Toby Chung"
+
 Pedro: Not as hard as I thought.
+페드로: 생각만큼 어렵지는 않네요.
 
 Episode 14: Facade
 
@@ -1571,7 +1619,7 @@ public class FacadeService {
 
   RequestRaw extractRequest(Request req) {
     return requestExtractorService.extract(req);
-  } 
+  }
 
   RequestRaw validateRequest(RequestRaw raw) {
     return requestValidatorService.validate(raw);
