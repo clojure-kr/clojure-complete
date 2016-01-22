@@ -1370,8 +1370,8 @@ Eve: Every call (except first one) with the same parameters return cached value.
 Pedro: That's awesome!
 Eve: Of course, but remember if your function has side-effects, memoization is bad idea.
 
-Episode 13: Builder
-에피소드 13: 빌더
+=== Episode 13: Builder
+=== 에피소드 13: 빌더(Builder)
 
 Tuck Brass complains that his old automatic coffee-making system is very slow in usage. Customers can't wait long enough and going away.
 턱 브라스는 자동 커피 메이커 시스템이 오래되서 너무 느리다고 불평한다. 고객들은 기다리지 못해 그냥 가버린다.
@@ -1395,8 +1395,10 @@ Eve: Because it is the raisin of the system: customer can make coffee with any s
 이브: 시스템에 대한 과신 때문이죠: 컴퓨터가 스스로 재료를 혼합해서 커피를 만들 수 있다는 거죠.
 
 Pedro: Okay, let's fix it with Builder pattern.
-페드로: 오케이, 알겠어요. Builder 패턴으로 고쳐봅시다.
+페드로: 오케이, 알겠어요. 빌더 패턴으로 고쳐봅시다.
 
+[source, java]
+....
 public class Coffee {
   private String coffeeName; // required
   private double amountOfCoffee; // required
@@ -1466,9 +1468,13 @@ public class Coffee {
     }
   }
 }
+....
+
 Pedro: As you see, you can't instantiate Coffee class easily, you need to set parameters with nested Builder class
 페드로: 보다시피, 커피 클래스의 인스턴스를 만드는게 쉽지 않아요, 내포된 Builder 클래스로 파라미터를 설정할 필요가 있죠.
 
+[source, java]
+....
 Coffee c = new Coffee.Builder()
         .setCoffeeName("Royale Coffee")
         .setCoffee(15)
@@ -1476,6 +1482,7 @@ Coffee c = new Coffee.Builder()
         .setMilk(10)
         .setCinnamon(3)
         .make();
+....
 
 Pedro: Calling to method make checks all required parameters, and could validate and throw an exception if object is in inconsistent state.
 페드로: 메소드를 호출하면 모든 필수 파라미터를 검사를 하는데, 검증하다가 객체가 뭔가 모순적 상태가 되면 예외를 던지죠.
@@ -1489,6 +1496,8 @@ Pedro: Beat it.
 Eve: A piece of cake, clojure supports optional arguments, everything what builder pattern is about.
 이브: 껌이죠, 클로저는 옵션 파라미터를 제공하는데, 그게 빌더 패턴의 모든 것이죠.
 
+[source, clojure]
+....
 (defn make-coffee [name amount water
                    & {:keys [milk sugar cinnamon]
                       :or {milk 0 sugar 0 cinnamon 0}}]
@@ -1498,6 +1507,7 @@ Eve: A piece of cake, clojure supports optional arguments, everything what build
 (make-coffee "Royale Coffee" 15 100
              :milk 10
              :cinnamon 3)
+....
 
 Pedro: Aha, you have three required parameters and three optionals, but required parameters still without names.
 페드로: 아하, 파라미터 3개는 필수이고 나머지는 옵션들이긴 한데, 필수 파라미터에는 이름이 없군요.
@@ -1511,6 +1521,8 @@ Pedro: From the client call I see number 15 but I have no idea what it might be.
 Eve: Agreed. Then, let's make all parameters are named and add precondition for required, the same way you do with the builder.
 이브: 맞네요. 그러면 모든 파라미터에 이름을 짓고, 사전 조건을 걸어보죠. 그럼 당신이 한 것과 똑같죠.
 
+[source, clojure]
+....
 (defn make-coffee
   [& {:keys [name amount water milk sugar cinnamon]
       :or {name "" amount 0 water 0 milk 0 sugar 0 cinnamon 0}}]
@@ -1525,6 +1537,7 @@ Eve: Agreed. Then, let's make all parameters are named and add precondition for 
              :water 100
              :milk 10
              :cinnamon 3)
+....
 
 Eve: As you see all parameters are named and all required params are checked in :pre constraint. If constraints are violated AssertionError is thrown.
 이브: 보다시피 모든 파라미터에 이름이 있고, 필수 파라미터는 :pre 제약으로 검사되고 있죠. 제약이 위반되면 AssertionError가 발생하죠.
@@ -1547,6 +1560,8 @@ Pedro: Where is the code?
 Eve: Here is example of custom implementation of mutable StringBuilder in clojure. It has a lot of drawbacks and limitations but you've got the idea.
 이브: 여기 가변 StringBuilder를 클로저로 구현한 예제에요. 단점도 있고 제한적이지만, 아이디어를 얻을 수 있어요.
 
+[source, clojure]
+....
 ;; interface
 (defprotocol IStringBuilder
     (append [this s])
@@ -1572,18 +1587,28 @@ Eve: Here is example of custom implementation of mutable StringBuilder in clojur
 (to-string sb) => "Toby Wong"
 (append sb " ")
 (append sb "Toby Chung") => "Toby Wang Toby Chung"
+....
 
 Pedro: Not as hard as I thought.
 페드로: 생각만큼 어렵지는 않네요.
 
-Episode 14: Facade
+=== Episode 14: Facade
+=== 에피소드 14: 파사드(Facade) 패턴
 
 Our new member Eugenio Reinn Jr. commited file with diff in 134 lines to processing servlet. But actual work is just to process request. All other code injection and imports. It MUST be one line commit.
+새로운 멤버 유진 라인 주니어가 처리중인 서블릿에 134개 라인 추가된 파일을 커밋했다. 하지만 추가된 코드들이 실제로 하는 일은 요청을 처리하는 것일 뿐이었다. 즉 클래스들을 임포트해서 사용한 것이 전부이다. 이것은 한 줄짜리 커밋이어야 했다.
 
 Pedro: Who cares how many lines are committed?
-Eve: Someone cares.
-Pedro: Let's see where is the problem
+페드로: 얼마나 많은 줄이 커밋되었는지 누가 신경쓰나?
 
+Eve: Someone cares.
+이브: 신경쓰는 사람이 있을 수 있죠.
+
+Pedro: Let's see where is the problem
+페드로: 어디가 문제인지 봅시다.
+
+[source, java]
+....
 class OldServlet {
   @Autowired
   RequestExtractorService requestExtractorService;
@@ -1602,11 +1627,22 @@ class OldServlet {
     return response;
   }
 }
-Eve: Oh shi...
-Pedro: That's our internal API for developers, every time they need to process request, inject 4 services, include all imports, and write this code.
-Eve: Let's refactor it with...
-Pedro: ...Facade pattern. We resolve all dependencies to a single point of access and simplify API usage.
+....
 
+Eve: Oh shi...
+이브: 오 이런...
+
+Pedro: That's our internal API for developers, every time they need to process request, inject 4 services, include all imports, and write this code.
+페드로: 이것은 개발자를 위한 내부 API에요, 요청을 처리할 때마다, 서비스 4개를 써야하는데, 관련된 모든 임포트를 포함해야 하고, 그래서 이런 코드가 되는거죠.
+
+Eve: Let's refactor it with...
+이브: 리팩토링을 해보죠...그러니까...
+
+Pedro: ...Facade pattern. We resolve all dependencies to a single point of access and simplify API usage.
+페드로: ...파사드 패턴. 모든 의존성(dependencies)를 하나의 접점으로 모아서 API를 단순화하죠.
+
+[source, java]
+....
 public class FacadeService {
   @Autowired
   RequestExtractorService requestExtractorService;
@@ -1633,8 +1669,13 @@ public class FacadeService {
     return responseBuilderService.buildResponse(raw);
   }
 }
-Pedro: Then if you need any service or set of services in the code you just injecting facade to your code
+....
 
+Pedro: Then if you need any service or set of services in the code you just injecting facade to your code
+페드로: 그래서 어떤 서비스, 혹은 일단의 서비스가 필요하게 되면 단지 파사드만 쓰면 되죠.
+
+[source, java]
+....
 class NewServlet {
   @Autowired
   FacadeService facadeService;
@@ -1647,16 +1688,37 @@ class NewServlet {
     return response;
   }
 }
-Eve: Wait, you've just moved all dependencies to one and everytime using this one, correct?
-Pedro: Yes, now everytime some functionality is needed, use FacadeService. Dependency is already there.
-Eve: But we did the same in Mediator pattern?
-Pedro: Mediator is behavioral pattern. We resolved all dependency to Mediator and added new behavior to it.
-Eve: And facade?
-Pedro: Facade is structural, we don't add new functionality, we just expose existing functionality with facade.
-Eve: Got it. But seems that pattern very loud word for such little tweak.
-Pedro: Maybe.
-Eve: Here is clojure version using structure by namespaces
+....
 
+Eve: Wait, you've just moved all dependencies to one and everytime using this one, correct?
+이브: 잠깐만요, 방금 모든 의존성을 한 곳으로 옮기고, 매번 그것을 사용한다...라는 거죠?
+
+Pedro: Yes, now everytime some functionality is needed, use FacadeService. Dependency is already there.
+페드로:네, 어떤 기능이 필요할 때마다, FacadeService를 사용하죠. 필요한 의존성은 이미 거기에 있으니까요.
+
+Eve: But we did the same in Mediator pattern?
+이브: 하지만 중개자(Mediator) 패턴에서도 같은 일을 했잖아요?
+
+Pedro: Mediator is behavioral pattern. We resolved all dependency to Mediator and added new behavior to it.
+페드로: 중개자는 행위 패턴이죠. 모든 의존성을 중개자에게 몰아넣고, 거기에 새로운 행위를 추가하죠.
+
+Eve: And facade?
+이브: 그러면 파사드는?
+
+Pedro: Facade is structural, we don't add new functionality, we just expose existing functionality with facade.
+페드로: 파사드는 구조 패턴이죠, 파사드 패턴에는 새로운 기능을 추가하지 않아요, 그냥 기존 기능들을 노출할 뿐이죠.
+
+Eve: Got it. But seems that pattern very loud word for such little tweak.
+이브: 알겠어요. 하지만 그런 작은 차이에 붙이는 이름 치고는 정말 별나게 거창한 이름이군요.
+
+Pedro: Maybe.
+페드로: 아마도.
+
+Eve: Here is clojure version using structure by namespaces
+이브: 이 클로저 코드는 이름공간들을 가져와서 사용하고 있어요.
+
+[source, clojure]
+....
 (ns application.old-servlet
   (:require [application.request-extractor :as re])
   (:require [application.request-validator :as rv])
@@ -1669,8 +1731,13 @@ Eve: Here is clojure version using structure by namespaces
       (rv/validate)
       (t/transform)
       (rb/build)))
-Eve: Exposing all services via facade.
+....
 
+Eve: Exposing all services via facade.
+이브: 파사드로 모든 서비스 노출시키고
+
+[source, clojure]
+....
 (ns application.facade
   (:require [application.request-extractor :as re])
   (:require [application.request-validator :as rv])
@@ -1688,8 +1755,13 @@ Eve: Exposing all services via facade.
 
 (defn response-build [request]
   (rb/build request))
-Eve: And use it.
+....
 
+Eve: And use it.
+이브: 그리고 사용하면 되죠.
+
+[source, clojure]
+....
 (ns application.old-servlet
   (:use [application.facade]))
 
@@ -1699,15 +1771,31 @@ Eve: And use it.
       (request-validate)
       (request-transform)
       (request-build)))
-Pedro: What the difference between :use and :require?
-Eve: They are almost similar, but with :require you expose functionality via namespace qualificator (namespace/function) where with :use you can refer to it directly (function)
-Pedro: So, :use is better.
-Eve: No, be aware of :use because it can conflict with existing names in your namespace.
-Pedro: Oh, I see your point. And every time you call (:use [application.facade]) in some namespace all existing functionality from facade is available?
-Eve: Yes.
-Pedro: Pretty the same.
+....
 
-Episode 15: Singleton
+Pedro: What the difference between :use and :require?
+페드로: :use와 :require의 차이는 뭐죠?
+
+Eve: They are almost similar, but with :require you expose functionality via namespace qualificator (namespace/function) where with :use you can refer to it directly (function)
+이브: 거의 비슷해요, 하지만 :require는 이름공간 표식이 필요한 반면, :use는 바로 사용가능하죠.
+
+Pedro: So, :use is better.
+페드로: 그러면, :use가 더 좋네요.
+
+Eve: No, be aware of :use because it can conflict with existing names in your namespace.
+이브: 아뇨, :use는 조심해야 해요. 기존 이름공간에서 같은 이름을 사용하면 충돌이 날 수 있죠.
+
+Pedro: Oh, I see your point. And every time you call (:use [application.facade]) in some namespace all existing functionality from facade is available?
+페드로: 오, 무슨 말인지 알겠어요. 어떤 이름공간에서 (:use [application.facade])를 호출할 때마다, 파사드에 있는 함수들 모두가 사용가능하다?
+
+Eve: Yes.
+이브: 네.
+
+Pedro: Pretty the same.
+페드로: 아주 비슷하네요.
+
+=== Episode 15: Singleton
+=== 에피소드 15: 싱글톤(Singleton)
 
 Feverro O'Neal complains that we have a lot of different styles for UI.
 Force one per application UI configuration.
