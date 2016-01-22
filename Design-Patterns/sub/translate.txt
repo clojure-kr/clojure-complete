@@ -1919,21 +1919,39 @@ Pedro: Ok, I give up, you won.
 페드로: 오케이, 포기, 당신이 이겼어요.
 
 
-Episode 16: Chain Of Responsibility
+=== Episode 16: Chain Of Responsibility
+=== 에피소드 16: 책임연쇄(Chain Of Responsibility) 패턴
 
 New York marketing organization "A Profit NY" opened request to filter profanity words from their public chat system.
+뉴욕의 마케팅 조직인 "A Profit NY"는 그들의 공개 채팅 시스템에서  욕설을 필터링해야 한다고 요청했다.
 
 Pedro: Fuck, they don't like the word "fuck"?
+페드로: 빙신, 그들은 '빙신'이라는 말을 싫어하나?
+
 Eve: It is profit organization, they lose money if someone use profanity words in public chat.
+이브: 수익을 내야하는 조직이니, 공개 채팅에서 누군가 욕설을 사용하면 수익을 잃겠죠.
+
 Pedro: Who defined profanity words list?
+페드로: 욕설 리스트는 누가 만들죠?
+
 Eve: George Carlin
+이브: 조지 칼린이요.
 
 Watching and laughing
+보다가 웃으며
 
 Pedro: Ok, so let's just add a filter to replace these rude words with the asterisks.
-Eve: Make sure your solution is extendable, other filters could be applied.
-Pedro: Chain of Responisibility seems like a good pattern candidate for that. First of all we make some abstract filter.
+페드로: 오케이, 욕설들을 별표로 바꾸는 필터를 추가해 봅시다.
 
+Eve: Make sure your solution is extendable, other filters could be applied.
+이브: 그 솔루션이 확장성이 있어야 해요, 다른 필터가 적용될 수도 있어요.
+
+Pedro: Chain of Responisibility seems like a good pattern candidate for that. First of all we make some abstract filter.
+페드로: 책임연쇄 패턴은 여기에 딱 맞는 패턴이 것 같네요. 일단 먼저 추상 필터를 만들어 보죠.
+
+
+[source, java]
+....
 public abstract class Filter {
   protected Filter nextFilter;
 
@@ -1943,8 +1961,14 @@ public abstract class Filter {
     this.nextFilter = nextFilter;
   }
 }
-Pedro: Then, provide implementation for each specific filter you want to apply
+....
 
+Pedro: Then, provide implementation for each specific filter you want to apply
+페드로: 그러고나서 실제로 적용할 필터들 구현해 봅시다.
+
+
+[source, java]
+....
 class LogFilter extends Filter {
   @Override
   void process(String message) {
@@ -1980,8 +2004,14 @@ class StatisticsFilter extends Filter {
     if (nextFilter != null) nextFilter.process(message);
   }
 }
-Pedro: And finally build a chain of filters which defines an order how message will be processed.
+....
 
+Pedro: And finally build a chain of filters which defines an order how message will be processed.
+페드로: 마지막으로 메시지가 처리되는 순서를 정의하는 필터의 연쇄를 만듭시다.
+
+
+[source, java]
+....
 Filter rejectFilter = new RejectFilter();
 Filter logFilter = new LogFilter();
 Filter profanityFilter = new ProfanityFilter();
@@ -1993,8 +2023,14 @@ profanityFilter.setNextFilter(statsFilter);
 
 String message = "[A PROFIT NY] What the fuck?";
 rejectFilter.process(message);
-Eve: Ok, now clojure turn. Just define each filter as a function.
+....
 
+Eve: Ok, now clojure turn. Just define each filter as a function.
+이브: 오케이, 이제 클로저로 해보죠. 각 필터는 함수로 정의합니다.
+
+
+[source, clojure]
+....
 ;; define filters
 
 (defn log-filter [message]
@@ -2011,24 +2047,48 @@ Eve: Ok, now clojure turn. Just define each filter as a function.
 (defn reject-filter [message]
   (if (.startsWith message "[A Profit NY]")
     message))
-Eve: And use some-> macro to chain filters
+....
 
+Eve: And use some-> macro to chain filters
+이브: 그리고 ``some->`` 매크로를 사용해서 필터들을 연결합니다.
+
+
+[source, clojure]
+....
 (defn chain [message]
   (some-> message
           reject-filter
           log-filter
           stats-filter
           profanity-filter))
-Eve: You see how much it is easier, you don't need every-time call if (nextFilter != null) nextFilter.process(), because it's natural. The next filter defined at the some-> level naturally, instead of calling manuall setNext.
-Pedro: That's definitely better for composability, but why did you use some-> instead of ->?
-Eve: Just for reject-filter. It could stop further processing, so some-> returns nil as soon as nil encountered as a filter
-Pedro: Could you explain more?
-Eve: Look at the usage
+....
 
+Eve: You see how much it is easier, you don't need every-time call if (nextFilter != null) nextFilter.process(), because it's natural. The next filter defined at the some-> level naturally, instead of calling manuall setNext.
+이브: 얼마나 쉬운지 아시겠죠? 너무 자연스러워서, 매번 ``if (nextFilter != null) nextFilter.process()`` 호출할 필요가 없어요. ``some->``에서 정의한 다음 필터는 ``setNext``를 호출하지 필요없이, 자연스럽게 연결되요.
+
+Pedro: That's definitely better for composability, but why did you use some-> instead of ->?
+페드로: 확실히 구성력이 더 좋네요. 하지만 왜 ``->?``가 아닌 ``some->``을 썼죠?
+
+Eve: Just for reject-filter. It could stop further processing, so some-> returns nil as soon as nil encountered as a filter
+이브: ``reject-filter`` 때문이죠. 더 이상 진행할 필요가 없을 수 있는데, 그래서 필터가 nil을 반환하면 ``some->``은 곧바로 nil을 반환한다.
+
+Pedro: Could you explain more?
+페드로: 좀 더 설명해 주실 수 있어요?
+
+Eve: Look at the usage
+이브: 용법을 보시죠.
+
+[source, clojure]
+....
 (chain "fuck") => nil
 (chain "[A Profit NY] fuck") => "f*ck"
+....
+
 Pedro: Understood.
+페드로: 이해됐어요.
+
 Eve: Chain of Responsibility just an approach to function composition
+이브: 책임연쇄 패턴은 단지 함수 합성일 뿐인 거죠.
 
 Episode 17: Composite
 
