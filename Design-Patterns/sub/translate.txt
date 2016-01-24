@@ -2068,43 +2068,84 @@ Eve: Chain of Responsibility just an approach to function composition
 이브: 책임연쇄 패턴은 단지 함수 합성일 뿐인 거죠.
 
 Episode 17: Composite
+에피소드 17: 합성(Composite)패턴
 
 Actress Bella Hock don't see user avatars in our social network on her computer.
+여배우인 벨라 호크가 소셜 네트웍에서 사용자 아바타를 보지 못하고 있다.
 
 "Everything is black. Is it black holes?"
+"모든 것이 검어요. 이거 블랙홀인가요?"
 
 Pedro: It is black squares.
+페드로: 이거 검정 사각형이네요.
+
 Eve: Hmm, the same problem on our side.
+이브: 흠, 이쪽도 같은 문제가 있어요.
+
 Pedro: Seems, that latest feature broke user avatars.
+페드로: 마지막에 추가된 기능이 유저 아바타에 버그를 만든 것 같네요.
+
 Eve: Strange, because avatars rendered the same way as other elements, but they are visible.
+이브: 이상하네요, 아바타는 다른 요소들과 같은 방식으로 랜더링해요, 하지만 아바타는 눈에 보이는 거죠.
+
 Pedro: Are you sure it rendered the same way?
+페드로: 같은 방식으로 랜더링하는 거 확실해요?
+
 Eve: Well...no
+이브: 글세요... 아니요.
+
 
 Digging code
+코드를 파본다.
 
 Pedro: What the hell is going on here?
-Eve: Someone copypasted code, but forgot to reflect changes in avatars.
-Pedro: Let's blame him, git-blame
-Eve: Blame is good, but we need to fix the problem
-Pedro: It's simple just additional line here.
-Eve: I mean, really solve the problem. Why do we need two similar snippets of code to process the same blocks?
-Pedro: Correct, I think we could use Composite pattern to handle rendering of the whole page. Our smallest element to render is block.
+페드로: 도대체 이 코드들이 뭘 하는 거죠?
 
+Eve: Someone copypasted code, but forgot to reflect changes in avatars.
+이브: 누군가 복붙을 했네요, 하지만 아바타에 변경 사항을 반영하는 것을 잊었어요.
+
+Pedro: Let's blame him, git-blame
+페드로: 블레임하죠, ``git-blame``
+
+Eve: Blame is good, but we need to fix the problem
+이브: 블레임이 좋긴한데, 이 문제를 고칠 필요는 있어요.
+
+Pedro: It's simple just additional line here.
+페드로: 여기에 한 줄 추가하면 간단해죠.
+
+Eve: I mean, really solve the problem. Why do we need two similar snippets of code to process the same blocks?
+이브: 제 말은, 진짜 문제를 풀자는 거에요. 같은 블럭들을 처리하는데, 비슷한 코드 2개가 왜 필요하죠?
+
+Pedro: Correct, I think we could use Composite pattern to handle rendering of the whole page. Our smallest element to render is block.
+페드로: 맞네요, 합성 패턴을 사용해서 전체 페이지 랜더링을 처리할 수 있을 것 같아요. 랜더링하는 가장 작은 요소는 블럭이구요.
+
+[source, java]
+....
 public interface Block {
   void addBlock(Block b);
   List<Block> getChildren();
 
   void render();
 }
-Pedro: Obviously blocks may contain other blocks, that's the point of Composite pattern. We may create some specific blocks.
+....
 
+Pedro: Obviously blocks may contain other blocks, that's the point of Composite pattern. We may create some specific blocks.
+페드로: 당연히 블럭은 다른 블럭을 포함할 수 있죠, 그게 바로 합성 패턴이죠. 구체적인 블럭 몇 개를 만들업 보죠.
+
+[source, java]
+....
 public class Page implements Block { }
 public class Header implements Block { }
 public class Body implements Block { }
 public class HeaderTitle implements Block { }
 public class UserAvatar implements Block { }
-Pedro: And treat every specific element as a Block
+....
 
+Pedro: And treat every specific element as a Block
+페드로: 그리고 모든 구체적인 요소들을 ``Block``인 것처럼 다룰 수 있죠.
+
+[source, java]
+....
 Block page = new Page();
 Block header = new Header();
 Block body = new Body();
@@ -2117,17 +2158,39 @@ header.addBlock(title);
 header.addBlock(avatar);
 
 page.render();
-Pedro: This is a structural pattern, a good way to compose objects. That's why it is called composite
-Eve: Hey, composite is a simple tree structure.
-Pedro: Yes.
-Eve: There is pattern for every datastructure?
-Pedro: No, just for list and tree.
-Eve: Actually, tree can be represented as a list
-Pedro: How?
-Eve: First element of a list is a node value, next elements are children, each of them is...
-Pedro: I understand.
-Eve: To be specific, here is the tree
+....
 
+Pedro: This is a structural pattern, a good way to compose objects. That's why it is called composite
+페드로: 이것은 구조 패턴이에요, 개체들을 합성하는 좋은 방법이죠. 그래서 __합성__이라고 불리는 거죠.
+
+Eve: Hey, composite is a simple tree structure.
+이브: 저기요, 합성은 단순한 트리 구조네요.
+
+Pedro: Yes.
+페드로: 그렇죠.
+
+Eve: There is pattern for every datastructure?
+이브: 모든 자료구조를 위한 패턴이 있나요?
+
+Pedro: No, just for list and tree.
+페드로: 아니요, 단지 리스트와 트리만을 위한 패턴이 있죠.
+
+Eve: Actually, tree can be represented as a list
+이브: 사실, 트리는 리스트로 표현할 수 있죠.
+
+Pedro: How?
+페드로: 어떻게?
+
+Eve: First element of a list is a node value, next elements are children, each of them is...
+이브: 리스트의 첫 요소는 노드이고요, 그 다음 요소들은 자식들이죠, 그리고 그들 각각은...
+
+Pedro: I understand.
+페드로: 이해했어요.
+
+Eve: To be specific, here is the tree
+이브: 좀 더 설명하자면, 다음과 같이 트리가 있어요.
+
+****
         A
      /  |  \
     B   C   D
@@ -2135,22 +2198,52 @@ Eve: To be specific, here is the tree
     E   H J   K
    / \       /|\
   F   G     L M N
-Eve: And here is the list represents this tree
+****
 
+Eve: And here is the list represents this tree
+이브: 그리고 이 트리를 나타내는 리스트가 다음처럼 되요.
+
+[source, clojure]
+....
 (def tree
   '(A (B (E (F) (G))) (C (H)) (D (J) (K (L) (M) (N)))))
-Pedro: It's a plenty of parentheses!
-Eve: They define structure, you know
-Pedro: But it's hard to understand
-Eve: It's easy for machine, there is awesome tree-seq function to process the tree.
+....
 
+Pedro: It's a plenty of parentheses!
+페드로: 괄호가 많네요!
+
+Eve: They define structure, you know
+이브: 괄호는 구조를 만드는 거죠, 아다시피
+
+Pedro: But it's hard to understand
+페드로: 하지만 파악하기 어려워요.
+
+Eve: It's easy for machine, there is awesome tree-seq function to process the tree.
+이브: 기계한테는 쉽죠, 트리를 처리하는 ``tree-seq``라는 멋진 함수가 있어요.
+
+[source, clojure]
+....
 (map first (tree-seq next rest tree)) => (A B E F G C H D J K L M N)
+....
+
 Eve: If you need more advanced traversals, use clojure.walk
+이브: 더 고급한 순회가 필요하다면, ``clojure.walk``를 사용하면 돼요.
+
 Pedro: I don't know, everything seems just a bit harder.
+페드로: 모르겠네요, 모든 것이 좀 더 어려워 보이네요.
+
 Eve: No, you define the whole tree with one datastructure and use one function to operate on it.
+이브: 아니요, 모든 트리를 자료구조 하나로 정의하고, 그것에 대해 동작하는 하나의 함수만을 사용하는 것이에요.
+
 Pedro: What this function will do?
+페드로: 이 함수가 하는 일이 뭐죠?
+
 Eve: It traverses the tree and applies to every node, so in our case it can render each component.
+이브: 트리를 순회하면서 모든 노드에 함수를 적용하는 거죠, 우리의 경우에는 각 컴포넌트들을 랜더링하는 거구요.
+
 Pedro: I don't know, maybe I am too young for the trees, let's move forward.
+페드로: 모르겠네요, 아마도 전 트리를 다루기에는 어린가봐요, 다음으로 가죠.
+
 
 Episode 18. Factory Method
 
