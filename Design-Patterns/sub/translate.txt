@@ -2496,25 +2496,51 @@ Pedro: Handy.
 
 
 Episode 20: Adapter
+=== 에피소드 20: 어댑터(Adapter) 패턴
 
 Deam Evil conducts a medieval tournament for knights. The prize is $100.000
+딤 이블은 기사의 결투 시합을 한다. 상금은 10만 달러이다.
 
 I'll pay you the half if you break the system and allow my armed commando to take part in competition.
+만약 당신들이 시스템을 깨고 내 무장한 코만도를 시합에 넣어주면 상금의 반을 주겠소.
 
 Pedro: Finally we've got interesting work.
-Eve: Funny to see the competition. Especially, M16 vs Iron Sword part.
-Pedro: Knights have a good armor.
-Eve: F1 grenade does not care about armor.
-Pedro: Nevermind, we do the work, we get the money.
-Eve: Fifty grands - nice compensation
-Pedro: Yes, look at this, I've stolen sources of the competition system, though it is not possible to modify their sources, we can find some vulneravility.
-Eve: Here it is
+페드로: 드디어 재밌는 일을 얻었군요.
 
+Eve: Funny to see the competition. Especially, M16 vs Iron Sword part.
+이브: 시합을 보는 것은 재밌죠. 특히 M16과 철검 대결이라면...
+
+Pedro: Knights have a good armor.
+페드로: 기사들은 좋은 갑옷을 입고 있죠.
+
+Eve: F1 grenade does not care about armor.
+이브: F1 수류탄한테는 갑옷은 소용없어요.
+
+Pedro: Nevermind, we do the work, we get the money.
+페드로: 신경쓸거 없어요, 우리는 일을 하고, 돈을 받을 거에요.
+
+Eve: Fifty grands - nice compensation
+이브: 5만 달라 - 괜찮은 액수네요.
+
+Pedro: Yes, look at this, I've stolen sources of the competition system, though it is not possible to modify their sources, we can find some vulneravility.
+페드로: 네, 이것을 보세요, 시합 시스템의 소스를 훔쳤어요, 소스를 고칠 수는 없지만, 약점을 찾을 수 있어요.
+
+Eve: Here it is
+이브: 여기 있어요.
+
+
+[source, java]
+....
 public interface Tournament {
   void accept(Knight knight);
 }
-Pedro: Aha! System validates only incoming types via Knight interface. All we need to do is to adapt commando to be a knight. Let's see how knight look like
+....
 
+Pedro: Aha! System validates only incoming types via Knight interface. All we need to do is to adapt commando to be a knight. Let's see how knight look like
+페드로: 아하! 시스템은 ``Knight`` 인터페이스로 들어오는 입력 타입만을 검사하고 있어요. 우리는 그저 commando를 기사로 __맞추어 넣기(adapt)__만 하면 돼요. 기사가 어떤 모양인지 봅시다.
+
+[source, java]
+....
 interface Knight {
   void attackWithSword();
   void attackWithBow();
@@ -2543,13 +2569,20 @@ class Galahad implements Knight {
     attack();
   }
 }
-Pedro: To accept the commando let's take an old implementation
+....
 
+Pedro: To accept the commando let's take an old implementation
+페드로: 코만도를 받기 위해서 이전 구현 코드를 가져옵시다.
+
+[source, java]
+....
 class Commando {
     void throwGrenade(String grenade) { }
     shot(String rifleType) { }
 }
+
 Pedro: And adapt it.
+페드로: 그리고 기사로 맞추어 줍니다.
 
 class Commando implements Knight {
   @Override
@@ -2567,47 +2600,106 @@ class Commando implements Knight {
     shotWithRifle("M16");
   }
 }
-Pedro: That's it.
-Eve: It's simpler in clojure.
-Pedro: Really?
-Eve: We don't love types so their validation won't work at all
-Pedro: So, how do you replace knight with commando?
-Eve: Basically, what knight is? It's a map, consists of data and behaviour
+....
 
+Pedro: That's it.
+페드로: 됐어요.
+
+Eve: It's simpler in clojure.
+이브: 클로저로는 더 쉬워요.
+
+Pedro: Really?
+페드로: 정말로요?
+
+Eve: We don't love types so their validation won't work at all
+이브: 클로저는 타입을 쓰지 않아서 타입 검사는 전혀 동작하지 않죠.
+
+Pedro: So, how do you replace knight with commando?
+페드로: 그러면 기사를 어떻게 코만도로 바꾸죠?
+
+Eve: Basically, what knight is? It's a map, consists of data and behaviour
+이브: 기본적으로 기사란 무엇이죠? 그것은 맵이죠, 데이타와 행위로 된.
+
+
+[source, clojure]
+....
 {:name "Lancelot"
  :speed 1.0
  :attack-bow-fn attack-with-bow
  :attack-sword-fn attack-with-sword
  :block-fn block-with-shield}
-Eve: To adapt commando, just pass his functions instead original ones
+....
 
+Eve: To adapt commando, just pass his functions instead original ones
+이브: 코만도를 기사로 맞추기 위해서는 단지 원래의 것 대신 코만도의 함수를 전달하면 되요.
+
+[source, clojure]
+....
 {:name "Commando"
  :speed 5.0
  :attack-bow-fn (partial throw-grenade "F1")
  :attack-sword-fn (partial shot "M16")
  :block-fn nil}
+....
+
 Pedro: How did we share money?
+페드로: 우리는 돈을 어떻게 나눌까요?
+
 Eve: 50/50
+이브: 50 대 50
+
 Pedro: I wrote more code, I want 70
+페드로: 내가 더 많은 코드를 작성했으니, 전 70을 원해요.
+
 Eve: Ok, 70/70
+이브: 오케이, 70 대 70
+
 Pedro: Deal.
+페드로: 좋아요.
+
 
 Episode 21: Decorator
+=== 에피소드 21: 데코레이터(Decorator) 패턴
 
 Podrea Vesper caught us on cheating for the tournament. We have a choice: to be busted by police or to help his super knight to take part in competition
 
-Pedro: I don't wanna go to prison.
-Eve: Me either.
-Pedro: Let's cheat for him one more time.
-Eve: This is the same solution, isn't it?
-Pedro Similar, but not the same. Commando was a soldier and they are not allowed on the tournament. We adapted it. But knight is allowed for tournament we don't need to adapt it, we must add functionality to existing object.
-Eve: Inheritance or composition?
-Pedro: Composition, the main goal of decorator to change behaviour at a runtime
-Eve: So how we deal with this super knight?
-Pedro: They plan to use Galahad knight and decorate it with more HP and Power Armor
-Eve: Heh, funny that cops are playing Fallout
-Pedro: Yeah, let's make knight an abstract class
 
+Pedro: I don't wanna go to prison.
+페드로:
+
+Eve: Me either.
+이브:
+
+Pedro: Let's cheat for him one more time.
+페드로:
+
+Eve: This is the same solution, isn't it?
+이브:
+
+Pedro Similar, but not the same. Commando was a soldier and they are not allowed on the tournament. We adapted it. But knight is allowed for tournament we don't need to adapt it, we must add functionality to existing object.
+페드로:
+
+Eve: Inheritance or composition?
+이브:
+
+Pedro: Composition, the main goal of decorator to change behaviour at a runtime
+페드로:
+
+Eve: So how we deal with this super knight?
+이브:
+
+Pedro: They plan to use Galahad knight and decorate it with more HP and Power Armor
+페드로:
+
+Eve: Heh, funny that cops are playing Fallout
+이브:
+
+Pedro: Yeah, let's make knight an abstract class
+페드로:
+
+
+[source, java]
+....
 public class Knight {
     protected int hp;
     private Knight decorated;
@@ -2630,13 +2722,29 @@ public class Knight {
         if (decorated != null) decorated.blockWithShield();
     }
 }
-Eve: So what we improved there?
-Pedro: First af all we make class Knight instead of interface to have access to hit points. Then we provide two diferent constructors, default for standard behaviour, and decorated, which delegates call to decorated object.
-Eve: Is it fair to use abstract class instead of interface?
-Pedro: No, but we avoid two classes with similar behaviour and fill each decorated object with default implementation, instead of forcing to implement each of the methods.
-Eve: Ok, what's about Power Armor?
-Pedro: Easy as well
+....
 
+Eve: So what we improved there?
+이브:
+
+Pedro: First af all we make class Knight instead of interface to have access to hit points. Then we provide two diferent constructors, default for standard behaviour, and decorated, which delegates call to decorated object.
+페드로:
+
+Eve: Is it fair to use abstract class instead of interface?
+이브:
+
+Pedro: No, but we avoid two classes with similar behaviour and fill each decorated object with default implementation, instead of forcing to implement each of the methods.
+페드로:
+
+Eve: Ok, what's about Power Armor?
+이브:
+
+Pedro: Easy as well
+페드로:
+
+
+[source, java]
+....
 public class KnightWithPowerArmor extends Knight {
     public KnightWithPowerArmor(Knight decorated) {
         super(decorated);
@@ -2656,16 +2764,32 @@ public class KnightWithAdditionalHP extends Knight {
         this.hp += 50;
     }
 }
-Pedro: Two decorators that fulfils FBI requirements, and we able to create super knight, with behaviour like Galahad, but super armor and 50 more hit points.
+....
 
+Pedro: Two decorators that fulfils FBI requirements, and we able to create super knight, with behaviour like Galahad, but super armor and 50 more hit points.
+페드로:
+
+
+[source, java]
+....
 Knight superKnight =
      new KnightWithAdditionalHP(
      new KnightWithPowerArmor(
      new Galahad()));
-Eve: Nice trick!
-Pedro: You are welcome to show the similar behaviour in clojure
-Eve: Here it is
+....
 
+Eve: Nice trick!
+이브:
+
+Pedro: You are welcome to show the similar behaviour in clojure
+페드로:
+
+Eve: Here it is
+이브:
+
+
+[source, clojure]
+....
 (def galahad {:name "Galahad"
               :speed 1.0
               :hp 100
@@ -2687,10 +2811,17 @@ Eve: Here it is
 (def superknight (-> galahad
                      make-knight-with-power-armor
                      make-knight-with-more-hp)
+....
+
 Pedro: The same functionality.
+페드로:
+
 Eve: Yes, just pay attention to power armor decorator.
+이브:
+
 
 Episode 22: Proxy
+=== 에피소드 22: 프록시(Proxy) 패턴
 
 Deren Bart manages the system for making mixed drinks. It is rigid system, because after making a drink Bart must manually subtract used ingredients from the bar. Do this automatically.
 
@@ -2788,6 +2919,7 @@ Pedro: It uses another interface.
 Eve: But from implementation perspective all these pattern are the same, wrap something and delegate calls to wrapper. "Wrapper" could be a good name for these patterns.
 
 Episode 23: Bridge
+=== 에피소드 23: 브릿지(Bridge) 패턴
 
 Girls from HR agency "Hurece's Sour Man" trying to identify candidates to their open job positions. The problem is jobs often created by customers, but requirements to the jobs are developed by HR. Provide them with a flexible way of collaborating.
 
