@@ -450,7 +450,7 @@ Eve: And pay function it's just a plain function, which changes state of object.
 ----
 
 Pedro: Is dispatching by multimethods better than dispatching by enum?
-페드로: 멀티메소드를 이용한 분기 판별이 enum을 이용한 분기 판별보다 더 나은가요?
+페드로: 멀티메소드를 이용한 메소드 호출(dispatch)이 enum을 이용한 메소드 호출보다 더 나은가요?
 
 Eve: No, in this particlular case, but in general yes.
 이브: 이 경우에는 그렇지 않지만, 일반적으로는 그렇습니다.
@@ -459,7 +459,7 @@ Pedro: Explain, please
 페드로: 설명해 주시겠어요?
 
 Eve: Do you know what double dispatch is?
-이브: 이중 분기 판별(double dispatch)라고 들어 보셨나요?
+이브: 다중 기반 메소드 호출(multiple dispatch)라고 들어 보셨나요?
 
 Pedro: Not sure.
 페드로: 잘 모르겠는데요.
@@ -468,14 +468,22 @@ Eve: Well, it is topic for Visitor pattern.
 이브: 괜찮아요, 그것이 다음에 다룰 방문자 패턴의 주제이거든요.
 
 
-Episode 4. Visitor
+== Episode 4. Visitor
+== 에피소드 4. 방문자 패턴
 
-<상태>
+[sidebar]
+****
 Natanius S. Selbys suggested to implement functionality which allows users export their messages, activities and achievements in different formats.
-</상태>
+
+나탈리우스 S. 셀비즈(Natanius S. Selbys)는 사용자들이 자신의 메시지와 활동을 전하는(export) 기능 구현을 제안했다.
+****
 
 Eve: So, how do you plan to do it?
+이브: 어떻게 하실 생각이세요?
+
 Pedro: We have one hierarchy for item types (Message, Activity) and another for file formats (PDF, XML)
+페드로: 항목(item)의 하위에 ``Message``와 ``Activity``가 있고, 파일 형식(format)의 하위에 ``PDF``와 ``XML``이 있어요.
+
 
 [source,java]
 ----
@@ -517,9 +525,16 @@ class Activity extends Item {
 ----
 
 Pedro: That's all.
+페드로: 이게 다예요.
+
 Eve: Nice, but how do you dispatch on argument type?
+이브: 좋아요, 그런데 인수의 타입에 따른 메소드 호출(dispatch)은 어떻게 하죠? 
+
 Pedro: What the problem?
+페드로: 뭐가 문제라는 거죠?
+
 Eve: Consider this snippet
+이브: 다음의 코드를 고려해 보죠.
 
 [source,java]
 ----
@@ -529,13 +544,28 @@ i.export(f);
 ----
 
 Pedro: Nothing suspicious here.
+페드로: 이 코드에는 의심스러운 부분이 없어 보이는데요.
+
 Eve: Actually, if you run this code you get UnknownFormatException
+이브: 실제로 이 코드를 실행해 보면 ``UnknownFormatException``이 발생해요.
+
 Pedro: Wait...Really?
+페드로: 잠깐만요... 정말요?
+
 Eve: In java you can use only single dispatch. That means if you call i.export(f) you dispatches on the actual type of i, not f.
+이브: 자바에서는 단일 기반 메소드 호출(single dispatch)만이 가능해요. 다시 말해 ``i.export(f)``를 호출하면, ``i``의 실제 타입에 따라 분기될 뿐 인수인 ``f``의 타입은 메소드 호출시 전혀 고려의 대상이 되지 않아요.  
+
 Pedro: I'm surprised. So, there is no dispatch on argument type?
+페드로: 놀랍군요. 그러면 인수의 타입에 따른 메소드 호출은 안된다는 건가요?
+
 Eve: That's what visitor hack for. After you got a dispatch on i type, you additionally call f.someMethod(i) and dispatched on f type.
+이브: 그래서 방문자 패턴이 생긴 것이죠. 먼저 `i` 타입에 기반해 메소드를 호출한 후, 다시 ``f.someMethod(i)``를 호출해 ``f``의 타입에 기반한 메소드 호출을 시행하는 방식으로요.
+
 Pedro: How that looks in code?
+이브: 그런 코드는 어떤 모양인가요?
+
 Eve: You separately define export operations for all types as a Visitor
+이브: 모든 타입에 `export` 메소드를 일일히 방문자로 정의하면 됩니다.
 
 [source,java]
 ----
@@ -558,6 +588,7 @@ public class PDFVisitor implements Visitor {
 ----
 
 Eve: Your items change signature to accept different visitors.
+이브: 각 아이템은 다른 방문자를 받아들일 수 있도록 인수 형식을 바꾸어 줍니다.
 
 [source,java]
 ----
@@ -581,6 +612,7 @@ class Activity extends Item {
 ----
 
 Eve: To use it you may call
+이브: 그리고 다음과 같은 방식으로 호출합니다.
 
 [source,java]
 ----
@@ -590,10 +622,19 @@ i.accept(v);
 ----
 
 Eve: And everything works fine. Moreover, you can add new operations for activities and messages by just defining new visitors and without changing their code.
+이브: 모든 것이 제대로 작동하네요. 게다가 Activity와 Message의 코드를 변경하지 않고, 단순히 새로운 방문자를 정의해서 새로운 동작을 추가할 수 있어요. 
+
 Pedro: That's really useful. But implementation is tough, it is the same for clojure?
+페드로: 정말로 유용하네요. 하지만 구현은 쉽지 않아 보이네요. 클로저에서도 마찬가지인가요?  
+
 Eve: Not really, clojure supports it natively via multimethods
+이브: 그렇지 않아요. 클로저에서는 멀티메소드를 통해 쉽게 구현할 수 있어요.
+
 Pedro: Multi what?
+페드로: 멀티 워라고요?
+
 Eve: Just follow the code... First we define dispatcher function
+이브: 코드를 보시죠. 먼저 메소드 호출(dispatch) 함수를 정의합니다.
 
 [source]
 ----
@@ -602,18 +643,21 @@ Eve: Just follow the code... First we define dispatcher function
 ----
 
 Eve: It accepts item and format to be exported. Examples:
-
+이브: 이 함수는 ``item``과 ``format``을 인수로 받아 들입니다. 예를 들면,
 [source]
 ----
-;; Message
+;; Message item
 {:type :message :content "Say what again!"}
-;; Activity
+
+;; Activity item
 {:type :activity :content "Quoting Ezekiel 25:17"}
+
 ;; Formats
 :pdf, :xml
 ----
 
 Eve: And now you just provide a functions for different combinatations, and dispatcher decide which one to call.
+이브: 그리고 인수의 다양한 조합에 해당하는 함수들을 정의합니다. 그러면 메소드 호출 함수가 어떤 함수를 호출할지를 결정합니다.
 
 [source]
 ----
@@ -631,7 +675,10 @@ Eve: And now you just provide a functions for different combinatations, and disp
 ----
 
 Pedro: What if unknown format passed?
+페드로: 모르는 포맷이 인수로 건네지면 어떻게 하죠?
+
 Eve: We could specify default dipatcher function.
+이브: 다음처럼 디폴트 함수를 지정해 줄 수 있어요.
 
 [source]
 ----
@@ -640,8 +687,11 @@ Eve: We could specify default dipatcher function.
 ----
 
 Pedro: Ok, but there is no hierarchy for :pdf and :xml. They are just keywords?
-Eve: Correct, simple problem - simple solution. If you need advanced features, you could use adhoc hierarchies or dispatch by class.
+페드로: 좋습니다. 하지만 ``:pdf``와 ``:xml`` 사이에는 아무런 상하 관계(hierarchy)가 존재하지 않네요. 단순히 키워드일 뿐이잖아요?
 
+Eve: Correct, simple problem - simple solution. If you need advanced features, you could use adhoc hierarchies or dispatch by class.
+이브: 맞아요. 단순한 문제여서 해법도 단순해요. 이와 같은 고급 기능이 필요하면 상하 관계를 지정해 줄 수도 있고, 메소드 호출에 `class` 함수를 이용할 수도 있어요.
+   
 [source]
 ----
 (derive ::pdf ::format)
@@ -649,9 +699,16 @@ Eve: Correct, simple problem - simple solution. If you need advanced features, y
 ----
 
 Pedro: Quadrocolons?!
+페드로: 콜론이 연속해 두 개 있네요!
+
 Eve: Assume they are just keywords.
+이브: 일단은 그냥 키워드와 같다고 생각하세요.
+
 Pedro: Ok.
+페드로: 알겠습니다.
+
 Eve: Then you add functions for every dispatch type ::pdf, ::xml and ::format
+이브: 그리고 ``::pdf``와  `::xml`, ``::format``에 해당하는 함수들을 다음처럼 추가해 줍니다.
 
 [source]
 ----
@@ -661,17 +718,28 @@ Eve: Then you add functions for every dispatch type ::pdf, ::xml and ::format
 ----
 
 Eve: If some new format (i.e. csv) appears in the system
-
+이브: 만약 새로은 포맷 (예를 들면, csv) 처리가 필요하면, 다음과 같이 해 줍니다.
+ 
 [source]
 ----
 (derive ::csv ::format)
 ----
 
 Eve: It will be dispatched to ::format function, until you add a separate ::csv function.
+이브: `::csv`를 처리하는 함수를 별도로 제공하지 않으면, ``::format``을 처리하는 함수가 이를 처리해 줘요.
+
 Pedro: Seems good.
+페드로: 훌륭해 보이네요.
+
 Eve: Definitely, much easier.
+이브: 물론이죠. 게다가 훨씬 쉽지요.
+
 Pedro: So, basically, if a language support multiple dispatch, you don't need Visitor pattern?
+페드로: 그렇다면, 언어가 기본적으로 다중 기반 메소드 호출을 지원하면, 방문자 패턴은 필요 없다는 건가요?
+
 Eve: Exactly.
+이브: 핵심을 찌르시는 군요.
+
 
 Episode 5. Template Method
 
