@@ -1,78 +1,65 @@
-Clojure Design Patterns
-클로저 디자인 패턴
+= Clojure Design Patterns
+:source-highlighter: coderay
+:source-language: clojure
+:sectnums!:
+:icons: font
+:imagesdir: ../img
+:linkcss:
+:stylesdir: ../
+:stylesheet: my-asciidoctor.css
+
+= 클로저 디자인 패턴
 
 Quick overview of the classic Design Patterns in Clojure
 기존의 디자인 패턴을 클로저의 관점에서 조명하기
 
+[WARNING]
+====
 Disclaimer: Most patterns are easy to implement because we use dynamic typing, functional programming and, of course, Clojure. Some of them look wrong and ugly. It's okay. All characters are fake, coincidences are accidental.
-고지 사항: 클로저는 동적 타입 언어이자 함수형 프로그래밍 언어여서,  대부분의 패턴은 클로저로 쉽게 구현될 수 있다. 일부 구현은 부적절하고 부자연스럽게 보일 수도 있지만, 크게 문제될 것은 없다. 이 글에 등장하는 인물은 모두 가공의 인물이다. 특정인과 일치할 수도 있지만, 우연일 뿐이다.   
-  
-Index
-목차
 
-Intro
-Episode 1. Command
-Episode 2. Strategy
-Episode 3. State
-Episode 4. Visitor
-Episode 5. Template Method
-Episode 6. Iterator
-Episode 7. Memento
-Episode 8. Prototype
-Episode 9. Mediator
-Episode 10. Observer
-Episode 11. Interpreter
-Episode 12. Flyweight
-Episode 13. Builder
-Episode 14. Facade
-Episode 15. Singleton
-Episode 16. Chain of Responsibility
-Episode 17. Composite
-Episode 18. Factory Method
-Episode 19. Abstract Factory
-Episode 20. Adapter
-Episode 21. Decorator
-Episode 22. Proxy
-Episode 23. Bridge
-Cheatsheet
-Cast
+고지 사항: 클로저는 동적 타입 언어이자 함수형 프로그래밍 언어여서, 대부분의 패턴은 클로저로 쉽게 구현될 수 있다. 일부 구현은 부적절하고 부자연스럽게 보일 수도 있지만, 크게 문제될 것은 없다. 이 글에 등장하는 인물은 모두 가공의 인물이다. 특정인과 일치할 수도 있지만, 우연일 뿐이다.
+====
 
 
-Intro
-도입
+== Intro
+== 도입
 
-Our programming language is fucked up.
+[quote,Anonymous 익명의 프로그래머]
+____
+Our programming language is fucked up. +
 That's why we need design patterns.
-우리가 사용하는 프로그래밍 언어는 개판이다. 
-그래서 디자인 패턴이 필요하게 된다.
 
--- Anonymous 
--- 익명의 프로그래머가
+우리가 사용하는 프로그래밍 언어는 개판이다. +
+그래서 디자인 패턴이 필요하게 된다.
+____
 
 Two modest programmers Pedro Veel and Eve Dopler are solving common software engineering problems and applying design patterns.
 평범한 두 프로그래머 페트로 빌(Pedro Veel)과 이브 도플러(Eve Dopler)가 흔히 부딪히는 소프트웨어 문제를 해결하며 디자인 패턴을 적용하고 있다.
 
-Episode 1. Command
-에피소드 1. 커맨드 패턴
+== Episode 1. Command
+== 에피소드 1. 커맨드 패턴
 
-<situation>
+[sidebar]
+****
 Leading IT service provider "Serpent Hill & R.E.E" acquired new project for USA customer. First delivery is a register, login and logout functionality for their brand new site.
 중견 IT 서비스 회사 Serpent Hill & R.E.E는 미국 소비자들을 대상으로 하는 새로운 프로젝트를 수주했다. 첫 번째로 할 일은 새로운 사이트의 회원 가입과 로그인, 로그아웃을 처리하는 것이다.
-</situation>
+****
 
 Pedro: Oh, that's easy. You just need a Command interface...
-페드로: 아! 그건 쉬어요. `Command` 인터페이스가 필요하네요.
+페드로: 아! 그건 쉬어요. `Command` 인터페이스가 필요하네요...
 
-<java>
+[source,java]
+----
 interface Command {
   void execute();
 }
-</java>
+----
 
 Pedro: Every action should implement this interface and define specific execute behaviour.
 페드로: 모든 클래스에서 이 인터페이스를 구현하고 `execute` 메소드를 정의하면 됩니다.
 
-<java>
+[source,java]
+----
 public class LoginCommand implements Command {
 
   private String user;
@@ -88,9 +75,10 @@ public class LoginCommand implements Command {
     DB.login(user, password);
   }
 }
-</java>
+----
 
-<java>
+[source,java]
+----
 public class LogoutCommand implements Command {
 
   private String user;
@@ -104,38 +92,43 @@ public class LogoutCommand implements Command {
     DB.logout(user);
   }
 }
-</java>
+----
 
 Pedro: Usage is simple as well.
 페드로: 사용법도 간단합니다.
 
-<java>
+[source,java]
+----
 (new LoginCommand("django", "unCh@1ned")).execute();
 (new LogoutCommand("django")).execute();
-</java>
-
+----
 
 Pedro: What do you think, Eve?
 페드로: 어떻게 생각해요, 이브?
 
 Eve: Why are you using redundant wrapping into LoginCommand and just don't call DB.login?
-Pedro: It's important to wrap here, because now we can operate on generic Command objects.
-Eve: For what purpose?
-Pedro: Delayed call, logging, history tracking, caching, plenty of usages.
-Eve: Ok, how about that?
-이브: 단순히 DB.login을 호출하지 않고, 불필요하게 LoginCommand 안에 감싸는 거죠?
-페드로: 여기서 감싸서 호출하는 건 중요해요. 그래야 좀 더 추상화된 Command 객체를 대상으로 작업을 수행할 수 있거든요.
-이브: 왜 그래야 하죠?
-페드로: 지연 호출이나, 로그 기록, 기록 추적, 캐싱 등등을 하기 위해서죠.
-이브: 그런 용도를 위해서라면 이건 어떄요?
+이브: 단순히 ``DB.login``을 호출하지 않고, 굳이 `LoginCommand` 안에 감싸는 거죠?
 
-<clj>
+Pedro: It's important to wrap here, because now we can operate on generic Command objects.
+페드로: 여기서 감싸서 호출하는 건 중요해요. 그래야 좀 더 추상화된 `Command` 객체를 대상으로 작업을 수행할 수 있거든요.
+
+Eve: For what purpose?
+이브: 왜 그래야 하죠?
+
+Pedro: Delayed call, logging, history tracking, caching, plenty of usages.
+페드로: 지연 호출이나, 로그 기록, 기록 추적, 캐싱 등등을 하기 위해서죠.
+
+Eve: Ok, how about that?
+이브: 그런 용도를 위해서라면 이건 어때요?
+
+[source]
+----
 (defn execute [command]
   (command))
 
 (execute #(db/login "django" "unCh@1ned"))
 (execute #(db/logout "django"))
-</clj>
+----
 
 Pedro: What the hell this hash sign?
 페드로: 이 해시(#) 기호는 도대체 뭐죠?
@@ -143,28 +136,29 @@ Pedro: What the hell this hash sign?
 Eve: A shortcut for javaish
 이브: 다음의 자바 코드의 단축형으로 보면 되요.
 
-<java>
+[source,java]
+----
 new SomeInterfaceWithOneMethod() {
-
   @Override
   public void execute() {
     // do
   }
 };
-</java>
+----
 
 Pedro: Just like Command interface...
-페드로: Command 인터페이스처럼 보이네요.
+페드로: `Command` 인터페이스처럼 보이네요.
 
 Eve: Or if you want - no-hash solution.
 이브: 원한다면, 다음과 같이 해시 기호 없이 구현할 수도 있어요.
 
-<clj>
+[source]
+----
 (defn execute [command & args]
   (apply command args))
 
 (execute db/login "django" "unCh@1ned")
-</clj>
+----
 
 Pedro: And how do you save function for delayed call in that case?
 페드로: 이 경우에 지연 호출을 위해 함수를 보관하려면 어떻게 해야 하나요?
@@ -179,24 +173,27 @@ Eve: And?
 이브: 그리고요?
 
 Pedro: ...arguments.
-페드로: 함수의 인자들이겠죠.
+페드로: 함수의 인수들이겠죠.
 
 Eve: Bingo. All you do is saving a pair (function-name, arguments) and call it whenever you want using (apply function-name arguments)
-이브: 맞았어요! 단순히 `function-name`과 `arguments`를 보관해 두었다가 언제든 원할 때 `(apply function-name arguments)` 형식으로 호출하면 되요.
+이브: 맞았어요! 단순히 ``function-name``과 ``arguments``를 보관해 두었다가 언제든 원할 때 `(apply function-name arguments)` 형식으로 호출하면 되요.
 
 Pedro: Hmm... Looks simple.
 페드로: 음... 간단해 보이네요.
 
 Eve: Definitely, Command is just a function.
-이브: 물론이죠. Command는 단순히 함수일 뿐이예요.
+이브: 물론이죠. ``Command``는 단순히 함수일 뿐이니까요.
 
 
-Episode 2. Strategy
+== Episode 2. Strategy
 
-<상황>
-Sven Tori pays a lot of money to see a page with list of users. But users must be sorted by name and users with subscription must appear before all other users. Obviously, because they pay. Reverse sorting should keep subscripted users on top.
+== 에피소드 2. 전략 패턴
+
+[sidebar]
+****
+Sven Tori pays a lot of money to see a page with list of users. But users must be sorted by name and users with subscription must appear before all other users. Obviously, because they pay. Reverse sorting should keep subscripted users on top. 
 스벤 토리(Sven Tori)는 이용자 목록을 담은 페이지를 보려고 많은 돈을 지불한다. 그런데 이용자는 이름순으로 정렬되어 있어야 하고, 구독 사용자들은 다른 사용자들보다 앞에 나타나야 한다. 그 이유는 그들이 돈을 지불하기 때문이다. 역순으로 정렬할 때에도 구독 이용자들은 앞에 나열되어야 한다.
-</상황>
+****
 
 Pedro: Ha, just call Collections.sort(users, comparator) with custom comparator.
 페도라: 아! 적절한 비교자(custom comparator)를 제공해서 ``Collections.sort(users, comparator)``를 호출하면 되곘네요.
@@ -205,12 +202,13 @@ Eve: How would you implement custom comparator?
 이브: 적절한 비교자는 어떻게 구현하시려고요?
 
 Pedro: You need to take Comparator interface and provide implementation for compare(Object o1, Object o2) method. Also you need another implementation for ReverseComparator
-페드로: `Comparator` 인터페이스를 이용해 `compare(Object o1, Object o2)` 메소드를 구현하면 되요. `ReverseComparator` 클래스의 경우에도 마찬가지로 `Comparator` 인터페이스를 구현하면 됩니다. 
+페드로: Comparator 인터페이스를 이용해 `compare(Object o1, Object o2)` 메소드를 구현하면 되요. `ReverseComparator` 클래스의 경우에도 마찬가지로 `Comparator` 인터페이스를 구현하면 됩니다.
 
 Eve: Stop talking, show me the code!
-이브: 설명보다는 코드를 보여 주세요!
+이브: 말보다는 코드를 보여 주세요!
 
-<자바>
+[source,java]
+----
 class SubsComparator implements Comparator<User> {
 
   @Override
@@ -239,12 +237,10 @@ class ReverseSubsComparator implements Comparator<User> {
   }
 }
 
-// forward sort
 Collections.sort(users, new SubsComparator());
 
-// reverse sort
 Collections.sort(users, new ReverseSubsComparator());
-</자바>
+----
 
 Pedro: Could you do the same?
 페드로: 클로저로는 어떻게 할 수 있죠?
@@ -252,71 +248,89 @@ Pedro: Could you do the same?
 Eve: Yeah, something like that
 이브: 예, 다음과 같이 합니다.
 
-<클로저>
-(sort (comparator 
-        (fn [u1 u2]
-          (cond
-            (= (:subscription u1) (:subscription u2))
-            (neg? (compare (:name u1) (:name u2)))
+[source]
+----
+(sort (comparator (fn [u1 u2] 
+                    (cond
+                      (= (:subscription u1) (:subscription u2))
+                      (neg? (compare (:name u1) (:name u2)))
 
-            (:subscription u1)
-            true
+                      (:subscription u1)
+                      true
 
-            :else false)))
+                      :else
+                      false)))
       users)
-</클로저>
+----
 
-Pedro: Pretty similar.
-페드로: 아주 유사하네요.
+Pedro: Pretty similar. 페드로: 아주 유사하네요.
+Eve: But we can do it better 이브: 하지만 더 간단하게 할 수도 있어요.
 
-Eve: But we can do it better
-이브: 하지만 더 간단하게 할 수도 있어요.
-
-<클로저>
+[source]
+----
 ;; forward sort
 (sort-by (juxt (complement :subscription) :name) users)
 
 ;; reverse sort
 (sort-by (juxt :subscription :name) #(compare %2 %1) users)
-</클로저>
+----
 
 Pedro: Oh my gut! Monstrous oneliners.
 페드로: 세상에! 달랑 한 줄짜리 코드네요.
 
 Eve: Functions, you know.
 이브: 보시다시피, 그냥 함수들일 뿐이죠.
- 
-Pedro: Whatever, it's very hard to understand what's happening there.
+
+Pedro: Whatever, it’s very hard to understand what’s happening there.
 페드로: 어쩃거나, 코드를 이해하기는 매우 어렵네요.
 
-<해설>
-Eve explains juxt, complement and sort-by
-이브는 `juxt`와 `complement`, `sort-by` 함수에 대해 설명한다.
+[sidebar]
+****
+Eve explains juxt, complement and sort-by.
+이브는 juxt`와 `complement, sort-by 함수에 대해 설명한다.
 
-10 minutes later
-10분 뒤
-</해설>
+10 minutes later 10분 뒤에
+****
 
 Pedro: Very doubtful approach to pass strategy.
 페드로: 전략 패턴을 뛰어 넘는 아주 이상한 접근법이네요.
 
-Eve: I don't care, because Strategy is just a function passed to another function.
+Eve: I don’t care, because Strategy is just a function passed to another function.
 이브: 상관 없어요. 전략 패턴은 클로저에서는 단순히 어떤 함수에 인수로 전달되는 함수일 뿐이니까요.
 
 
-Episode 3. State
+== Episode 3. State
+== 에피소드 3. 상태 패턴
 
+[sidebar]
+****
 Sales person Karmen Git investigated the market and decided to provide user-specific functionality.
+영업 사원 카르멘 깃(Karmen Git)은 시장을 조사한 후, 이용자 맞춤 기능을 제공하기로 결정했다.
+****
 
 Pedro: Smooth requirements.
+페드로: 요구 사항이 어렵지는 않네요.
+
 Eve: Let's clarify them.
+이브: 알아 듣기 쉽게 설명해 보시죠.
 
-If user has subscription show him all news in a feed
-Otherwise, show him only recent 10 news
-If he pays money, add the amount to his account balance
-If user doesn't have subscription and there is enough money to buy subscription, change his state to...
+* If user has subscription show him all news in a feed
+* 이용자가 구독 상태이면 모든 뉴스를 보여준다.
+
+* Otherwise, show him only recent 10 news
+* 그렇지 않으면, 최근 10개의 뉴스만을 보여준다.
+
+* If he pays money, add the amount to his account balance
+* 돈을 지불하면 그 금액을 그의 계정 잔액에 더한다.
+
+* If user doesn't have subscription and there is enough money to buy subscription, change his state to...
+* 이용자가 미구독 상태인데, 잔액이 구독에 필요한 돈보다 많으면 그의 상태를 구독 상태로 변경한다.
+
 Pedro: State! Awesome pattern. First we make a user state enum
+페드로: 상태 패턴이네요! 멋진 패턴이죠. 먼저 이용자의 상태 enum을 만듭니다.
 
+[source,java]
+----
 public enum UserState {
   SUBSCRIPTION(Integer.MAX_VALUE),
   NO_SUBSCRIPTION(10);
@@ -331,8 +345,13 @@ public enum UserState {
     return newsLimit;
   }
 }
-Pedro: User logic is following
+----
 
+Pedro: User logic is following
+페드로: ``User``의 로직은 다음과 같습니다.
+
+[source,java]
+----
 public class User {
   private int money = 0;
   private UserState state = UserState.NO_SUBSCRIPTION;
@@ -352,24 +371,50 @@ public class User {
     }
   }
 }
-Pedro: Lets call it
+----
 
+Pedro: Lets call it
+페드로: 호출해 보죠.
+
+[source,java]
+----
 User user = new User(); // create default user
 user.newsFeed(); // show him top 10 news
 user.pay(10); // balance changed, not enough for subs
 user.newsFeed(); // still top 10
 user.pay(25); // balance enough to apply subscription
 user.newsFeed(); // show him all news
-Eve: You just hide value that affects behaviour inside User object. We could use strategy to pass it directly user.newsFeed(subscriptionType).
-Pedro: Agreed, State is very close to the Strategy. They even have the same UML diagrams. but we encapsulate balance and bind it to user.
-Eve: I think it achieves the same goal using another mechanism. Instead of providing strategy explicitly, it depends on some state. From clojure perspective it can be implemented the same way as strategy pattern.
-Pedro: But successive calls can change object's state.
-Eve: Correct, but it has nothing to do with Strategy it is just implementation detail.
-Pedro: What about "another mechanism"?
-Eve: Multimethods.
-Pedro: Multi what?
-Eve: Look at this
+----
 
+Eve: You just hide value that affects behaviour inside User object. We could use strategy to pass it directly user.newsFeed(subscriptionType).
+이브: `newsFeed` 메소드의 동작에 영향을 미치는 값을 `User` 객체에 감추었을 뿐이네요. ``user.newsFeed(subscriptionType)``처럼 ``subscriptionType``을 인수에 직접 전달하는 전략 패턴을 이용할 수도 있었는데 말이죠. 
+
+Pedro: Agreed, State is very close to the Strategy. They even have the same UML diagrams. but we encapsulate balance and bind it to user.
+페드로: 인정합니다. 상태 패턴은 전략 패턴과 아주 유사하죠. 이 둘은 심지어 UML 다이어그램으로 표현할 때도 같은 모양이예요. 하지만 잔액을 캡술화해서 `user` 객체 안에 묶어 놓은 것은 다르죠. 
+
+Eve: I think it achieves the same goal using another mechanism. Instead of providing strategy explicitly, it depends on some state. From clojure perspective it can be implemented the same way as strategy pattern.
+이브: 저는 다른 방식을 사용해도 같은 일을 할 수 있다고 생각해요. 그런데 이 방식은, 명시적으로 전략 패턴을 제공하는 대신에, 상태에 의존하는 것이죠. 클로저의 관점에서는 이 패턴을 전략 패턴과 동일한 방법으로 구현할 수 있어요. 
+
+Pedro: But successive calls can change object's state.
+페드로: 메소드를 여러 번 호출하면, 객체의 상태가 바뀔 수 있는 데도요?
+
+Eve: Correct, but it has nothing to do with Strategy it is just implementation detail.
+이브: 맞아요, 하지만 객체의 상태는 전략 패턴과 관련이 없어요. 그것은 단지 구현 상의 한 방법일 뿐이예요.
+
+Pedro: What about "another mechanism"?
+페드로: 그럼 다른 방식이란 무엇인가요?
+
+Eve: Multimethods.
+이브: 멀티메소드(Multimethods)입니다.
+
+Pedro: Multi what?
+페드로: 멀티 뭐라고요? 
+
+Eve: Look at this
+이브: 다음 코드를 보세요.
+
+[source]
+----
 (defmulti news-feed :user-state)
 
 (defmethod news-feed :subscription [user]
@@ -377,8 +422,13 @@ Eve: Look at this
 
 (defmethod news-feed :no-subscription [user]
   (take 10 (db/news-feed)))
-Eve: And pay function it's just a plain function, which changes state of object. We don't like state too much in clojure, but if you wish.
+----
 
+Eve: And pay function it's just a plain function, which changes state of object. We don't like state too much in clojure, but if you wish.
+이브: 다음의 `pay` 함수는 객체의 상태를 바꾼다는 점을 제외하면 평범한 함수일 뿐이예요. 클로저에서는 상태를 가능한 한 최소화하려 하지만, 필요할 때는 사용해야겠지요.   
+
+[source]
+----
 (def user (atom {:name "Jackie Brown"
                  :balance 0
                  :user-state :no-subscription}))
@@ -397,20 +447,38 @@ Eve: And pay function it's just a plain function, which changes state of object.
 (news-feed @user) ;; top 10
 (pay user 25)
 (news-feed @user) ;; all news
+----
+
 Pedro: Is dispatching by multimethods better than dispatching by enum?
+페드로: 멀티메소드를 이용한 분기 판별이 enum을 이용한 분기 판별보다 더 나은가요?
+
 Eve: No, in this particlular case, but in general yes.
+이브: 이 경우에는 그렇지 않지만, 일반적으로는 그렇습니다.
+
 Pedro: Explain, please
+페드로: 설명해 주시겠어요?
+
 Eve: Do you know what double dispatch is?
+이브: 이중 분기 판별(double dispatch)라고 들어 보셨나요?
+
 Pedro: Not sure.
+페드로: 잘 모르겠는데요.
+
 Eve: Well, it is topic for Visitor pattern.
+이브: 괜찮아요, 그것이 다음에 다룰 방문자 패턴의 주제이거든요.
+
 
 Episode 4. Visitor
 
+<상태>
 Natanius S. Selbys suggested to implement functionality which allows users export their messages, activities and achievements in different formats.
+</상태>
 
 Eve: So, how do you plan to do it?
 Pedro: We have one hierarchy for item types (Message, Activity) and another for file formats (PDF, XML)
 
+[source,java]
+----
 abstract class Format { }
 class PDF extends Format { }
 class XML extends Format { }
@@ -446,14 +514,20 @@ class Activity extends Item {
     XMLExporter.export(this);
   }
 }
+----
+
 Pedro: That's all.
 Eve: Nice, but how do you dispatch on argument type?
 Pedro: What the problem?
 Eve: Consider this snippet
 
+[source,java]
+----
 Item i = new Activity();
 Format f = new PDF();
 i.export(f);
+----
+
 Pedro: Nothing suspicious here.
 Eve: Actually, if you run this code you get UnknownFormatException
 Pedro: Wait...Really?
@@ -463,6 +537,8 @@ Eve: That's what visitor hack for. After you got a dispatch on i type, you addit
 Pedro: How that looks in code?
 Eve: You separately define export operations for all types as a Visitor
 
+[source,java]
+----
 public interface Visitor {
   void visit(Activity a);
   void visit(Message m);
@@ -479,8 +555,12 @@ public class PDFVisitor implements Visitor {
     PDFExporter.export(m);
   }
 }
+----
+
 Eve: Your items change signature to accept different visitors.
 
+[source,java]
+----
 public abstract class Item {
   abstract void accept(Visitor v);
 }
@@ -498,29 +578,45 @@ class Activity extends Item {
     v.visit(this);
   }
 }
+----
+
 Eve: To use it you may call
 
+[source,java]
+----
 Item i = new Message();
-Visitor v = new PDFVisitor(); 
+Visitor v = new PDFVisitor();
 i.accept(v);
+----
+
 Eve: And everything works fine. Moreover, you can add new operations for activities and messages by just defining new visitors and without changing their code.
 Pedro: That's really useful. But implementation is tough, it is the same for clojure?
 Eve: Not really, clojure supports it natively via multimethods
 Pedro: Multi what?
 Eve: Just follow the code... First we define dispatcher function
 
+[source]
+----
 (defmulti export
   (fn [item format] [(:type item) format]))
+----
+
 Eve: It accepts item and format to be exported. Examples:
 
+[source]
+----
 ;; Message
 {:type :message :content "Say what again!"}
 ;; Activity
 {:type :activity :content "Quoting Ezekiel 25:17"}
 ;; Formats
 :pdf, :xml
+----
+
 Eve: And now you just provide a functions for different combinatations, and dispatcher decide which one to call.
 
+[source]
+----
 (defmethod export [:activity :pdf] [item format]
   (exporter/activity->pdf item))
 
@@ -532,27 +628,45 @@ Eve: And now you just provide a functions for different combinatations, and disp
 
 (defmethod export [:message :xml] [item format]
   (exporter/message->xml item))
+----
+
 Pedro: What if unknown format passed?
 Eve: We could specify default dipatcher function.
 
+[source]
+----
 (defmethod export :default [item format]
   (throw (IllegalArgumentException. "not supported")))
+----
+
 Pedro: Ok, but there is no hierarchy for :pdf and :xml. They are just keywords?
 Eve: Correct, simple problem - simple solution. If you need advanced features, you could use adhoc hierarchies or dispatch by class.
 
+[source]
+----
 (derive ::pdf ::format)
 (derive ::xml ::format)
+----
+
 Pedro: Quadrocolons?!
 Eve: Assume they are just keywords.
 Pedro: Ok.
 Eve: Then you add functions for every dispatch type ::pdf, ::xml and ::format
 
+[source]
+----
 (defmethod export [:activity ::pdf])
 (defmethod export [:activity ::xml])
 (defmethod export [:activity ::format])
+----
+
 Eve: If some new format (i.e. csv) appears in the system
 
+[source]
+----
 (derive ::csv ::format)
+----
+
 Eve: It will be dispatched to ::format function, until you add a separate ::csv function.
 Pedro: Seems good.
 Eve: Definitely, much easier.
@@ -561,7 +675,10 @@ Eve: Exactly.
 
 Episode 5. Template Method
 
+[sidebar]
+****
 MMORPG Mech Dominore Fight Saga requested to implement a game bot for their VIP users. Not fair.
+****
 
 Pedro: First, we must decide what actions should be automated with bot.
 Eve: Have you ever played RPG?
@@ -574,13 +691,16 @@ Pedro: ...fantastic, I found epic sword, which has +100 attack.
 Eve: Unbelievable. But now, it's time for bot.
 Pedro: Easy-peasy. We could select following events
 
-Battle
-Quest
-Open Chest
+* Battle
+* Quest
+* Open Chest
+
 Pedro: Characters behave differently in different events, for example mages cast spells in battle, but rogues prefer silent melee combat; locked chests are skipped by most characters, but rogues can unlock them, etc.
 Eve: Looks like ideal candidate for Template Method?
 Pedro: Yes. We define abstract algorithm, and then specify differences in subclasses.
 
+[source,java]
+----
 public abstract class Character {
   void moveTo(Location loc) {
     if (loc.isQuestAvailable()) {
@@ -604,10 +724,14 @@ public abstract class Character {
   abstract void handleLockedChest(Chest chest);
   abstract void attack(List<Enemy> enemies);
 }
+----
+
 Pedro: We've separated to Character class everything common to all characters. Now we can create subclasses, that define how character should behave in specific situation. In out case: handling locked chests and attacking enemies.
 Eve: Let's start with a Mage class.
 Pedro: Mage? Okay. He can't open locked chest, so implementation is just do nothing. And if he is attacking enemies, if there are more than 10 enemies, freeze them, and cast teleport to run away. If there are 10 enemies or less cast fireball on each of them.
 
+[source,java]
+----
 public class MageCharacter extends Character {
   @Override
   void handleLockedChest(Chest chest) {
@@ -626,9 +750,13 @@ public class MageCharacter extends Character {
     }
   }
 }
+----
+
 Eve: Excellent, what about Rogue class?
 Pedro: Easy as well, rogues can unlock chests and prefer silent combat, handle enemies one by one.
 
+[source,java]
+----
 public class RogueCharacter extends Character {
   @Override
   void handleLockedChest(Chest chest) {
@@ -643,6 +771,8 @@ public class RogueCharacter extends Character {
     }
   }
 }
+----
+
 Eve: Excellent. But how this approach is differrent from Strategy?
 Pedro: What?
 Eve: I mean, you redefined behaviour by using subclasses, but in Strategy pattern you did the same: redefined behaviour by using functions.
@@ -653,6 +783,8 @@ Eve: You are solving the same kind of problem, but change the approach to it.
 Pedro: How do yo solve this problem using strategy in clojure?
 Eve: Just pass a set of specific functions for each character. For example, your abstract move may look like:
 
+[source]
+----
 (defn move-to [character location]
   (cond
    (quest? location)
@@ -664,8 +796,12 @@ Eve: Just pass a set of specific functions for each character. For example, your
    (enemies? location)
    (attack (:enemies location)))
   (move-to character (:next-location location)))
+----
+
 Eve: To add character-specific implementation of methods handle-chest and attack, implement them and pass as an argument.
 
+[source]
+----
 ;; Mage-specific actions
 (defn mage-handle-chest [chest])
 
@@ -685,39 +821,56 @@ Eve: To add character-specific implementation of methods handle-chest and attack
                        attack (fn [enemies] (run-away))}}]
   ;; previous implementation
 )
+----
+
 Pedro: OMG, what's happening there?
 Eve: We changed signature of move-to to accept handle-chest and attack functions.
 Think of them like optional parameters.
 
+[source]
+----
 (move-to character location
   :handle-chest mage-handle-chest
   :attack       mage-attack)
+----
+
 Eve: Keep in mind that if these functions are not provided we use default behavior: do nothing for handle-chest and run away from enemies in attack
 Pedro: Fine, but is this better than approach by subclassing? Seems that we have a lot of redundant information in move-to call.
 Eve: It's fixable, just define this call once, and give it alias
 
+[source]
+----
 (defn mage-move [character location]
   (move-to character location
     :handle-chest mage-handle-chest
     :attack       mage-attack))
+----
+
 Eve: Or use multimethods, it's even better.
 
-(defmulti move 
+[source]
+----
+(defmulti move
   (fn [character location] (:class character)))
 
 (defmethod move :mage [character location]
   (move-to character location
     :handle-chest mage-handle-chest
     :attack       mage-attack))
+----
+
 Pedro: I understand. But why do you think pass as argument is better than subclassing?
 Eve: You can change behaviour dynamically. Assume your mage has no mana, so instead of trying to cast fireballs, he can just teleport and run away, you just provide new function.
 Pedro: Makes sense. Functions everywhere.
 
 Episode 6. Iterator
 
+[sidebar]
+****
 Technical consultant Kent Podiololis complains for C-style loops usage.
 
 "Are we in 1980 or what?" -- Kent
+****
 
 Pedro: We definitely should use pattern Iterator from java.
 Eve: Don't be fool, nobody's using java.util.Iterator
@@ -734,38 +887,60 @@ Pedro: Emmm...
 
 Pedro wrote two traversing snippets:
 
-Traversing using iterator
+* Traversing using iterator
+
+[source,java]
+----
 Iterator i;
 while (i.hasNext()) {
   i.next();
 }
-Traversing using linked list
+----
+
+* Traversing using linked list
+
+[source,java]
+----
 Node next = root;
 while (next != null) {
   next = next.next;
 }
+----
+
 Pedro: They are pretty similar...What is analogue of Iterator in clojure?
 Eve: seq function.
 
+[source]
+----
 (seq [1 2 3])       => (1 2 3)
 (seq (list 4 5 6))  => (4 5 6)
 (seq #{7 8 9})      => (7 8 9)
 (seq (int-array 3)) => (0 0 0)
 (seq "abc")         => (\a \b \c)
+----
+
 Pedro: It returns a list...
 Eve: Sequence, because Iterator is just a sequence
 Pedro: Is it possible to make seq works on custom datastructures?
 Eve: Implement clojure.lang.Seqable interface
 
+[source]
+----
 (deftype RedGreenBlackTree [& elems]
   clojure.lang.Seqable
   (seq [self]
     ;; traverse element in needed order
     ))
+----
+
 Pedro: Fine then. But I've heard iterator is often used to achive laziness, for example to calculate value only during getNext() call, how list handle that?
 Eve: List can be lazy as well, clojure calls such list "lazy sequence".
 
+[source]
+----
 (def natural-numbers (iterate inc 1))
+----
+
 Eve: We defined thing to represent ALL natural numbers, but we haven't got OutOfMemory yet, because we haven't requested any value. It's lazy.
 Pedro: Could you explain more?
 Eve: Unfortunately, I am too lazy for that.
@@ -773,7 +948,9 @@ Pedro: I will remember that!
 
 Episode 7: Memento
 
+<상태>
 User Chad Bogue lost the message he was writing for two days. Implement save button for him.
+</상태>
 
 Pedro: I don't believe there are people who can type in textbox for two days. Two. Days.
 Eve: Let's save him.
@@ -781,6 +958,8 @@ Pedro: I googled this problem. Most popular approach to implement save button is
 Eve: What's that?
 Pedro: Originator is just an object or state that we want to preserve. (text inside a textbox), caretaker is responsible to save state (save button) and memento is just an object to encapsulate state.
 
+[source,java]
+----
 public class TextBox {
   // state for memento
   private String text = "";
@@ -806,8 +985,12 @@ public class TextBox {
     return "[" + text + "]";
   }
 }
+----
+
 Pedro: Memento is just an immutable object
 
+[source,java]
+----
 public final class Memento {
   private final String text;
 
@@ -819,8 +1002,12 @@ public final class Memento {
     return text;
   }
 }
+----
+
 Pedro: And caretaker is a demo
 
+[source,java]
+----
 // open browser, init empty textbox
 TextBox textbox = new TextBox();
 
@@ -841,12 +1028,15 @@ textbox = new TextBox();
 // but it's empty! All work is gone!
 // not really, you rollback to last checkpoint
 textbox.restore(checkpoint1);
+----
+
 Pedro: Just a note if you want a multiple checkpoints, save memento's to the list.
 Eve: Originator, caretaker, memento - looks as a bunch of nouns, but actually it's all about two functions save and restore.
-
+[source]
+----
 (def textbox (atom {}))
 
-(defn init-textbox [] 
+(defn init-textbox []
  (reset! textbox {:text ""
                   :color :BLACK
                   :width 100}))
@@ -863,8 +1053,12 @@ Eve: Originator, caretaker, memento - looks as a bunch of nouns, but actually it
 
 (defn restore []
   (swap! textbox assoc :text @memento))
+----
+
 Eve: And demo as well.
 
+[source]
+----
 (init-textbox)
 (type-text "'Like A Virgin' ")
 (type-text "it's not about this sensitive girl ")
@@ -873,6 +1067,8 @@ Eve: And demo as well.
 ;; crash
 (init-textbox)
 (restore)
+----
+
 Pedro: It's pretty the same code.
 Eve: Yes, but you must care about memento immutability
 Pedro: What does it mean?
@@ -882,7 +1078,9 @@ Eve: We will talk about Prototype in a minute, but just remember that Memento is
 
 Episode 8: Prototype
 
+<상태>
 Dex Ringeus detected that users feel uncomfortable with registration form. Make it more usable.
+</상태>
 
 Pedro: So, what's the problem with the registration?
 Eve: There are lot of fields users bored to type in.
@@ -900,6 +1098,8 @@ Pedro: I suggest to use some registration prototype which has all fields are fil
 Eve: Sounds great.
 Pedro: Here it is our standard registration form, with prototype in clone() method.
 
+[source,java]
+----
 public class RegistrationForm implements Cloneable {
   private String name = "Zed";
   private String email = "zzzed@gmail.com";
@@ -934,6 +1134,8 @@ public class RegistrationForm implements Cloneable {
     return  prototyped;
   }
 }
+----
+
 Pedro: Every time we create a user, call clone() and then override needed properties.
 Eve: Awful! In mutable world clone() is needed to create new object with the same properties. The hard part is the copy must be deep, i.e. instead of copying reference you need recursively clone() other objects, and what if one of them doesn't have clone()...
 Pedro: That's the problem and this pattern solves it.
@@ -943,6 +1145,8 @@ Eve: Clojure has immutable data structures. That's all.
 Pedro: How does it solve prototype problem?
 Eve: Every time you modify object, you get a fresh new immutable copy of your data, and old one is not changed. Prototype is not needed in immutable world
 
+[source]
+----
 (def registration-prototype
      {:name          "Zed"
       :email         "zzzed@gmail.com"
@@ -955,12 +1159,14 @@ Eve: Every time you modify object, you get a fresh new immutable copy of your da
       :brands        ["Adidas" "GAP"]})
 
 ;; return new object
-(assoc registration-prototype 
+(assoc registration-prototype
      :name "Mia Vallace"
      :email "tomato@gmail.com"
      :weight 52
      :gender :female
      :month-salary 0)
+----
+
 Pedro: Great! But how this affects performance?
 Copying million rows each time you adding new value seems time consuming operation.
 Eve: No, it is not. Go to Google and search for persistent data structures and structural sharing
@@ -968,13 +1174,18 @@ Pedro: Thanks a lot.
 
 Episode 9: Mediator
 
+[sidebar]
+****
 Recently performed external code review shows a lot of issues with current codebase. Veerco Wierde emphasizes tight coupling in chat application.
+****
 
 Eve: What is tight coupling?
 Pedro: It's the problem when objects know too much about each other.
 Eve: Could you be more specific?
 Pedro: Look at the current chat implementation
 
+[source,java]
+----
 public class User {
   private String name;
   List<User> users = new ArrayList<User>();
@@ -998,10 +1209,14 @@ public class User {
     // process message
   }
 }
+----
+
 Pedro: The problem here is the user knows everything about other users. It is very hard to use and maintain such code. When new user connects to the chat, you must add a reference to him via addUser for every existing user.
 Eve: So, we just move one piece of responsibility to another class?
 Pedro: Yes, kind of. We create mega-aware class, called mediator, that binds all parts together. Obviously, each part knows only about mediator.
 
+[source,java]
+----
 public class User {
   String name;
   private Mediator m;
@@ -1034,19 +1249,23 @@ public class Mediator {
     }
   }
 }
+----
+
 Eve: That seems like a simple refactoring problem.
 Pedro: Profit may be underestimated, but if you have hundreds of mutually connected components (UI for example) mediator is really a savior.
 Eve: Agreed.
 Pedro: Now the clojure turn.
 Eve: Ok...let's look...your mediator is responsible for saving users and sending messages
 
+[source]
+----
 (def mediator
   (atom {:users []
          :send (fn [users text]
                  (map #(receive % text) users))}))
 
 (defn add-user [u]
-    (swap! mediator 
+    (swap! mediator
       (fn [m]
         (update-in m [:users] conj u))))
 
@@ -1058,22 +1277,33 @@ Eve: Ok...let's look...your mediator is responsible for saving users and sending
 (add-user {:name "Mister White"})
 (add-user {:name "Mister Pink"})
 (send-message {:name "Joe"} "Toby?")
+----
+
 Pedro: Good enough.
 Eve: Nothing interesing here, because it is just a one approach to reduce coupling.
 
 Episode 10: Observer
 
+[sidebar]
+****
 Independent security commision detected hacker Dartee Hebl has over a billion dollars balance on his account. Track big transactions to the accounts.
+****
 
 Pedro: Are we Holmses?
 Eve: No, but there is a lack of logging in the system, need to find a way to track all changes to balance.
 Pedro: We could add observers. Every time we modify balance, if change is big enough, notify about this and track the reason. We need Observer interface
 
+[source,java]
+----
 public interface Observer {
   void notify(User u);
 }
+----
+
 Pedro: And two specific observers
 
+[source,java]
+----
 class MailObserver implements Observer {
   @Override
   public void notify(User user) {
@@ -1087,8 +1317,12 @@ class BlockObserver implements Observer {
     DB.blockUser(u);
   }
 }
+----
+
 Pedro: Tracker class would be responsible for managing observers.
 
+[source,java]
+----
 public class Tracker {
   private Set<Observer> observers = new HashSet<Observer>();
 
@@ -1102,8 +1336,12 @@ public class Tracker {
     }
   }
 }
+----
+
 Pedro: And the last part: init tracker with the user and modify its addMoney method. If transcation amount is greaterthan 100$, notify FBI and block this user.
 
+[source,java]
+----
 public class User {
   String name;
   double balance;
@@ -1127,8 +1365,12 @@ public class User {
     }
   }
 }
+----
+
 Eve: Why are you created two separate observers? You could use it in a one.
 
+[source,java]
+----
 class MailAndBlock implements Observer {
   @Override
   public void notify(User u) {
@@ -1136,11 +1378,15 @@ class MailAndBlock implements Observer {
     DB.blockUser(u);
   }
 }
+----
+
 Pedro: Single responsibility principle.
 Eve: Oh, yeah.
 Pedro: And you can compose observer functionality dynamically.
 Eve: I see your point.
 
+[source]
+----
 ;; Tracker
 
 (def observers (atom #{}))
@@ -1164,17 +1410,23 @@ Eve: I see your point.
       (update-in m [:balance] + amount)))
   ;; tracking
   (if (> amount 100) (notify)))
+----
+
 Pedro: It's a pretty the same way?
 Eve: Yeah, in fact observer is just a way to register function, which will be called after another function.
 Pedro: It is still the pattern.
 Eve Sure, but we can improve solution a bit using clojure watches.
 
+[source]
+----
 (add-watch
   user
-  :money-tracker 
-  (fn [k r os ns] 
+  :money-tracker
+  (fn [k r os ns]
     (if (< 100 (- (:balance ns) (:balance os)))
       (notify))))
+----
+
 Pedro: Why is that better?
 Eve: First of all, our add-money function is clean, it just adds money. Also, watcher tracks every change to the state, not the ones we handle in mutator functions, like add-money
 Pedro: Explain please.
@@ -1183,31 +1435,42 @@ Pedro: That's awesome!
 
 Episode 11: Interpreter
 
+[sidebar]
+****
 Bertie Prayc stole important data from our server and shared it via BitTorrent system. Create a fake account for Bertie to discredit him.
+****
 
 Pedro: BitTorrent system based on .torrent files. We need to write Bencode encoder.
 Eve: Yes, but first let's agree on the format spec
 
 Bencode encoding rules:
 
-Two datatypes are supported:
-Integer N is encoded as i<N>e. (42 = i42e)
-String S is encoded as <length>:<contents> (hello = 5:hello)
-Two containers are supported:
-List of values is encoded as l<contents>e ([1, "Bye"] = li1e3:Byee)
-Map of values is encoded as d<contents>e ({"R" 2, "D" 2} = d1:Ri2e1:Di2ee)
-Keys are just strings, Values are any bencode element
+* Two datatypes are supported:
+** Integer N is encoded as i<N>e. (42 = i42e)
+** String S is encoded as <length>:<contents> (hello = 5:hello)
+
+* Two containers are supported:
+** List of values is encoded as l<contents>e ([1, "Bye"] = li1e3:Byee)
+** Map of values is encoded as d<contents>e ({"R" 2, "D" 2} = d1:Ri2e1:Di2ee)
+***Keys are just strings, Values are any bencode element
+
 Pedro: Seems easy.
 Eve: Maybe, but take into account that values may be nested, list inside list, etc.
 Pedro: Sure. I think we can use Interpreter pattern for bencode encoding.
 Eve: Try it.
 Pedro: We start from interface for all bencode elements
 
+[source,java]
+----
 interface BencodeElement {
   String interpret();
 }
+----
+
 Pedro: Then we provide implementation for each datatype and datacontainer
 
+[source,java]
+----
 class IntegerElement implements BencodeElement {
   private int value;
 
@@ -1267,8 +1530,12 @@ class DictionaryElement implements BencodeElement {
     return "d" + content + "e";
   }
 }
+----
+
 Pedro: And finally, our bencoded string can be constructed from common datastructures programmatically
 
+[source,java]
+----
 // discredit user
 Map<StringElement, BencodeElement> mainStructure = new HashMap<StringElement, BencodeElement>();
 // our victim
@@ -1292,6 +1559,8 @@ BencodeElement top = new DictionaryElement(mainStructure);
 // let's totally discredit him
 String bencodedString = top.interpret();
 BitTorrent.send(bencodedString);
+----
+
 Eve: Interesting, but that is ton of code!
 Pedro: We pay readability for capabilities.
 Eve: I suppose you've heard concept Code is Data, that's a lot easier in clojure
@@ -1299,6 +1568,8 @@ Eve: I suppose you've heard concept Code is Data, that's a lot easier in clojure
 ;; multimethod to handle bencode structure
 (defmulti interpret class)
 
+[source]
+----
 ;; implementation of bencode handler for each type
 (defmethod interpret java.lang.Long [n]
   (str "i" n "e"))
@@ -1307,13 +1578,13 @@ Eve: I suppose you've heard concept Code is Data, that's a lot easier in clojure
   (str (count s) ":" s))
 
 (defmethod interpret clojure.lang.PersistentVector [v]
-  (str "l" 
+  (str "l"
        (apply str (map interpret v))
        "e"))
 
 (defmethod interpret clojure.lang.PersistentArrayMap [m]
-  (str "d" 
-       (apply str (map (fn [[k v]] 
+  (str "d"
+       (apply str (map (fn [[k v]]
                          (str (interpret k)
                               (interpret v))) m))
        "e"))
@@ -1327,13 +1598,19 @@ Eve: I suppose you've heard concept Code is Data, that's a lot easier in clojure
                                     "murder"
                                     "scala"
                                     "pokemons"]})
+----
+
 Eve: You see how it is much easier define specific data?
 Pedro: Sure, and interpret it's just a function per bencode type, instead of separate class.
 Eve: Correct, interpreter is nothing but a set of functions to process a tree.
 
+
 Episode 12: Flyweight
 
+[sidebar]
+****
 Administrators of the lawyer firm Cristopher, Matton & Pharts detected that reporting system consumes a lot of memory and garbage collector continiously hangs system for seconds. Fix that.
+****
 
 Pedro: I've seen this issue before.
 Eve: What's wrong?
@@ -1346,6 +1623,8 @@ Eve: They use age values for points, why not precompute these points for most co
 Pedro: You mean use Flyweight pattern?
 Eve: I mean reuse objects.
 
+[source,java]
+----
 class Point {
   int x;
   int y;
@@ -1378,11 +1657,15 @@ class Point {
     }
   }
 }
+----
+
 Pedro: For this pattern we need two things: precompute most used points at a startup time, and use static factory method instead of constructor to return cached object.
 Eve: Have you tested it?
 Pedro: Sure, the system works like a clock.
 Eve: Excellent, here is my version
 
+[source]
+----
 (defn make-point [x y]
   [x y {:some "Important Properties"}])
 
@@ -1395,6 +1678,8 @@ Eve: Excellent, here is my version
     (if result
       result
       (make-point x y))))
+----
+
 Eve: It creates a flat map with pair [x, y] as a key, instead of two-dimensional array.
 Pedro: Pretty the same.
 Eve: No, it is much flexible, you can't use two-dimensional array if you need to cache three points or non-integer values.
@@ -1406,17 +1691,34 @@ Eve: Every call (except first one) with the same parameters return cached value.
 Pedro: That's awesome!
 Eve: Of course, but remember if your function has side-effects, memoization is bad idea.
 
+
+
 Episode 13: Builder
+에피소드 13: 빌더
 
 Tuck Brass complains that his old automatic coffee-making system is very slow in usage. Customers can't wait long enough and going away.
+턱 브라스는 자동 커피 메이커 시스템이 오래되서 너무 느리다고 불평한다. 고객들은 기다리지 못해 그냥 가버린다.
 
 Pedro: Need to understand what's the problem exactly?
+페드로: 문제가 정확히 무엇인지 이해할 필요가 있나?
+
 Eve: I've researched, system is old, written in COBOL and built around expert system question-answer. They were very popular long time ago.
+이브: 연구해 봤는데, 시스템이 낡았구요, 코볼로 작성된 질의-응답 전문가 시스템으로 구축되어 있어요. 그것은 예전에는 아주 인기가 있었었죠.
+
 Pedro: What do you mean by "question-answer"
+페드로: "질의-응답"이 무슨 의미에요?
+
 Eve: There is operator in front of terminal. System asks: "Do yo want to add water?", operator answers "Yes". Then system asks again: "Do you want to add coffee", operator answers "Yes" and so forth.
+이브: 터미날 앞에 사람이 있어요. 시스템이 "물을 추가할까요?" 라고 물으면, 사람이 "네"라고 답해요. 그러면 시스템이 다시 "커피를 추가할까요?" 라고 물으면, 사람이 "네"라고 답하죠. 뭐 이런 식이죠.
+
 Pedro: It's a nightmare, I just want coffee with milk. Why they don't use predefined options: coffee with milk, coffee with sugar and so on.
+페드로: 악몽이로군요, 난 단지 밀크 커피를 원할 뿐인데요. 왜 사전에 준비된 옵션을 사용하지 않죠: 밀크 커피, 설탕 커피 등등.
+
 Eve: Because it is the raisin of the system: customer can make coffee with any set of ingridients by themselves
+이브: 시스템에 대한 과신 때문이죠: 컴퓨터가 스스로 재료를 혼합해서 커피를 만들 수 있다는 거죠.
+
 Pedro: Okay, let's fix it with Builder pattern.
+페드로: 오케이, 알겠어요. Builder 패턴으로 고쳐봅시다.
 
 public class Coffee {
   private String coffeeName; // required
@@ -1488,6 +1790,7 @@ public class Coffee {
   }
 }
 Pedro: As you see, you can't instantiate Coffee class easily, you need to set parameters with nested Builder class
+페드로: 보다시피, 커피 클래스의 인스턴스를 만드는게 쉽지 않아요, 내포된 Builder 클래스로 파라미터를 설정할 필요가 있죠.
 
 Coffee c = new Coffee.Builder()
         .setCoffeeName("Royale Coffee")
@@ -1496,10 +1799,18 @@ Coffee c = new Coffee.Builder()
         .setMilk(10)
         .setCinnamon(3)
         .make();
+
 Pedro: Calling to method make checks all required parameters, and could validate and throw an exception if object is in inconsistent state.
+페드로: 메소드를 호출하면 모든 필수 파라미터를 검사를 하는데, 검증하다가 객체가 뭔가 모순적 상태가 되면 예외를 던지죠.
+
 Eve: Awesome functionality, but why so verbose?
+이브: 멋진 기능이긴 한데요, 왜 그리 장황하죠?
+
 Pedro: Beat it.
+페드로: 어디 해보시죠.
+
 Eve: A piece of cake, clojure supports optional arguments, everything what builder pattern is about.
+이브: 껌이죠, 클로저는 옵션 파라미터를 제공하는데, 그게 빌더 패턴의 모든 것이죠.
 
 (defn make-coffee [name amount water
                    & {:keys [milk sugar cinnamon]
@@ -1510,10 +1821,18 @@ Eve: A piece of cake, clojure supports optional arguments, everything what build
 (make-coffee "Royale Coffee" 15 100
              :milk 10
              :cinnamon 3)
+
 Pedro: Aha, you have three required parameters and three optionals, but required parameters still without names.
+페드로: 아하, 파라미터 3개는 필수이고 나머지는 옵션들이긴 한데, 필수 파라미터에는 이름이 없군요.
+
 Eve: What do you mean?
+이브: 무슨 말이죠?
+
 Pedro: From the client call I see number 15 but I have no idea what it might be.
+페드로: 함수 호출할 때 파라미터 15를 넘기는데, 그게 무엇을 의미하는지 전혀 모르쟎아요.
+
 Eve: Agreed. Then, let's make all parameters are named and add precondition for required, the same way you do with the builder.
+이브: 맞네요. 그러면 모든 파라미터에 이름을 짓고, 사전 조건을 걸어보죠. 그럼 당신이 한 것과 똑같죠.
 
 (defn make-coffee
   [& {:keys [name amount water milk sugar cinnamon]
@@ -1521,7 +1840,7 @@ Eve: Agreed. Then, let's make all parameters are named and add precondition for 
   {:pre [(not (empty? name))
          (> amount 0)
          (> water 0)]}
-  ;; definition goes here        
+  ;; definition goes here
   )
 
 (make-coffee :name "Royale Coffee"
@@ -1529,13 +1848,27 @@ Eve: Agreed. Then, let's make all parameters are named and add precondition for 
              :water 100
              :milk 10
              :cinnamon 3)
+
 Eve: As you see all parameters are named and all required params are checked in :pre constraint. If constraints are violated AssertionError is thrown.
+이브: 보다시피 모든 파라미터에 이름이 있고, 필수 파라미터는 :pre 제약으로 검사되고 있죠. 제약이 위반되면 AssertionError가 발생하죠.
+
 Pedro: Interesting, :pre is a part of a language?
+페드로: 재밌네요. :pre는 언어의 일부인가요?
+
 Eve: Sure, it's just a simple assertion. There is also :post constraint, with the similar effect.
+이브: 그렇죠. 단지 간단한 어써션이에요. :post 제약도 있는데, 비슷하죠.
+
 Pedro: Hm, okay. But as you know Builder pattern often used as a mutable datastucture, StringBuilder for example.
+페드로: 흠, 오케이. 하지만 알다시피 빌더 패턴은 가변 자료구조에 자주 사용되죠. 예를 들어, StringBuilder가 있어요.
+
 Eve: It's not a part of clojure philosophy to use mutables, but if you really want, no problem. Just create a new class with deftype and do not forget to use volatile-mutable on the properties you want to mutate.
+이브: 가변 데이타를 사용하는 것은 클로저의 철학과는 맞지 않지만, 굳이 가변 데이타를 사용해야 한다면, 문제 없어요. deftype으로 클래스를 만든 다음, 변경하려는 속성에 일시적 가변 변수를 사용하면 되요.
+
 Pedro: Where is the code?
+페드로: 코드를 보여주시죠.
+
 Eve: Here is example of custom implementation of mutable StringBuilder in clojure. It has a lot of drawbacks and limitations but you've got the idea.
+이브: 여기 가변 StringBuilder를 클로저로 구현한 예제에요. 단점도 있고 제한적이지만, 아이디어를 얻을 수 있어요.
 
 ;; interface
 (defprotocol IStringBuilder
@@ -1545,7 +1878,7 @@ Eve: Here is example of custom implementation of mutable StringBuilder in clojur
 ;; implementation
 (deftype ClojureStringBuilder [charray ^:volatile-mutable last-pos]
     IStringBuilder
-    (append [this s] 
+    (append [this s]
       (let [cs (char-array s)]
         (doseq [i (range (count cs))]
           (aset charray (+ last-pos i) (aget cs i))))
@@ -1562,7 +1895,9 @@ Eve: Here is example of custom implementation of mutable StringBuilder in clojur
 (to-string sb) => "Toby Wong"
 (append sb " ")
 (append sb "Toby Chung") => "Toby Wang Toby Chung"
+
 Pedro: Not as hard as I thought.
+페드로: 생각만큼 어렵지는 않네요.
 
 Episode 14: Facade
 
@@ -1607,7 +1942,7 @@ public class FacadeService {
 
   RequestRaw extractRequest(Request req) {
     return requestExtractorService.extract(req);
-  } 
+  }
 
   RequestRaw validateRequest(RequestRaw raw) {
     return requestValidatorService.validate(raw);
@@ -2577,5 +2912,4 @@ mishadoff
 Code Golf: New Year Tree →← Littlepot: Autofilled Cache
 
 random thoughts about programming, math and life | mishadoff Design by Mark Reid | Powered by Jekyll
-
 

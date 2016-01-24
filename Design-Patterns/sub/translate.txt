@@ -1,45 +1,19 @@
-Clojure Design Patterns
-클로저 디자인 패턴
+= Clojure Design Patterns
+= 클로저 디자인 패턴
 
 Quick overview of the classic Design Patterns in Clojure
+
 기존의 디자인 패턴을 클로저의 관점에서 조명하기
 
+[WARNING]
+====
 Disclaimer: Most patterns are easy to implement because we use dynamic typing, functional programming and, of course, Clojure. Some of them look wrong and ugly. It's okay. All characters are fake, coincidences are accidental.
 고지 사항: 클로저는 동적 타입 언어이자 함수형 프로그래밍 언어여서, 대부분의 패턴은 클로저로 쉽게 구현될 수 있다. 일부 구현은 부적절하고 부자연스럽게 보일 수도 있지만, 크게 문제될 것은 없다. 이 글에 등장하는 인물은 모두 가공의 인물이다. 특정인과 일치할 수도 있지만, 우연일 뿐이다.
+====
 
-Index
-목차
+== Intro
+== 도입
 
-Intro
-Episode 1. Command
-Episode 2. Strategy
-Episode 3. State
-Episode 4. Visitor
-Episode 5. Template Method
-Episode 6. Iterator
-Episode 7. Memento
-Episode 8. Prototype
-Episode 9. Mediator
-Episode 10. Observer
-Episode 11. Interpreter
-Episode 12. Flyweight
-Episode 13. Builder
-Episode 14. Facade
-Episode 15. Singleton
-Episode 16. Chain of Responsibility
-Episode 17. Composite
-Episode 18. Factory Method
-Episode 19. Abstract Factory
-Episode 20. Adapter
-Episode 21. Decorator
-Episode 22. Proxy
-Episode 23. Bridge
-Cheatsheet
-Cast
-
-
-Intro
-도입
 
 Our programming language is fucked up.
 That's why we need design patterns.
@@ -64,9 +38,12 @@ Pedro: Oh, that's easy. You just need a Command interface...
 페드로: 아! 그건 쉬어요. `Command` 인터페이스가 필요하네요.
 
 <자바>
+[source,java]
+----
 interface Command {
   void execute();
 }
+----
 </자바>
 
 Pedro: Every action should implement this interface and define specific execute behaviour.
