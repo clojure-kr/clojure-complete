@@ -2246,15 +2246,28 @@ Pedro: I don't know, maybe I am too young for the trees, let's move forward.
 
 
 Episode 18. Factory Method
+=== 에피소드 18. 팩토리 메서드(Factory Method) 패턴
 
 Sir Dry Bang suggest to create new levels for their popular game. More levels - more money.
+드라이 뱅씨가 그들의 인기 게임에 새로운 레벨를 만들자고 제안한다. 레벨이 많으면 그만큼 돈도 번다.
 
 Pedro: How can we create new levels?
-Eve: Just change assets and add new blocks: paper, wood, iron...
-Pedro: It's too silly, isn't it?
-Eve: The whole game is too silly. If user pay for color hats for their characters, then they will pay for wooden blocks as well.
-Pedro: I think it's a crap, but anyway, let's make MazeBuilder generic and add specific builder for each type of the block. It's a Factory Method pattern.
+페드로: 새 레벨들을 어떻게 만들 수 있나요?
 
+Eve: Just change assets and add new blocks: paper, wood, iron...
+이브: 그저 리소스를 바꾸고 블럭들을 새로 만들고, 종이, 나무, 철...
+
+Pedro: It's too silly, isn't it?
+페드로: 그건 너무 바보같이 않아요?
+
+Eve: The whole game is too silly. If user pay for color hats for their characters, then they will pay for wooden blocks as well.
+이브: 게임 전체가 바보같죠. 유저들이 자신의 캐릭터가 쓸 색깔 모자에 돈을 지불한다면, 나무 블럭에도 지불할 거에요.
+
+Pedro: I think it's a crap, but anyway, let's make MazeBuilder generic and add specific builder for each type of the block. It's a Factory Method pattern.
+페드로: 말도 않되는 거 같지만, 어쨌든, ``MazeBuilder``를 제너릭하게 만들고 블럭의 각 타입에 맞는 빌더를 추가합시다. 그건 팩토리 메서드 패턴이죠.
+
+[source, java]
+....
 class Maze { }
 class WoodMaze extends Maze { }
 class IronMaze extends Maze { }
@@ -2276,17 +2289,37 @@ class IronMazeBuilder {
     return new IronMaze();
   }
 }
-Eve: Isn't it obvious that IronMazeBuilder will return IronMazes?
-Pedro: Not for program. But see, to make a maze from another blocks we just change implementation responsible for block creation.
+....
 
+Eve: Isn't it obvious that IronMazeBuilder will return IronMazes?
+이브: ``IronMazeBuilder``이 ``IronMazes``를 리턴하는 것은 당연하지 않나요?
+
+Pedro: Not for program. But see, to make a maze from another blocks we just change implementation responsible for block creation.
+페드로: 프로그램한테는 당연한 게 아니죠. 하지만 봅시다, 다른 블럭으로부터 메이즈를 만들기 위해 우리는 블럭 생성에 책임이 있는 구현체를 단지 변경했어요.
+
+[source, java]
+....
 MazeBuilder builder = new WoodMazeBuilder();
 Maze maze = builder.build();
-Eve: I've seen something similar before.
-Pedro: What exactly?
-Eve: For me it seems like a strategy or state pattern.
-Pedro: No way! Strategy is about performing specific operations and factory is for creating specific object.
-Eve: But create is an operation as well.
+....
 
+Eve: I've seen something similar before.
+이브: 전에 비슷한 것을 봤어요.
+
+Pedro: What exactly?
+페드로: 무엇을요?
+
+Eve: For me it seems like a strategy or state pattern.
+이브: 저에게는 이것은 전략 패턴이나 상태 패턴과 비슷해요.
+
+Pedro: No way! Strategy is about performing specific operations and factory is for creating specific object.
+페드로: 말도 않돼요. 전략 패턴은 특정 동작을 수행하는 것에 대한 것이고, 팩토리 패턴은 특정 객체를 만들기 위한 것이에요.
+
+Eve: But create is an operation as well.
+이브: 하지만 생성도 또한 동작이죠.
+
+[source, clojure]
+....
 (defn maze-builder [maze-fn])
 
 (defn make-wood-maze [])
@@ -2294,10 +2327,20 @@ Eve: But create is an operation as well.
 
 (def wood-maze-builder (partial maze-builder make-wood-maze))
 (def iron-maze-builder (partial maze-builder make-iron-maze))
+....
+
 Pedro: Hm, seems similar.
+페드로: 흠, 비슷해 보이네요.
+
 Eve: Think about it.
+이브: 생각해 보세요.
+
 Pedro: Any usage examples?
+페드로: 사용 예제 같은게 있나요?
+
 Eve: No, everything is obvious here, just re-read Strategy, State or TemplateMethod episodes.
+이브: 아니요, 모든 것이 여기서는 뻔한거라, 그저 전략 패턴이나 상태 패턴, 그리고 템플릿 메서드 패턴 에피소드를 다시 읽으면 돼요.
+
 
 Episode 19: Abstract Factory
 
