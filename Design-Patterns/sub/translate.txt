@@ -2343,26 +2343,50 @@ Eve: No, everything is obvious here, just re-read Strategy, State or TemplateMet
 
 
 Episode 19: Abstract Factory
+=== 에피소드 19: 추상 팩토리(Abstract Factory) 패턴
 
 Users are not buying new levels in the game. Saimank Gerr build a complains cloud and the most popular negative feedback words are: "ugly", "crap" and "shit".
+사용자들이 게임의 새 레벨들을 사지 않는다. 세이망 게르는 불평 클라우드를 구축했는데 가장 많은 부정적 피드백 단어는 "추해", "형편없어", "엉망이야" 이었다.
 
 Improve levels-building system.
+레벨 구축 시스템을 개선하라.
 
 Pedro: I said this is crap.
-Eve: Sure, snow background with wooden walls, space invaders with wooden walls every setting with wooden walls.
-Pedro: Then we must separate game worlds and build a set of specific objects for particular world.
-Eve: Explain.
-Pedro: Instead of using Factory Method for building specific blocks, we use Abstract Factory to build a set of related objects, to make a level look less crappy.
-Eve: Example would be good.
-Pedro: Code is my example. First we define abstract behaviour of level factory
+페드로: 내가 말했죠, 이건 형편없다고.
 
+Eve: Sure, snow background with wooden walls, space invaders with wooden walls every setting with wooden walls.
+이브: 확실히 그래요, 나무벽이 있는 눈 배경, 나무벽이 있는 우주 침략자들, 모든 곳에 나무벽이에요.
+
+Pedro: Then we must separate game worlds and build a set of specific objects for particular world.
+페드로: 그러니 게임 세계를 분리하고 각 분리된 세계에 맞는 대상들을 구축해야 해요.
+
+Eve: Explain.
+이브: 설명해주세요.
+
+Pedro: Instead of using Factory Method for building specific blocks, we use Abstract Factory to build a set of related objects, to make a level look less crappy.
+페드로: 구체적인 블럭을 만드는데 팩토리 메소드 패턴 대신, 추상 팩토리 패턴을 만들어서 서로 관련된 객체들을 만들어 주면 레벨들이 덜 형편없을 거에요.
+
+Eve: Example would be good.
+이브: 예제가 있으면 좋겠어요.
+
+Pedro: Code is my example. First we define abstract behaviour of level factory
+페드로: 코드가 예제죠. 우선 레벨 팩토리에 대해 추상 행위를 정의해요.
+
+[source, java]
+....
 public interface LevelFactory {
   Wall buildWall();
   Back buildBack();
   Enemy buildEnemy();
 }
-Pedro: Then we have a hierarchy of objects that level consists of
+....
 
+Pedro: Then we have a hierarchy of objects that level consists of
+페드로: 그리고 레벨들을 구성하는 객체들의 상속계층도를 만듭니다.
+
+
+[source, java]
+....
 class Wall {}
 class PlasmaWall extends Wall {}
 class StoneWall extends Wall {}
@@ -2374,8 +2398,13 @@ class EarthBack extends Back {}
 class Enemy {}
 class UFOSoldier extends Enemy {}
 class WormScout extends Enemy {}
-Pedro: See? We have a specific object for each level, let's create factory for them.
+....
 
+Pedro: See? We have a specific object for each level, let's create factory for them.
+페드로: 알겠나요? 각 레벨마다 고유한 객체들이 있죠, 이제 팩토리를 만들어 주죠.
+
+[source, java]
+....
 class SpaceLevelFactory implements LevelFactory {
   @Override
   public Wall buildWall() {
@@ -2409,11 +2438,23 @@ class UndergroundLevelFactory implements LevelFactory {
     return new WormScout();
   }
 }
-Pedro: Each implementation of level factory creates related objects for level. Levels will look less crappy for sure.
-Eve: Let me understand. I really can't spot the difference.
-Pedro: Factory Method defers object creation to a subclasses, Abstract Factory do the same but for a set of related object.
-Eve: Aha, that means I need to pass set of related functions to abstract builder
+....
 
+Pedro: Each implementation of level factory creates related objects for level. Levels will look less crappy for sure.
+페드로: 각 레벨 팩토리의 구현들은 자신의 레벨과 관련된 객체들을 만들어요. 레벨들은 이제 확실히 덜 형편없죠.
+
+Eve: Let me understand. I really can't spot the difference.
+이브: 어디 봅시다. 진짜 차이가 뭔지 모르겠네요.
+
+Pedro: Factory Method defers object creation to a subclasses, Abstract Factory do the same but for a set of related object.
+페드로: 팩토리 메서드 패턴은 객체 생성을 하위 클래스로 넘겨요, 추상 팩토리 패턴은 같은 일을 하지만 서로 관련된 객체들에 대해서 그렇게 하죠.
+
+Eve: Aha, that means I need to pass set of related functions to abstract builder
+이브: 아하, 추상 빌더에 서로 관련된 함수들을 전달하면 되다는 의미로군요.
+
+
+[source, clojure]
+....
 (defn level-factory [wall-fn back-fn enemy-fn])
 
 (defn make-stone-wall [])
@@ -2436,11 +2477,23 @@ Eve: Aha, that means I need to pass set of related functions to abstract builder
            make-plasma-wall
            make-stars-back
            make-ufo-soldier))
+....
+
 Pedro: I knew.
+페드로: 알겠어요.
+
 Eve: Everything is fair. Your lovely "set of related Xs", where X is a function
+이브: 모든 것이 공평하죠. 당신이 좋아하는 "서로 관련된 X들의 집합", 여기서 X는 함수죠.
+
 Pedro: Yes, clarify, what partial is.
+페드로: 네, 근데요, ``partial``은 뭐죠?
+
 Eve: Provide some parameters for function. So, underground-level-factory knows how to construct walls, backs and enemies. Everything other inherited from abstract level-factory function.
+이브: 함수에 파라미터를 일부만 주는 거에요. 그래서 ``underground-level-factory``는 wall과 back과 enemy를 구축하는 법을 알죠, 나머지 파라미터들은 ``level-factory`` 추상 함수로부터 상속받죠.
+
 Pedro: Handy.
+페드로: 편리하네요.
+
 
 Episode 20: Adapter
 
