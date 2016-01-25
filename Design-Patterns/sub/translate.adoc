@@ -949,7 +949,7 @@ Pedro: OMG, what's happening there?
 Eve: We changed signature of move-to to accept handle-chest and attack functions.
 Think of them like optional parameters.
 이브: `move-to` 함수의 인수가 ``handle-chest``와 `attack` 함수를 받아들일 수 있도록 변경했어요.
-선택 인수(optional parameters)로 생각하시면 되요.
+선택 인수(optional parameters)로 생각하면 되요.
 
 [source]
 ----
@@ -1007,24 +1007,52 @@ Pedro: Makes sense. Functions everywhere.
 Technical consultant Kent Podiololis complains for C-style loops usage.
 
 "Are we in 1980 or what?" -- Kent
+
+기술 고문 켄트 포디올로리스(Kent Podiololis)가 C 스타일의 반복문의 사용에 대해 불평한다.
+
+"우리가 1980년애 살고있는 건가요?"  -- 켄트
 ****
 
 Pedro: We definitely should use pattern Iterator from java.
+패드로: 자바의 Iterator 패턴을 사용하면 되요.
+
 Eve: Don't be fool, nobody's using java.util.Iterator
+이브: 놀리지 말아요. 아무도 ``java.util.Iterator``를 사용하고 있지 않아요.
+
 Pedro: Everybody use it implicitly in for-each loop. It's a good way to traverse a container.
+페드로: 모든 사람이 for-each 루프 구문에서 간접적으로 그것을 사용해요. 그것은 컨테인너를 순회하는 좋은 방법이예요. 
+
 Eve: What does it mean "to traverse a container"?
+이브: 컨테이너를 순회한다는 것이 무슨 의미죠?
+
 Pedro: Formally, the container should provide two methods for you:
 next() to return next element and hasNext() to return true if container has more elements.
+페드로: 컨테이너는 공식적으로 두 개의 메소드를 제공해야 해요. 즉,  ``next()``는 다음 요소를 반환하고, ``hasNext()``는 컨테이너가 더 많은 요소를 갖고 있으면 ``true``를 반환합니다. 
+
 Eve: Ok. Do you know what linked list is?
+이브: 좋아요. 그런데 혹시 연결 리스트(linked list)가 무엇인지 아시나요?
+
 Pedro: Singly linked list?
+페드로: 단일 연결 리스트 말씀하시는 건가요?
+
 Eve: Singly linked list.
-Pedro: Sure. It is a container consists of nodes. Each node has a data value and reference to the next node. And null value if there is no next node.
+이브: 맞아요.
+
+Pedro: Sure. It is a container consists of nodes. Each node has a data value and reference to th
+e next node. And null value if there is no next node.
+페드로: 물론이죠. 그것은 노드들로 구성된 컨테이너죠. 각 노드는 데이터 값과 다음 노드의 레퍼펀스를 갖고 있지요. 다음 노드가 없으면 `null` 값을 갖게 되고요.  
+
 Eve: Correct. Now tell me how traversing such list is differ from traversing via iterator?
+이브: 맞아요. 그럼 그런 리스트를 순회하는 것과, 반복자(iterator)를 통해 순회하는 것 사이에 차이가 있을까요?
+
 Pedro: Emmm...
+페드로: 음...
 
 Pedro wrote two traversing snippets:
+페드로는 순회하는 코드 두 개를 적는다. 
 
 * Traversing using iterator
+* 반복자를 통해 순회하기
 
 [source,java]
 ----
@@ -1035,6 +1063,7 @@ while (i.hasNext()) {
 ----
 
 * Traversing using linked list
+* 연결 리스트를 이용해 순히하기
 
 [source,java]
 ----
@@ -1045,7 +1074,10 @@ while (next != null) {
 ----
 
 Pedro: They are pretty similar...What is analogue of Iterator in clojure?
+페드로: 그러고 보니 둘이 아주 비슷하네요... 클로제에서는 반복자에 해당하는 것이 무엇인가요?
+
 Eve: seq function.
+이브: `seq` 함수입니다.
 
 [source]
 ----
@@ -1057,9 +1089,16 @@ Eve: seq function.
 ----
 
 Pedro: It returns a list...
+페드로: 리스트를 반환하네요...
+
 Eve: Sequence, because Iterator is just a sequence
+이브: 시퀀스예요. 반복자는 단순히 시퀀스이니까요.
+
 Pedro: Is it possible to make seq works on custom datastructures?
+페드로: 사용자 자료구조도 `seq` 함수의 인수로 들어갈 수 있나요?
+
 Eve: Implement clojure.lang.Seqable interface
+이브: `clojure.lang.Seqable` 인터페이스를 구현하면 가능해요.
 
 [source]
 ----
@@ -1071,7 +1110,10 @@ Eve: Implement clojure.lang.Seqable interface
 ----
 
 Pedro: Fine then. But I've heard iterator is often used to achive laziness, for example to calculate value only during getNext() call, how list handle that?
+페드로: 그렇다면 좋군요. 그런데 저는 시퀀스가 지연 평가될 수 있다고 들었어요. 예를 들면 ``getNext()``를 호출할 때에만 값을 계산하게 한다든지 하는 식으로요. 리스트로 어떻게 그것을 처리하나요?
+    
 Eve: List can be lazy as well, clojure calls such list "lazy sequence".
+이브: 리스트는 지연 평가될 수 있어요. 클로저에서는 그런 리스트를 "지연 시퀀스"라고 불러요. 
 
 [source]
 ----
@@ -1079,21 +1121,41 @@ Eve: List can be lazy as well, clojure calls such list "lazy sequence".
 ----
 
 Eve: We defined thing to represent ALL natural numbers, but we haven't got OutOfMemory yet, because we haven't requested any value. It's lazy.
+이브: 위의 정의로 모든 자연수를 표현할 수 있어요. 하지만 아무런 값도 아직 요청하고 있지 않아서, ``OutOfMemory``가 나지는 않아요. 
+
 Pedro: Could you explain more?
+페드로: 조금 더 설명해 주실 수 있겠어요?
+
 Eve: Unfortunately, I am too lazy for that.
+이브: 유감스럽게도 그러기에는 제가 너무 게을러서요.
+
 Pedro: I will remember that!
+페드로: 알겠습니다!
+
 
 Episode 7: Memento
+dpvlthem 7. 메멘토(Memento) 패턴 
 
 <상태>
 User Chad Bogue lost the message he was writing for two days. Implement save button for him.
+
+사용자 채드 보그(Chad Bogue)가 이틀 동안 작성해 두었던 메시지를 날려 버렸다. 그를 위해 저장 버튼을 구현하세요. 
 </상태>
 
 Pedro: I don't believe there are people who can type in textbox for two days. Two. Days.
+페드로: 이틀에 걸쳐 텍스트 박스에 타이핑할 수 있는 사람이 있다니 믿기지가 않는군요. 이틀이라니!
+
 Eve: Let's save him.
+이브: 그를 구해 주도록 하죠.
+
 Pedro: I googled this problem. Most popular approach to implement save button is Memento pattern. You need originator, caretaker and memento objects.
+페드로: 이 문제로 구글을 검색해 보니, 저장 버튼을 구현하는 가장 일반적인 접근법은 페펜토 패턴이네요. originator와 caretaker, memento 색체가 필요해요.
+  
 Eve: What's that?
+이브: 그것이 다 무엇인데요?
+
 Pedro: Originator is just an object or state that we want to preserve. (text inside a textbox), caretaker is responsible to save state (save button) and memento is just an object to encapsulate state.
+페즈로: originator는 저장하기 원하는 객체 또는 상태에요. 예를 들면 텍스트 박스 안의 텍스트이지요. caretaker는 상태를 저장하는 일을 맡아요. 그리고 memento는 상태를 보관하는 객체이고요.
 
 [source,java]
 ----
@@ -1125,6 +1187,7 @@ public class TextBox {
 ----
 
 Pedro: Memento is just an immutable object
+페드로: memento는 단순한 불변 객체예요.
 
 [source,java]
 ----
@@ -1142,6 +1205,7 @@ public final class Memento {
 ----
 
 Pedro: And caretaker is a demo
+페드로: 그리고 caretaker는 다음의 코드가 그 역할을 합니다.
 
 [source,java]
 ----
@@ -1168,7 +1232,11 @@ textbox.restore(checkpoint1);
 ----
 
 Pedro: Just a note if you want a multiple checkpoints, save memento's to the list.
+페드로: 참고로, 여러번 저장할 수 있도록 하려면 메먼토들을 리스트에 저장하면 되지요.
+
 Eve: Originator, caretaker, memento - looks as a bunch of nouns, but actually it's all about two functions save and restore.
+이브: originator, caretaker, memento - 필요한 게 너무 많네요. 하지만 실질적으로는 ``save``와 `restore` 함수만 있으면 충분해요.
+ 
 [source]
 ----
 (def textbox (atom {}))
@@ -1193,6 +1261,7 @@ Eve: Originator, caretaker, memento - looks as a bunch of nouns, but actually it
 ----
 
 Eve: And demo as well.
+이브: 그리고 다음은 실행 예고요. 
 
 [source]
 ----
@@ -1207,13 +1276,26 @@ Eve: And demo as well.
 ----
 
 Pedro: It's pretty the same code.
-Eve: Yes, but you must care about memento immutability
-Pedro: What does it mean?
-Eve: You are lucky, that you got String object in this example, String is immutable. But if you have something, that may change its internal state, you need to perform deep copy of this object for memento.
-Pedro: Oh, right. It's just a recursive clone() calls to obtain prototype.
-Eve: We will talk about Prototype in a minute, but just remember that Memento is not about caretaker and originator, it is about save and restore.
+페드로: 거의 동이한 코드네요.
 
-Episode 8: Prototype
+Eve: Yes, but you must care about memento immutability
+이브: 그래요, 하지만 메멘토가 불변값이어야 한다는 것은 주의해야 해요.
+
+Pedro: What does it mean?
+페드로: 무슨 의미죠?
+
+Eve: You are lucky, that you got String object in this example, String is immutable. But if you have something, that may change its internal state, you need to perform deep copy of this object for memento.
+이브: 이 예제에서 자바 불변 `String` 객체를 다룬 것은 운이 좋은 경우예요. 하지만 내부 상태가 변할 수 있는 가변 객체를 다루는 경우에는, 메멘토 객체를 대상으로 깊은 복사(deep copuy)를 수행해 줄 필요가 있거든요.  
+
+Pedro: Oh, right. It's just a recursive clone() calls to obtain prototype.
+페드로: 예, 맞아요. 프로토타입을 얻기 위해 재귀적으로 ``clone()``을 호출해 주어야 하죠.
+
+Eve: We will talk about Prototype in a minute, but just remember that Memento is not about caretaker and originator, it is about save and restore.
+이브: 프로토타입 패턴은 잠시 뒤에 이야기하겠지만, 메멘토 패턴은 저장(save)과 복원(restore)에 관련된 것이지, originator와 caretaker와 관련된 것은 아니라는 것을 기억해 두셔야 해요. 
+
+
+== Episode 8: Prototype
+== 에피소ㄷ 8. 프로토타입(Prototype) 패턴 
 
 <상태>
 Dex Ringeus detected that users feel uncomfortable with registration form. Make it more usable.
