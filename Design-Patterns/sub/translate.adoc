@@ -742,30 +742,56 @@ Eve: Exactly.
 
 
 Episode 5. Template Method
+에피소드 5. 템플릿 메소드
 
 [sidebar]
 ****
 MMORPG Mech Dominore Fight Saga requested to implement a game bot for their VIP users. Not fair.
+
+MMORPGfootnote:[대규모 다중 사용자 온라인 롤 플레잉 게임(Massively Multiplayer Online Role-Playing Game)의 줄임말이다.] 멕 도미노어 파잇 사거(Mech Dominore Fight Saga)는, 공정한 정책은 아니자만, VIP 사용자들을 위한 게임 봇(bot)을 구현해 줄 것을 요청했다. 
 ****
 
 Pedro: First, we must decide what actions should be automated with bot.
+페드로: 먼저 봇으로 어떤 동작을 자동화해야 할지 결정해야 겠어요.
+
 Eve: Have you ever played RPG?
+이브: RPG 게임 해본 적 있으세요? 
+
 Pedro: Fortunately, no
+페드로: 없는데요.
+
 Eve: Oh my... Let's go, I'll show you...
+이브: 오, 이런! 가시죠. 보여드릴께요.
 
 2 weeks later
+2주 후에
 
 Pedro: ...fantastic, I found epic sword, which has +100 attack.
+페드로: 와우, 제가 +100 공격을 할 수 있는 전설의 검을 찾았어요. 
+ 
 Eve: Unbelievable. But now, it's time for bot.
+이브: 대단하네요. 하지만 이제 봇을 구현해야 해요.
+
 Pedro: Easy-peasy. We could select following events
+페드로: 식은 죽 먹기죠. 다음의 상황을 선택하기로 하죠.
 
 * Battle
+* 전투
+
 * Quest
+* 임무
+
 * Open Chest
+* 상자 열기
 
 Pedro: Characters behave differently in different events, for example mages cast spells in battle, but rogues prefer silent melee combat; locked chests are skipped by most characters, but rogues can unlock them, etc.
+페드로: 등장 인물들은 다른 상황에서 다르게 행동하죠. 예를 들면 마법사는 전투에서 주문을 겁니다. 하지만 악당들은 조용한 근접전을 선호해요. 잠겨있는 상자는 대부분의 등장 인물들이 그냥 지나치죠. 하지만 악당들은 그것을 열수 있어요. 
+
 Eve: Looks like ideal candidate for Template Method?
+이브: 템플릿 메소드 패턴에 가장 적합한 것 같은데요?
+
 Pedro: Yes. We define abstract algorithm, and then specify differences in subclasses.
+페드로: 그래요. 상위 추상 클래스에서 공통의 알고리즘을 정의하고, 하위 클래스에서 차이점을 구현하는 방식이죠.
 
 [source,java]
 ----
@@ -795,9 +821,14 @@ public abstract class Character {
 ----
 
 Pedro: We've separated to Character class everything common to all characters. Now we can create subclasses, that define how character should behave in specific situation. In out case: handling locked chests and attacking enemies.
-Eve: Let's start with a Mage class.
-Pedro: Mage? Okay. He can't open locked chest, so implementation is just do nothing. And if he is attacking enemies, if there are more than 10 enemies, freeze them, and cast teleport to run away. If there are 10 enemies or less cast fireball on each of them.
+페드로: 모든 등장 인물에 공통된 내용은 `Character` 클래스로 분리했습니다. 이제 하위 클래스들을 만들어, 등장 인물들이 특정 상황에서 어떻게 행동하는지를 정의하면 되요. 이 경우에는 잠겨 있는 상자를 다루는 것과 적을 공격하는 일이죠. 
 
+Eve: Let's start with a Mage class.
+이브: 마법사 클래스부터 시작하도록 하죠.
+
+Pedro: Mage? Okay. He can't open locked chest, so implementation is just do nothing. And if he is attacking enemies, if there are more than 10 enemies, freeze them, and cast teleport to run away. If there are 10 enemies or less cast fireball on each of them.
+페드로: 마법사요? 좋습니다. 그는 잠긴 상자를 열 수 없어요. 그래서 아무것도 하지 않는 것으로 구현하면 됩니다. 적을 공격하는 메소드는 적의 수가 10명 이상이면 적들을 움직이지 못하게 하고 공간 이동 주문을 외워 도망칩니다. 10명 이하이면 불덩어리 주문을 겁니다.
+  
 [source,java]
 ----
 public class MageCharacter extends Character {
@@ -821,7 +852,10 @@ public class MageCharacter extends Character {
 ----
 
 Eve: Excellent, what about Rogue class?
+이브: 훌륭합니다. 그럼 악당 클래스는요?
+
 Pedro: Easy as well, rogues can unlock chests and prefer silent combat, handle enemies one by one.
+페드로: 마찬가지로 쉽습니다. 악당들은 상자를 열 수 있고, 조용한 근접전을 좋아해서 적들을 한 명씩 처리하죠.
 
 [source,java]
 ----
@@ -842,14 +876,31 @@ public class RogueCharacter extends Character {
 ----
 
 Eve: Excellent. But how this approach is differrent from Strategy?
+이브: 훌륭합니다. 그런데 이 접근법이 전략 패턴과는 어떻게 다르죠?
+
 Pedro: What?
+페즈로: 무슨 말씀인지?
+
 Eve: I mean, you redefined behaviour by using subclasses, but in Strategy pattern you did the same: redefined behaviour by using functions.
+이브: 제 말은, 이 패턴에서는 하위 클래스에서 동작을 재정의했는데, 전략 패턴에서도 함수를 이용해 동작을 재정의했지 않았느냐 하는 것이죠.
+
 Pedro: Well, another approach.
+페드로: 음, 또다른 접근법이하고 할 수 있겠죠.
+
 Eve: State was handled with another approach as well.
+이브: 상태 패턴에서도 역시 또다른 방식으로 처리했었죠.
+
 Pedro: What are you trying to say?
+페드로: 무엇을 말씀하시고 싶은 거죠?
+ 
 Eve: You are solving the same kind of problem, but change the approach to it.
+이브: 같은 종류의 문제를 해결하면서 접근하는 방법만을 바꾸었다는 것이죠.
+
 Pedro: How do yo solve this problem using strategy in clojure?
+페드로: 클로저에서는 전략 패턴을 이용해 이 문제를 어떻게 해결하나요?
+
 Eve: Just pass a set of specific functions for each character. For example, your abstract move may look like:
+이브: 각 등장 인물들의 행동을 정의하는 함수를 건네주면 되요. 예를 들면, 공통적인 `move` 함수는 다음과 같이 합니다.
 
 [source]
 ----
@@ -867,6 +918,7 @@ Eve: Just pass a set of specific functions for each character. For example, your
 ----
 
 Eve: To add character-specific implementation of methods handle-chest and attack, implement them and pass as an argument.
+이브: 각 등장 인물들에 특화된 ``handle-chest``와 `attack` 메소드를 추가하려면, 그것들을 구현한 후 인수로 전달하면 되요.
 
 [source]
 ----
@@ -887,13 +939,17 @@ Eve: To add character-specific implementation of methods handle-chest and attack
                & {:keys [handle-chest attack]
                   :or {handle-chest (fn [chest])
                        attack (fn [enemies] (run-away))}}]
-  ;; previous implementation
+;; previous implementation
 )
 ----
 
 Pedro: OMG, what's happening there?
+페드로: 오 이런 세상에, 무슨 일을 하고 있는 거죠?
+
 Eve: We changed signature of move-to to accept handle-chest and attack functions.
 Think of them like optional parameters.
+이브: `move-to` 함수의 인수가 ``handle-chest``와 `attack` 함수를 받아들일 수 있도록 변경했어요.
+선택 인수(optional parameters)로 생각하시면 되요.
 
 [source]
 ----
@@ -903,8 +959,13 @@ Think of them like optional parameters.
 ----
 
 Eve: Keep in mind that if these functions are not provided we use default behavior: do nothing for handle-chest and run away from enemies in attack
+이브: 이 함수들이 선택 인수로 제공되지 않으면, `handle-chest`의 경우에는 아무런 동작을 하지 않고, ``attack``의 경우에는 적들로부터 도망치는 디폴트 동작을 하도록 정의했어요.
+
 Pedro: Fine, but is this better than approach by subclassing? Seems that we have a lot of redundant information in move-to call.
+페즈로: 좋아요, 하지만 이것이 서브 클래실보다 더 나은 접근법인가요? `move-to` 호출시 불필요한 정보를 많이 제공하는 것 같이 보이는데.
+
 Eve: It's fixable, just define this call once, and give it alias
+이브: 그 점은 개선될 수 있어요. 다음과 같이 하면 간결해져요.
 
 [source]
 ----
@@ -915,6 +976,7 @@ Eve: It's fixable, just define this call once, and give it alias
 ----
 
 Eve: Or use multimethods, it's even better.
+이브: 멀티메소드를 사용하면 더 좋아요.
 
 [source]
 ----
@@ -928,10 +990,17 @@ Eve: Or use multimethods, it's even better.
 ----
 
 Pedro: I understand. But why do you think pass as argument is better than subclassing?
-Eve: You can change behaviour dynamically. Assume your mage has no mana, so instead of trying to cast fireballs, he can just teleport and run away, you just provide new function.
-Pedro: Makes sense. Functions everywhere.
+페드로: 이해했어요. 하지만 인수로 전달하는 것이 시버크르래싱보다 왜 더 낫다는 것이죠?
 
-Episode 6. Iterator
+Eve: You can change behaviour dynamically. Assume your mage has no mana, so instead of trying to cast fireballs, he can just teleport and run away, you just provide new function.
+이브: 동작을 동적으로 변경할 수 있으니끼요. 마법사가 마력이 없다고 가정해 봐요. 그러면 불덩어리들을 던지는 대신에 공간 이동으로 도망칠 수 있어요. 단순히 새로운 함수를 제공하면 되요.
+
+Pedro: Makes sense. Functions everywhere.
+페드로: 이제 이해가 됩니다. 함수만으로 모든 것이 해결 가능하네요.
+
+
+== Episode 6. Iterator
+== 에피소드 6. 반복자 패턴
 
 [sidebar]
 ****
