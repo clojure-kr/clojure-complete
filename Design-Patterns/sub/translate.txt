@@ -3006,13 +3006,13 @@ Episode 23: Bridge
 === 에피소드 23: 브릿지(Bridge) 패턴
 
 Girls from HR agency "Hurece's Sour Man" trying to identify candidates to their open job positions. The problem is jobs often created by customers, but requirements to the jobs are developed by HR. Provide them with a flexible way of collaborating.
+Hurece's Sour Man의 채용 대행사 여직원들이 구인 요청에 맞는 후보들를 확인하고 있다. 문제는 직무는 고객들이 만드는데, 자격요건은 채용 대행사에서 만든다는 것이다. 그들이 협업을 할 수 있는 유연한 방법을 제공하라.
 
 Eve: I don't understand the problem.
-이브:
+이브: 문제를 이해하지 못 하겠어요.
 
 Pedro: I have a bit of background. They have a very strange system which defines job requirements as an interface.
-페드로:
-
+페드로: 저는 조금 경험이 있어요. 채용 대행사의 시스템이 아주 이상한데요, 자격 요건들을 인터페이스로 정의해요.
 
 [source, java]
 ....
@@ -3022,7 +3022,7 @@ interface JobRequirement {
 ....
 
 Pedro: Every specific requirement implemented as a new subclass of this.
-페드로:
+페드로: 모든 특정 자격 요건은 이 인터페이스를 구현한 것이에요.
 
 
 [source, java]
@@ -3041,28 +3041,28 @@ class Experience10YearsRequirement implements JobRequirement {
 ....
 
 Eve: I've got an idea.
-이브:
+이브: 무슨 말인지 알겠어요.
 
 Pedro: Take into account, this requirement hierarchy is designed by HR Department.
-페드로:
+페드로: 생각해 보면, 이 자격 요건의 계층도가 인사부에서 설계된다는 거죠.
 
 Eve: Ok.
-이브:
+이브: 그렇군요.
 
 Pedro: And they have a Job hierarchy, where each specific job is subclass as well.
-페드로:
+페드로: 그리고 ``Job`` 계층도가 있고요, 또한 특정 직무(job)들은 그 서브 클래스들이죠.
 
 Eve: Why do they need a class for each job? It should be an object.
-이브:
+이브: 왜 각 직무마다 클래스가 있어야 되죠? 그건 객체여야 해요.
 
 Pedro: The system was designed when classes were more popular than objects, so live with this.
-페드로:
+페드로: 이 시스템은 객체보다는 클래스가 더 인기가 있을 때 설계었죠, 그래서 여기껏 그대로죠.
 
 Eve: Class were popular than objects?!
-이브:
+이브: 클래스가 객체보다 인기가 있었다고요?!
 
 Pedro: Yes, listen and don't interrupt me. Jobs with requirements is completely separate hierarchy, and it is developed by customers. We introduce pattern Bridge to separate these two hierarchies and allow them live independently.
-페드로:
+페드로: 네, 잘 들어요. 자격 요건이 있는 직무는 완전히 분리된 계층도이고, 그것은 고객에 의해 개발돼요. 브릿지 패턴으로 이 두 계층도를 분리하고, 독자적으로 유지되도록 하죠.
 
 
 [source, java]
@@ -3095,22 +3095,22 @@ class CognitectClojureDeveloper extends Job {
 ....
 
 Eve: So where is the bridge?
-이브:
+이브: 그래서 브리지는 어디에 있죠?
 
 Pedro: JobRequirement, JavaRequirement, ExperienceRequirement is one hierarchy, yes?
-페드로:
+페드로: ``JobRequirement``, ``JavaRequirement``, ``ExperienceRequirement``이 한 계층도죠?
 
 Eve: Yes.
-이브:
+이브: 네.
 
 Pedro: Job, CongnitectClojureDeveloperJob, OracleJavaDeveloperJob is another hierarchy.
-페드로:
+페드로: ``Job``, ``CongnitectClojureDeveloperJob``, ``OracleJavaDeveloperJob``가 또 다른 계층도죠.
 
 Eve: Oh, now I see. A link from Job to JobRequirement is a bridge.
-이브:
+이브: 오, 이제 알겠어요. ``Job``과 ``JobRequirement``의 링크가 브릿지네요.
 
 Pedro: Exactly! This is how HR can use this system to find candidate matches.
-페드로:
+페드로: 맞아요! 이것이 인사부가 이 시스템을 이용해서 후보자를 찾는 방법이에요.
 
 
 [source, java]
@@ -3121,52 +3121,52 @@ Candidate joshuaBloch = new Candidate();
 ....
 
 Pedro: Here is the point. Customers use Job as abstraction and JobRequirement as an implementation. They just create a job with descriptions or so, and HR is responsible to convert these descriptions into specific set of JobRequirement objects.
-페드로:
+페드로: 여기에 포인트가 있어요. 고객은 ``Job`` 은 추상으로, ``JobRequirement``는 구현으로 사용하죠. 고객들은 단지 직무(job)을 설명을 달아서 만들고, 인사부는 그 설명을 특정 JobRequirement의 집합으로 바꾸죠.
 
 Eve: Got it.
-이브:
+이브: 알겠어요.
 
 Pedro: So as far as I understand, clojure could mimic this pattern by using defprotocol and defrecord?
-페드로:
+페드로: 제가 지금까지 이해한 바로는 클로저는 이 패턴을 ``defprotocol``과 ``defrecord``로 흉내낼 수 있겠네요.
 
 Eve: Yes, but I want to revisit the problem.
-이브:
+이브: 네, 하지만 이 문제 자체를 다시 보고 싶에요
 
 Pedro: What's wrong?
-페드로:
+페드로: 뭐가 잘못되었나요?
 
 Eve: Here is we have a static flow: customer create job positions, human resources convert job position to a set of requirements and run a script against their candidates database to find a matches.
-이브:
+이브: 여기에 우리는 정적 흐름이 있어요. 고객은 job 포지션을 만들고, 인사부는 job 포지션을 자격요건의 집합으로 바꾸고, 그들의 후보자 데이타베이스에서 맞는 사람들 고르는 스크립트를 실행합니다.
 
 Pedro: Correct.
-페드로:
+페드로: 맞아요.
 
 Eve: So there is already dependency, HR can't do anything without open job positions.
-이브:
+이브: 그래서 이미 의존성이 있고, 인사부가 열린 job 포지션에 아무것도 할 수 없어요.
 
 Pedro: Well, yes. But they can develop a set of structured requirements without knowing what open positions might be.
-페드로:
+페드로: 글쎄요, 네. 하지만 그들은 구조화된 자격요선을 만들 수 있어요. 열린 포지션이 무엇인지 몰라도.
 
 Eve: For what purpose?
-이브:
+이브: 무엇을 위한 것이죠?
 
 Pedro: Later this can be reused by Job creators, so HR avoid doing the same work twice.
-페드로:
+페드로: 나중에 이것은 ``Job`` 생성자에서 재사용할 수 있고, 그래서 인사부 같은 일을 두 번 할 일을 피할 수 있어요.
 
 Eve: Okay, got it, but this problem is artificial. Basically what we need is a way to colaborate between abstraction and implementation.
-이브:
+이브: 오케이, 알겠어요, 하지만 이 문제는 인위적이에요. 기본적으로 우리가 필요한 것은 구상과 구체 사이의 협업 방법입니다.
 
 Pedro: Maybe, but I want to see your clojure way solution for that specific problem using bridge pattern.
-페드로:
+페드로: 아마도, 하지만 브릿피 패턴으로 이 특수한 문제를 클로저로 어떻게 푸는지 알고 싶어요.
 
 Eve: Easy. Let's use adhoc hierarchies.
-이브:
+이브: 쉽죠. adhoc 계층도를 사용합시다.
 
 Pedro: For abstractions?
-페드로:
+페드로: 추상을 위해?
 
 Eve: Yes, jobs hierarchy is abstraction, and people need just to enhance hierarchy.
-이브:
+이브: 네, job 계층도는 추상이죠, 그리고 사람들은 계층도를 보강할 필요가 있어요.
 
 
 [source, clojure]
@@ -3180,7 +3180,7 @@ Eve: Yes, jobs hierarchy is abstraction, and people need just to enhance hierarc
 ....
 
 Eve: HR department are like developers, they provide implementation for this abstraction.
-이브:
+이브: 인사과는 개발자들 같아요, 이 추상의 구현을 제공합니다.
 
 
 [source, clojure]
@@ -3194,25 +3194,25 @@ Eve: HR department are like developers, they provide implementation for this abs
 ....
 
 Eve: Later, when new jobs are created, but requirements are not yet developed and no accept method implementation for this type of job, we fallback using adhoc hierarchy.
-이브:
+이브: 후에, 새 job이 만들어지면, 하지만 자격요건이 개발되어 있지 않고 그러한 job 타입을 위한 구현도 없으면, adhoc 계층도를 사용해서 원상복구해요.
 
 Pedro: Hm?
-페드로:
+페드로: 흠?
 
 Eve: Assume someone created a new ::senior-java as a child of ::java job.
-이브:
+이브: 누군가 새로운 ::senior-java를 :java의 일의 자식으로 만들었다고 합시다.
 
 Pedro: Oh, and if HR not provided accept implementation for dispatch value ::senior-java, method with dispatch value ::java will be called, yes?
-페드로:
+페드로: 오 그리고 인사부는 분기값을 위한 구현을 제공하지 않는다면 ::senior-java, 디스패치 값을 지닌 메소드는 호출 될까?
 
 Eve: You learning so fast.
-이브:
+이브: 당신은 빠르게 배우는 군요.
 
 Pedro: But is it real bridge pattern?
-페드로:
+페드로: 하지만 이것이 정말 브릿지 패턴인가요?
 
 Eve: There is no bridge here, but abstraction and implementation can live independently.
-이브:
+이브: 여기에는 브릿지가 없어요, 하지만 추상과 구체가 독립적으로 유지될 수 있습니다.
 
 The End.
 
