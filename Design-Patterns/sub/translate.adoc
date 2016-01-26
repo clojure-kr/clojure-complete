@@ -1276,7 +1276,7 @@ Eve: And demo as well.
 ----
 
 Pedro: It's pretty the same code.
-페드로: 거의 동이한 코드네요.
+페드로: 거의 동일한 코드네요.
 
 Eve: Yes, but you must care about memento immutability
 이브: 그래요, 하지만 메멘토가 불변값이어야 한다는 것은 주의해야 해요.
@@ -1438,8 +1438,8 @@ Pedro: Thanks a lot.
 페드로: 고마워요.
 
 
-Episode 9: Mediator
-에피소드 9. 중개자(Mediator) 패턴 
+== Episode 9: Mediator
+== 에피소드 9. 중개자(Mediator) 패턴 
 
 [sidebar]
 ****
@@ -1533,10 +1533,10 @@ public class Mediator {
 ----
 
 Eve: That seems like a simple refactoring problem.
-이브: 이거은 단순한 리팩토링 문제같이 보이는 데요.
+이브: 이것은 단순한 리팩토링 문제같이 보이는 데요.
 
 Pedro: Profit may be underestimated, but if you have hundreds of mutually connected components (UI for example) mediator is really a savior.
-페드로: 그렇게 보일 수도 있지만, 예를 들어, Ui에서 서로 결함된 수백개의 부품들(components)이 있는 경우에는 이 중개자 패턴이 구세주 역할을 할 수 있어요. 
+페드로: 그럴 수도 있지만, 예를 들어, Ui에서 서로 결함된 수백개의 부품들(components)이 있는 경우에는 이 중개자 패턴이 구세주 역할을 할 수 있어요. 
 
 Eve: Agreed.
 이브: 인정합니다.
@@ -1573,21 +1573,27 @@ Pedro: Good enough.
 페드로: 아주 좋네요.
 
 Eve: Nothing interesing here, because it is just a one approach to reduce coupling.
-이브: 여기에 특별한 것이 없어요. 단지 결합도를 줄이는 방법 중의 하나일 뿐이니까요.
+이브: 여기에 특별한 것은 없어요. 단지 결합도를 줄이는 방법 중의 하나일 뿐이니까요.
  
 
-Episode 10: Observer
-
+== Episode 10: Observer
+== 에피소드: 관찰자(Observer) 패턴
+ 
 [sidebar]
 ****
 Independent security commision detected hacker Dartee Hebl has over a billion dollars balance on his account. Track big transactions to the accounts.
+
+독립 보안 위원회가 해커 다티 헤블(Dartee Hebl)이 자신의 계좌에 십억 달러의 잔고를 가지고 있는 것을 포착했다. 그래서 연관 계좌들과의 거래 내역을 추적해야 한다.
 ****
 
 Pedro: Are we Holmses?
+페즈로: 우리가 셜럭 홈즈가 되는 건가요? 
 
 Eve: No, but there is a lack of logging in the system, need to find a way to track all changes to balance.
+이브: 그런 건 아니지만, 지금 시스템에는 로깅 기능이 없어서, 모든 잔고 변화를 추적할 방법을 찾아야 해요.
 
-Pedro: We could add observers. Every time we modify balance, if change is big enough, notify about this and track the reason. We need Observer interface
+Pedro: We could add observers. Every time we modify balance, if change is big enough, notify about this and track the reason. We need Observer interface.
+페드로: 관잘자들을 추가하면 되요. 잔고의 변화가 큰 경우에만, 이것을 통지하고 그 이유를 추적하면 되죠. 먼저 `Observer` 인터페이스를 다음과 같이 정의합니다.
 
 [source,java]
 ----
@@ -1597,6 +1603,7 @@ public interface Observer {
 ----
 
 Pedro: And two specific observers
+페드로: 그리고 이 인터페이스를 구현하는 관찰자 클래스 두 개를 정의합니다.
 
 [source,java]
 ----
@@ -1616,6 +1623,7 @@ class BlockObserver implements Observer {
 ----
 
 Pedro: Tracker class would be responsible for managing observers.
+페즈로: `Tracker` 클래스에서 이 관찰자 객체들을 관리하는 일을 맡습니다. 
 
 [source,java]
 ----
@@ -1635,6 +1643,7 @@ public class Tracker {
 ----
 
 Pedro: And the last part: init tracker with the user and modify its addMoney method. If transcation amount is greaterthan 100$, notify FBI and block this user.
+페드로: 그리고 마지막으로 `User` 객체를 생성할 때 `initTracker()` 메소드를 호출해 이 두 관찰자 객체를 추가합니다. 그리고 `addMoney` 메소드에서 만약 거래액이 100$를 넘으면 FBI에 통지하고 이 사용자의 거래를 차단하도록 수정해 줍니다. 
 
 [source,java]
 ----
@@ -1653,7 +1662,6 @@ public class User {
     tracker.add(new BlockObserver());
   }
 
-
   public void addMoney(double amount) {
     balance += amount;
     if (amount > 100) {
@@ -1664,7 +1672,8 @@ public class User {
 ----
 
 Eve: Why are you created two separate observers? You could use it in a one.
-
+이브: 왜 관찰자를 따로 두 개를 만들었나요? 다음처럼 한 개만 만들어도 될 것 같은데.
+ 
 [source,java]
 ----
 class MailAndBlock implements Observer {
@@ -1677,12 +1686,16 @@ class MailAndBlock implements Observer {
 ----
 
 Pedro: Single responsibility principle.
+페드로: 일을 한 개만 처리한다는 윈칙(Single responsibility principle)을 따른 거죠.
 
 Eve: Oh, yeah.
+디브: 아 그렇군요.
 
 Pedro: And you can compose observer functionality dynamically.
+페드로: 그러면 관찰자 기능을 동적으로 결합할 수 있게 되거든요.
 
 Eve: I see your point.
+이브: 예, 알겠어요.
 
 [source]
 ----
@@ -1712,13 +1725,16 @@ Eve: I see your point.
 ----
 
 Pedro: It's a pretty the same way?
+페드로: 거의 같은 방식이네요?
 
 Eve: Yeah, in fact observer is just a way to register function, which will be called after another function.
+이브: 그래요, 사실 관찰자는 함수를 등록하는 한 가지 방법일 뿐이 거든요.  그리고 나서 다른 함수가 그 등록된 함수를 호출하게 되죠.
 
 Pedro: It is still the pattern.
+페드로: 이것도 여전히 패턴이네요.
 
 Eve Sure, but we can improve solution a bit using clojure watches.
-
+이브: 물론이죠, 하지만 다음처럼 클로저의 watch 기능을 이용하면 위의 코드를 더 개선할 수 있어요.
 
 [source]
 ----
@@ -1731,27 +1747,39 @@ Eve Sure, but we can improve solution a bit using clojure watches.
 ----
 
 Pedro: Why is that better?
+페드로: 왜 이 방식이 더 나은 거죠?
 
 Eve: First of all, our add-money function is clean, it just adds money. Also, watcher tracks every change to the state, not the ones we handle in mutator functions, like add-money
+이브: 우선 `add-money` 함수가 더 깔끔해졌어요. 단순히 돈을 더하는 일만 하고 있죠. 아울러 watcher는 ``add-money`` 함수에서의 변경 내용 뿐만아니라,  user에게 일어나는 모든 상태 변화를 추적할 수 있어요. 
 
 Pedro: Explain please.
+페드로: 좀 더 설명해 주세요.
 
 Eve: If there is provided another secred method secret-add-money for changing balance, watchers will handle that as well.
+이브: 만약 또다른 함수 `secret-add-money`가 잔고를 바꾼다 하더라도, watcher는 그것도 처리할 수 있다는 겁니다. 
 
 Pedro: That's awesome!
+페드로: 오! 멋집니다.
 
-Episode 11: Interpreter
+
+== Episode 11: Interpreter
+== 에피소드 11. 통역자(Interpreter) 패턴
 
 [sidebar]
 ****
 Bertie Prayc stole important data from our server and shared it via BitTorrent system. Create a fake account for Bertie to discredit him.
+
+버티 프레이시(Bertie Prayc)가 우리 서버에서 중요한 데이터를 훔쳐 BitTorrent 시스템을 통해 공유하고 있다.  버티의 가짜 계정을 만들어 그의 평판을 떨어뜨려야 한다. 
 ****
 
 Pedro: BitTorrent system based on .torrent files. We need to write Bencode encoder.
+페드로: BitTorrent 시스템은 .torrent 파일에 기반하고 있어서 Bencode 인코더를 만들어야 해요.
 
 Eve: Yes, but first let's agree on the format spec
+이브: 그렇군요, 하지만, Bencode 포맷에 대해 먼저 알야아 겠네요.
 
 Bencode encoding rules:
+다음은 Bencode 인코딩 규칙이다.
 
 * Two datatypes are supported:
 ** Integer N is encoded as i<N>e. (42 = i42e)
@@ -1762,16 +1790,29 @@ Bencode encoding rules:
 ** Map of values is encoded as d<contents>e ({"R" 2, "D" 2} = d1:Ri2e1:Di2ee)
 ***Keys are just strings, Values are any bencode element
 
+* 데이터 타입은 두 개가 지원된다.
+** 정수 N은 ``i<N>e``로 인코딩된다. (예) 42 = i42e
+** 문자열 S는 ``<length>:<contents>``로 인코딩된다. (예) hello = 5:hello
+
+* 컨데이너도 두 개가 지원된다.
+** 값의 리스트는 ``l<contents>e``로 인코딩된다. (예) [1, "Bye"] = li1e3:Byee
+** 값의 맵은 ``d<contents>e``로 인코딩된다. (예) {"R" 2, "D" 2} = d1:Ri2e1:Di2ee
+*** 키는 단순히 문자열이고, 값은 모든 Bencode 요소가 허용된다.
+
 Pedro: Seems easy.
+페드로: 쉬워 보이네요.
 
 Eve: Maybe, but take into account that values may be nested, list inside list, etc.
+이브: 그럴 수도 있지만, 값들은 중첩될 수 있다는 점을 고려해야 해요. 예를 들면 리스트 안에 리스트 같은. 
 
 Pedro: Sure. I think we can use Interpreter pattern for bencode encoding.
+페드로: 물론이죠. bencode 인코딩에는 통역자 패턴을 사용할 수 있을 것 같네요.
 
 Eve: Try it.
+이브: 한번 해 보시죠.
 
 Pedro: We start from interface for all bencode elements
-
+페드로: 모든 bencode 요소들을 위한 인터페이스부터 시작해 보죠.
 
 [source,java]
 ----
@@ -1781,6 +1822,7 @@ interface BencodeElement {
 ----
 
 Pedro: Then we provide implementation for each datatype and datacontainer
+페드로: 그리고 나서 각각의 데이터 타입과 데이터 컨데이너에서 위의 인터페이스를 구현합니다.
 
 [source,java]
 ----
@@ -1846,7 +1888,7 @@ class DictionaryElement implements BencodeElement {
 ----
 
 Pedro: And finally, our bencoded string can be constructed from common datastructures programmatically
-
+페드로: 마지막으로 bencode 인코딩 문자열을 만들 수 있어요ㅣ. 
 [source,java]
 ----
 // discredit user
@@ -1875,14 +1917,19 @@ BitTorrent.send(bencodedString);
 ----
 
 Eve: Interesting, but that is ton of code!
-Pedro: We pay readability for capabilities.
-Eve: I suppose you've heard concept Code is Data, that's a lot easier in clojure
+이브: 재미있네요, 그런데 코드량이 너무 많네요!
 
+Pedro: We pay readability for capabilities.
+페드로: 기능이 충실하려면 코드량은 많아질 수 밖에 없지요.
+
+Eve: I suppose you've heard concept Code is Data, that's a lot easier in clojure
+이브: 코드가 곧 데이터(Code is Data)라는 말을 들어 보신 적 있을 거예요. 그래서 클로저에서는 훨씬 수월해지죠. 
+ 
+[source]
+----
 ;; multimethod to handle bencode structure
 (defmulti interpret class)
 
-[source]
-----
 ;; implementation of bencode handler for each type
 (defmethod interpret java.lang.Long [n]
   (str "i" n "e"))
@@ -1914,37 +1961,53 @@ Eve: I suppose you've heard concept Code is Data, that's a lot easier in clojure
 ----
 
 Eve: You see how it is much easier define specific data?
+이브: 데이터를 정의하는 것이 얼마나 쉬운지 보이세요? 
 
 Pedro: Sure, and interpret it's just a function per bencode type, instead of separate class.
+페드로: 그러네요.``interpret``은 bencode 자료형 당 단순히 하나의 함수네요. 별도의 클래스가 아니라. 
 
 Eve: Correct, interpreter is nothing but a set of functions to process a tree.
+이브: 맞아요, 통역자 패턴은 단순히 트리를 처리하는 함수들일 뿐인 거죠.
 
 
-Episode 12: Flyweight
+== Episode 12: Flyweight
+== 에피소드 12. 플라이웨이트 패턴
 
 [sidebar]
 ****
 Administrators of the lawyer firm Cristopher, Matton & Pharts detected that reporting system consumes a lot of memory and garbage collector continiously hangs system for seconds. Fix that.
+한 법무 법인의 시스템 관리자 크리스토펴 매튼 & 파트(Cristopher, Matton & Pharts)는 보고 시스템이 많은 메모리를 소모해서 가비지 컬렉터가 끊임없이 시스템을 몇 초 동안 멈추게 한다는 것을 발견했다. 그것을 고쳐야 한다.  
 ****
 
 Pedro: I've seen this issue before.
-
+페드로: 저도 전에 이런 문제를 본 적이 있어요.
+ 
 Eve: What's wrong?
+이브: 무엇이 잘못된 거죠?
 
 Pedro: They have realtime charts with a lot of different points. It's a huge amount of memory. As a result garbage collector stops the system.
-
+페드로: 많은 점 데이터를 사용하는 실시간 차트 프로그램 때문이예요. 메모리를 많이 소모하거든요. 그래서 가비지 컬렉터가 시스템을 멈추게 하는 거고요.
+ 
 Eve: Hmmm, what we can do?
+이브: 음, 그럼 무엇을 해야 하죠?
 
 Pedro: Not much, caching does not help us because points are...
+페드로: 달리 할 수 있는 일이 별로 없어요. 캐싱도 별 도움이 안되고...
+
 Eve: Wait!
+이브:잠깐만요!
 
 Pedro: What?
+페드로: 무슨 일이죠?
 
 Eve: They use age values for points, why not precompute these points for most common ages? Say for age [0, 100]
+이브: 점들은 나이 데이터로 이루어져 있네요. 일반적인 나이(예를 들면, 나이 [0, 100])의 경우, 왜 미리 계산해 놓지 않는 거죠?
 
 Pedro: You mean use Flyweight pattern?
+페드로: 플라이웨이트 패턴을 사용하라는 말씀인가요?
 
 Eve: I mean reuse objects.
+이브: 제 말은 객체를 재사용하자는 겁니다.  
 
 [source,java]
 ----
@@ -1983,12 +2046,16 @@ class Point {
 ----
 
 Pedro: For this pattern we need two things: precompute most used points at a startup time, and use static factory method instead of constructor to return cached object.
-
+페드로: 이 패턴의 경우에는 두 가지가 필요해요. 프로그램 실행 시점에 대부분의 점 데이터를 미리 계산하는 것과, 캐시 객체를 만들기 위해 생성자 대신에 정적인 팩토리 메소드를 이용하는 것이 그것이죠.
+  
 Eve: Have you tested it?
+이브: 테스트해 본 적 있나요?
 
 Pedro: Sure, the system works like a clock.
+페드로: 물론이죠. 시스템은 아주 정확히 동작했습니다.
 
 Eve: Excellent, here is my version
+이브: 좋아요, 다음은 클로저 버전이예요.
 
 [source]
 ----
@@ -2007,22 +2074,33 @@ Eve: Excellent, here is my version
 ----
 
 Eve: It creates a flat map with pair [x, y] as a key, instead of two-dimensional array.
-
+이브: 이차원 배열 대신에, [x y] 좌표를 키로 갖는 일차원 맵을 만듭니다.
+ 
 Pedro: Pretty the same.
+페드로: 자바의 경우와 마찬가지네요.
 
 Eve: No, it is much flexible, you can't use two-dimensional array if you need to cache three points or non-integer values.
-
+이브; 아니에요, 훨씬 더 유연해요. 세 개의 점이나 정수가 아닌 값을 캐시해야 할 필요가 있을 때에는 이차원 배열을 사용할 수 없으니까요.
+ 
 Pedro: Oh, got it.
+페드로: 아, 이해했어요.
 
 Eve: Even better, in clojure you can just use memoize function to cache calls to factory function make-point
+이브: 더 좋은 것은, 클로저에서는 `memoize` 함수를 이용하면 팩토리 함수 ``make-point``를 호출한 결과를 캐싱할 수 있어요.
 
+[source]
+----
 (def make-point-memoize (memoize make-point))
+----
+
 Eve: Every call (except first one) with the same parameters return cached value.
+이브: 그래서 최초의 호출할 때를 제외하고는, 같은 인자를 사용해 함수를 호출하게 되면 캐시에 저장된 값을 반환해요. 
 
 Pedro: That's awesome!
+페드로: 그것 참 멋진 기능이네요!
 
 Eve: Of course, but remember if your function has side-effects, memoization is bad idea.
-
+이브: 물론이죠. 하지만, 부수 효과(side effects)를 가진 함수인 경우에는 memoize 기능을 사용하지 않는 것이 좋다는 점도 기억해 두세요.
 
 
 Episode 13: Builder
