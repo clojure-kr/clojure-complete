@@ -742,30 +742,56 @@ Eve: Exactly.
 
 
 Episode 5. Template Method
+에피소드 5. 템플릿 메소드
 
 [sidebar]
 ****
 MMORPG Mech Dominore Fight Saga requested to implement a game bot for their VIP users. Not fair.
+
+MMORPGfootnote:[대규모 다중 사용자 온라인 롤 플레잉 게임(Massively Multiplayer Online Role-Playing Game)의 줄임말이다.] 멕 도미노어 파잇 사거(Mech Dominore Fight Saga)는, 공정한 정책은 아니자만, VIP 사용자들을 위한 게임 봇(bot)을 구현해 줄 것을 요청했다. 
 ****
 
 Pedro: First, we must decide what actions should be automated with bot.
+페드로: 먼저 봇으로 어떤 동작을 자동화해야 할지 결정해야 겠어요.
+
 Eve: Have you ever played RPG?
+이브: RPG 게임 해본 적 있으세요? 
+
 Pedro: Fortunately, no
+페드로: 없는데요.
+
 Eve: Oh my... Let's go, I'll show you...
+이브: 오, 이런! 가시죠. 보여드릴께요.
 
 2 weeks later
+2주 후에
 
 Pedro: ...fantastic, I found epic sword, which has +100 attack.
+페드로: 와우, 제가 +100 공격을 할 수 있는 전설의 검을 찾았어요. 
+ 
 Eve: Unbelievable. But now, it's time for bot.
+이브: 대단하네요. 하지만 이제 봇을 구현해야 해요.
+
 Pedro: Easy-peasy. We could select following events
+페드로: 식은 죽 먹기죠. 다음의 상황을 선택하기로 하죠.
 
 * Battle
+* 전투
+
 * Quest
+* 임무
+
 * Open Chest
+* 상자 열기
 
 Pedro: Characters behave differently in different events, for example mages cast spells in battle, but rogues prefer silent melee combat; locked chests are skipped by most characters, but rogues can unlock them, etc.
+페드로: 등장 인물들은 다른 상황에서 다르게 행동하죠. 예를 들면 마법사는 전투에서 주문을 겁니다. 하지만 악당들은 조용한 근접전을 선호해요. 잠겨있는 상자는 대부분의 등장 인물들이 그냥 지나치죠. 하지만 악당들은 그것을 열수 있어요. 
+
 Eve: Looks like ideal candidate for Template Method?
+이브: 템플릿 메소드 패턴에 가장 적합한 것 같은데요?
+
 Pedro: Yes. We define abstract algorithm, and then specify differences in subclasses.
+페드로: 그래요. 상위 추상 클래스에서 공통의 알고리즘을 정의하고, 하위 클래스에서 차이점을 구현하는 방식이죠.
 
 [source,java]
 ----
@@ -795,9 +821,14 @@ public abstract class Character {
 ----
 
 Pedro: We've separated to Character class everything common to all characters. Now we can create subclasses, that define how character should behave in specific situation. In out case: handling locked chests and attacking enemies.
-Eve: Let's start with a Mage class.
-Pedro: Mage? Okay. He can't open locked chest, so implementation is just do nothing. And if he is attacking enemies, if there are more than 10 enemies, freeze them, and cast teleport to run away. If there are 10 enemies or less cast fireball on each of them.
+페드로: 모든 등장 인물에 공통된 내용은 `Character` 클래스로 분리했습니다. 이제 하위 클래스들을 만들어, 등장 인물들이 특정 상황에서 어떻게 행동하는지를 정의하면 되요. 이 경우에는 잠겨 있는 상자를 다루는 것과 적을 공격하는 일이죠. 
 
+Eve: Let's start with a Mage class.
+이브: 마법사 클래스부터 시작하도록 하죠.
+
+Pedro: Mage? Okay. He can't open locked chest, so implementation is just do nothing. And if he is attacking enemies, if there are more than 10 enemies, freeze them, and cast teleport to run away. If there are 10 enemies or less cast fireball on each of them.
+페드로: 마법사요? 좋습니다. 그는 잠긴 상자를 열 수 없어요. 그래서 아무것도 하지 않는 것으로 구현하면 됩니다. 적을 공격하는 메소드는 적의 수가 10명 이상이면 적들을 움직이지 못하게 하고 공간 이동 주문을 외워 도망칩니다. 10명 이하이면 불덩어리 주문을 겁니다.
+  
 [source,java]
 ----
 public class MageCharacter extends Character {
@@ -821,7 +852,10 @@ public class MageCharacter extends Character {
 ----
 
 Eve: Excellent, what about Rogue class?
+이브: 훌륭합니다. 그럼 악당 클래스는요?
+
 Pedro: Easy as well, rogues can unlock chests and prefer silent combat, handle enemies one by one.
+페드로: 마찬가지로 쉽습니다. 악당들은 상자를 열 수 있고, 조용한 근접전을 좋아해서 적들을 한 명씩 처리하죠.
 
 [source,java]
 ----
@@ -842,14 +876,31 @@ public class RogueCharacter extends Character {
 ----
 
 Eve: Excellent. But how this approach is differrent from Strategy?
+이브: 훌륭합니다. 그런데 이 접근법이 전략 패턴과는 어떻게 다르죠?
+
 Pedro: What?
+페즈로: 무슨 말씀인지?
+
 Eve: I mean, you redefined behaviour by using subclasses, but in Strategy pattern you did the same: redefined behaviour by using functions.
+이브: 제 말은, 이 패턴에서는 하위 클래스에서 동작을 재정의했는데, 전략 패턴에서도 함수를 이용해 동작을 재정의했지 않았느냐 하는 것이죠.
+
 Pedro: Well, another approach.
+페드로: 음, 또다른 접근법이하고 할 수 있겠죠.
+
 Eve: State was handled with another approach as well.
+이브: 상태 패턴에서도 역시 또다른 방식으로 처리했었죠.
+
 Pedro: What are you trying to say?
+페드로: 무엇을 말씀하시고 싶은 거죠?
+ 
 Eve: You are solving the same kind of problem, but change the approach to it.
+이브: 같은 종류의 문제를 해결하면서 접근하는 방법만을 바꾸었다는 것이죠.
+
 Pedro: How do yo solve this problem using strategy in clojure?
+페드로: 클로저에서는 전략 패턴을 이용해 이 문제를 어떻게 해결하나요?
+
 Eve: Just pass a set of specific functions for each character. For example, your abstract move may look like:
+이브: 각 등장 인물들의 행동을 정의하는 함수를 건네주면 되요. 예를 들면, 공통적인 `move` 함수는 다음과 같이 합니다.
 
 [source]
 ----
@@ -867,6 +918,7 @@ Eve: Just pass a set of specific functions for each character. For example, your
 ----
 
 Eve: To add character-specific implementation of methods handle-chest and attack, implement them and pass as an argument.
+이브: 각 등장 인물들에 특화된 ``handle-chest``와 `attack` 메소드를 추가하려면, 그것들을 구현한 후 인수로 전달하면 되요.
 
 [source]
 ----
@@ -887,13 +939,17 @@ Eve: To add character-specific implementation of methods handle-chest and attack
                & {:keys [handle-chest attack]
                   :or {handle-chest (fn [chest])
                        attack (fn [enemies] (run-away))}}]
-  ;; previous implementation
+;; previous implementation
 )
 ----
 
 Pedro: OMG, what's happening there?
+페드로: 오 이런 세상에, 무슨 일을 하고 있는 거죠?
+
 Eve: We changed signature of move-to to accept handle-chest and attack functions.
 Think of them like optional parameters.
+이브: `move-to` 함수의 인수가 ``handle-chest``와 `attack` 함수를 받아들일 수 있도록 변경했어요.
+선택 인수(optional parameters)로 생각하면 되요.
 
 [source]
 ----
@@ -903,8 +959,13 @@ Think of them like optional parameters.
 ----
 
 Eve: Keep in mind that if these functions are not provided we use default behavior: do nothing for handle-chest and run away from enemies in attack
+이브: 이 함수들이 선택 인수로 제공되지 않으면, `handle-chest`의 경우에는 아무런 동작을 하지 않고, ``attack``의 경우에는 적들로부터 도망치는 디폴트 동작을 하도록 정의했어요.
+
 Pedro: Fine, but is this better than approach by subclassing? Seems that we have a lot of redundant information in move-to call.
+페즈로: 좋아요, 하지만 이것이 서브 클래실보다 더 나은 접근법인가요? `move-to` 호출시 불필요한 정보를 많이 제공하는 것 같이 보이는데.
+
 Eve: It's fixable, just define this call once, and give it alias
+이브: 그 점은 개선될 수 있어요. 다음과 같이 하면 간결해져요.
 
 [source]
 ----
@@ -915,6 +976,7 @@ Eve: It's fixable, just define this call once, and give it alias
 ----
 
 Eve: Or use multimethods, it's even better.
+이브: 멀티메소드를 사용하면 더 좋아요.
 
 [source]
 ----
@@ -928,34 +990,69 @@ Eve: Or use multimethods, it's even better.
 ----
 
 Pedro: I understand. But why do you think pass as argument is better than subclassing?
-Eve: You can change behaviour dynamically. Assume your mage has no mana, so instead of trying to cast fireballs, he can just teleport and run away, you just provide new function.
-Pedro: Makes sense. Functions everywhere.
+페드로: 이해했어요. 하지만 인수로 전달하는 것이 시버크르래싱보다 왜 더 낫다는 것이죠?
 
-Episode 6. Iterator
+Eve: You can change behaviour dynamically. Assume your mage has no mana, so instead of trying to cast fireballs, he can just teleport and run away, you just provide new function.
+이브: 동작을 동적으로 변경할 수 있으니끼요. 마법사가 마력이 없다고 가정해 봐요. 그러면 불덩어리들을 던지는 대신에 공간 이동으로 도망칠 수 있어요. 단순히 새로운 함수를 제공하면 되요.
+
+Pedro: Makes sense. Functions everywhere.
+페드로: 이제 이해가 됩니다. 함수만으로 모든 것이 해결 가능하네요.
+
+
+== Episode 6. Iterator
+== 에피소드 6. 반복자 패턴
 
 [sidebar]
 ****
 Technical consultant Kent Podiololis complains for C-style loops usage.
 
 "Are we in 1980 or what?" -- Kent
+
+기술 고문 켄트 포디올로리스(Kent Podiololis)가 C 스타일의 반복문의 사용에 대해 불평한다.
+
+"우리가 1980년애 살고있는 건가요?"  -- 켄트
 ****
 
 Pedro: We definitely should use pattern Iterator from java.
+패드로: 자바의 Iterator 패턴을 사용하면 되요.
+
 Eve: Don't be fool, nobody's using java.util.Iterator
+이브: 놀리지 말아요. 아무도 ``java.util.Iterator``를 사용하고 있지 않아요.
+
 Pedro: Everybody use it implicitly in for-each loop. It's a good way to traverse a container.
+페드로: 모든 사람이 for-each 루프 구문에서 간접적으로 그것을 사용해요. 그것은 컨테인너를 순회하는 좋은 방법이예요. 
+
 Eve: What does it mean "to traverse a container"?
+이브: 컨테이너를 순회한다는 것이 무슨 의미죠?
+
 Pedro: Formally, the container should provide two methods for you:
 next() to return next element and hasNext() to return true if container has more elements.
+페드로: 컨테이너는 공식적으로 두 개의 메소드를 제공해야 해요. 즉,  ``next()``는 다음 요소를 반환하고, ``hasNext()``는 컨테이너가 더 많은 요소를 갖고 있으면 ``true``를 반환합니다. 
+
 Eve: Ok. Do you know what linked list is?
+이브: 좋아요. 그런데 혹시 연결 리스트(linked list)가 무엇인지 아시나요?
+
 Pedro: Singly linked list?
+페드로: 단일 연결 리스트 말씀하시는 건가요?
+
 Eve: Singly linked list.
-Pedro: Sure. It is a container consists of nodes. Each node has a data value and reference to the next node. And null value if there is no next node.
+이브: 맞아요.
+
+Pedro: Sure. It is a container consists of nodes. Each node has a data value and reference to th
+e next node. And null value if there is no next node.
+페드로: 물론이죠. 그것은 노드들로 구성된 컨테이너죠. 각 노드는 데이터 값과 다음 노드의 레퍼펀스를 갖고 있지요. 다음 노드가 없으면 `null` 값을 갖게 되고요.  
+
 Eve: Correct. Now tell me how traversing such list is differ from traversing via iterator?
+이브: 맞아요. 그럼 그런 리스트를 순회하는 것과, 반복자(iterator)를 통해 순회하는 것 사이에 차이가 있을까요?
+
 Pedro: Emmm...
+페드로: 음...
 
 Pedro wrote two traversing snippets:
+페드로는 순회하는 코드 두 개를 적는다. 
 
 * Traversing using iterator
+* 반복자를 통해 순회하기
 
 [source,java]
 ----
@@ -966,6 +1063,7 @@ while (i.hasNext()) {
 ----
 
 * Traversing using linked list
+* 연결 리스트를 이용해 순히하기
 
 [source,java]
 ----
@@ -976,7 +1074,10 @@ while (next != null) {
 ----
 
 Pedro: They are pretty similar...What is analogue of Iterator in clojure?
+페드로: 그러고 보니 둘이 아주 비슷하네요... 클로제에서는 반복자에 해당하는 것이 무엇인가요?
+
 Eve: seq function.
+이브: `seq` 함수입니다.
 
 [source]
 ----
@@ -988,9 +1089,16 @@ Eve: seq function.
 ----
 
 Pedro: It returns a list...
+페드로: 리스트를 반환하네요...
+
 Eve: Sequence, because Iterator is just a sequence
+이브: 시퀀스예요. 반복자는 단순히 시퀀스이니까요.
+
 Pedro: Is it possible to make seq works on custom datastructures?
+페드로: 사용자 자료구조도 `seq` 함수의 인수로 들어갈 수 있나요?
+
 Eve: Implement clojure.lang.Seqable interface
+이브: `clojure.lang.Seqable` 인터페이스를 구현하면 가능해요.
 
 [source]
 ----
@@ -1002,7 +1110,10 @@ Eve: Implement clojure.lang.Seqable interface
 ----
 
 Pedro: Fine then. But I've heard iterator is often used to achive laziness, for example to calculate value only during getNext() call, how list handle that?
+페드로: 그렇다면 좋군요. 그런데 저는 시퀀스가 지연 평가될 수 있다고 들었어요. 예를 들면 ``getNext()``를 호출할 때에만 값을 계산하게 한다든지 하는 식으로요. 리스트로 어떻게 그것을 처리하나요?
+    
 Eve: List can be lazy as well, clojure calls such list "lazy sequence".
+이브: 리스트는 지연 평가될 수 있어요. 클로저에서는 그런 리스트를 "지연 시퀀스"라고 불러요. 
 
 [source]
 ----
@@ -1010,21 +1121,41 @@ Eve: List can be lazy as well, clojure calls such list "lazy sequence".
 ----
 
 Eve: We defined thing to represent ALL natural numbers, but we haven't got OutOfMemory yet, because we haven't requested any value. It's lazy.
+이브: 위의 정의로 모든 자연수를 표현할 수 있어요. 하지만 아무런 값도 아직 요청하고 있지 않아서, ``OutOfMemory``가 나지는 않아요. 
+
 Pedro: Could you explain more?
+페드로: 조금 더 설명해 주실 수 있겠어요?
+
 Eve: Unfortunately, I am too lazy for that.
+이브: 유감스럽게도 그러기에는 제가 너무 게을러서요.
+
 Pedro: I will remember that!
+페드로: 알겠습니다!
+
 
 Episode 7: Memento
+dpvlthem 7. 메멘토(Memento) 패턴 
 
 <상태>
 User Chad Bogue lost the message he was writing for two days. Implement save button for him.
+
+사용자 채드 보그(Chad Bogue)가 이틀 동안 작성해 두었던 메시지를 날려 버렸다. 그를 위해 저장 버튼을 구현하세요. 
 </상태>
 
 Pedro: I don't believe there are people who can type in textbox for two days. Two. Days.
+페드로: 이틀에 걸쳐 텍스트 박스에 타이핑할 수 있는 사람이 있다니 믿기지가 않는군요. 이틀이라니!
+
 Eve: Let's save him.
+이브: 그를 구해 주도록 하죠.
+
 Pedro: I googled this problem. Most popular approach to implement save button is Memento pattern. You need originator, caretaker and memento objects.
+페드로: 이 문제로 구글을 검색해 보니, 저장 버튼을 구현하는 가장 일반적인 접근법은 메펜토 패턴이네요. originator와 caretaker, memento 객체가 필요해요.
+  
 Eve: What's that?
+이브: 그것이 다 뭐죠?
+
 Pedro: Originator is just an object or state that we want to preserve. (text inside a textbox), caretaker is responsible to save state (save button) and memento is just an object to encapsulate state.
+페즈로: originator는 저장하기 원하는 객체 또는 상태에요. 예를 들면 텍스트 박스 안의 텍스트를 말해요. caretaker는 상태를 저장하는 일을 맡아요. 그리고 memento는 상태를 보관하는 객체이고요.
 
 [source,java]
 ----
@@ -1056,6 +1187,7 @@ public class TextBox {
 ----
 
 Pedro: Memento is just an immutable object
+페드로: memento는 단순한 불변 객체예요.
 
 [source,java]
 ----
@@ -1073,6 +1205,7 @@ public final class Memento {
 ----
 
 Pedro: And caretaker is a demo
+페드로: 그리고 caretaker는 다음의 코드가 그 역할을 합니다.
 
 [source,java]
 ----
@@ -1099,7 +1232,11 @@ textbox.restore(checkpoint1);
 ----
 
 Pedro: Just a note if you want a multiple checkpoints, save memento's to the list.
+페드로: 참고로, 여러번 저장할 수 있도록 하려면 메먼토들을 리스트에 저장하면 되지요.
+
 Eve: Originator, caretaker, memento - looks as a bunch of nouns, but actually it's all about two functions save and restore.
+이브: originator, caretaker, memento - 필요한 게 너무 많네요. 하지만 실질적으로는 ``save``와 `restore` 함수만 있으면 충분해요.
+ 
 [source]
 ----
 (def textbox (atom {}))
@@ -1124,6 +1261,7 @@ Eve: Originator, caretaker, memento - looks as a bunch of nouns, but actually it
 ----
 
 Eve: And demo as well.
+이브: 그리고 다음은 실행 예고요. 
 
 [source]
 ----
@@ -1138,33 +1276,72 @@ Eve: And demo as well.
 ----
 
 Pedro: It's pretty the same code.
-Eve: Yes, but you must care about memento immutability
-Pedro: What does it mean?
-Eve: You are lucky, that you got String object in this example, String is immutable. But if you have something, that may change its internal state, you need to perform deep copy of this object for memento.
-Pedro: Oh, right. It's just a recursive clone() calls to obtain prototype.
-Eve: We will talk about Prototype in a minute, but just remember that Memento is not about caretaker and originator, it is about save and restore.
+페드로: 거의 동일한 코드네요.
 
-Episode 8: Prototype
+Eve: Yes, but you must care about memento immutability
+이브: 그래요, 하지만 메멘토가 불변값이어야 한다는 것은 주의해야 해요.
+
+Pedro: What does it mean?
+페드로: 무슨 의미죠?
+
+Eve: You are lucky, that you got String object in this example, String is immutable. But if you have something, that may change its internal state, you need to perform deep copy of this object for memento.
+이브: 이 예제에서 자바 불변 `String` 객체를 다룬 것은 운이 좋은 경우예요. 하지만 내부 상태가 변할 수 있는 가변 객체를 다루는 경우에는, 메멘토 객체를 대상으로 깊은 복사(deep copuy)를 수행해 줄 필요가 있거든요.  
+
+Pedro: Oh, right. It's just a recursive clone() calls to obtain prototype.
+페드로: 예, 맞아요. 프로토타입을 얻기 위해 재귀적으로 ``clone()``을 호출해 주어야 하죠.
+
+Eve: We will talk about Prototype in a minute, but just remember that Memento is not about caretaker and originator, it is about save and restore.
+이브: 프로토타입 패턴은 잠시 뒤에 이야기하겠지만, 메멘토 패턴은 저장(save)과 복원(restore)에 관련된 것이지, originator와 caretaker와 관련된 것은 아니라는 것을 기억해 두셔야 해요. 
+
+
+== Episode 8: Prototype
+== 에피소드 8. 프로토타입(Prototype) 패턴 
 
 <상태>
 Dex Ringeus detected that users feel uncomfortable with registration form. Make it more usable.
+
+덱스 린지어스(Dex Ringeus)는 사용자들이 회원 등록 양식에 불편함을 느끼는 것을 발견했다. 이것을 좀 더 편리하게 만들어야 한다.
 </상태>
 
 Pedro: So, what's the problem with the registration?
+페드로: 등록 양식에 무슨 문제가 있나요?
+
 Eve: There are lot of fields users bored to type in.
+이브: 사용자들이 입력할 항목들이 너무 많아서 짜증날 정도예요.
+
 Pedro: For example?
+페드로: 예를 들면요?
+
 Eve: For example, weight. Having such field scares 90% of female users.
-Pedro: But this field is important for our analytics system, we make food and clothes recomendations based on that field.
+이브: 예를 들면 체중 항목이예요. 여성 사용자들의 90%가 그런 항목을 보면 짜증을 낼 거예요.
+  
+Pedro: But this field is important for our analytics system, we make food and clothes recomendat
+ions based on that field.
+페드로: 하지만 이 항목은 우리의 분석 팀에 중요해요. 이 항목 값에 근거해 음식과 옷을 추건해 주고 있거든요.
+
 Eve: Then, make it optional, and if it is not provided, take some default value.
+이브: 그러면 이 항목을 필수 입력 항목에서 제외하기로 하죠. 이 항목 값이 입력되지 않으면 기본값을 넣어 주는 방식으로요.
+
 Pedro: 60 kg is ok?
+페드로: 60kg이면 적당할가요?
+
 Eve: I think so.
+디브: 그런 것 같아요.
+
 Pedro: Ok, give me two minutes.
+페드로: 알았어여. 2분만 기다려 주세요.
 
 2 hours later
+두 시간이 흐른 뒤
 
 Pedro: I suggest to use some registration prototype which has all fields are filled with default values. After user completes the form we modify filled values.
+페드로: 모든 항목이 기본값으로 채워진 등록 프로토타입을 사용할 것을 제안했어요. 사용자가 값을 입력할 때는 기본값을 그 값으로 변경하면 되요.
+
 Eve: Sounds great.
+이브: 좋습니다.
+
 Pedro: Here it is our standard registration form, with prototype in clone() method.
+페드로: 여기에 표준 등록 양식이 있어요. `clone()` 메소드로 프로토타입 기본값을 설정합니다.
 
 [source,java]
 ----
@@ -1205,13 +1382,28 @@ public class RegistrationForm implements Cloneable {
 ----
 
 Pedro: Every time we create a user, call clone() and then override needed properties.
+페드로: 사용자를 생성할 때마다, ``clone()``을 호출해 기본값으로 설정해 줍니다.  
+
 Eve: Awful! In mutable world clone() is needed to create new object with the same properties. The hard part is the copy must be deep, i.e. instead of copying reference you need recursively clone() other objects, and what if one of them doesn't have clone()...
+이브: 끔직하네요! 가변 자료형의 세상에서는 동일한 값을 가진 새로운 객체를 생성하기 위해 ``clone()``이 필요하게 되요. 어려운 것은 깊은 복사가 이루어져야 한다는 점입니다. 단순히 레퍼런스를 복사하녀 안되고, 재귀적으로 내부의 객체들을 Clone() 해야만 하지요. 그런데 그 객체들 중의 일부가 clone() 메소드를 제공하지 않으면 어떻게 될까요?  
+
 Pedro: That's the problem and this pattern solves it.
+페드로: 그게 바로 문제인데, 이 패턴은 그 문제를 해결해 주죠.
+
 Eve: I don't think it is a solution if you need to implement clone every time you adding new object.
+이브: 제가 보기에, 새로운 객체를 추가해 줄 때마다 `clone` 메소드를 구현해 주어야만 한다면, 그것은 제대로 된 해결책이라고 보기 힘들다고 생각해요. 
+
 Pedro: How clojure avoid this?
+페드로: 클로저로는 이런 문제를 어떻게 피할 수 있죠?
+
 Eve: Clojure has immutable data structures. That's all.
+이브: 클로저는 불변 자료구조를 제공해요. 그것이 전부예요.
+
 Pedro: How does it solve prototype problem?
+페드로: 불변 자료구조로 프로토다입 문재를 어떻게 해결한다는 거죠?
+
 Eve: Every time you modify object, you get a fresh new immutable copy of your data, and old one is not changed. Prototype is not needed in immutable world
+이브: 객체를 변경할 때마다, 새로운 불변 객체를 얻게 되요. 그래서 예전 객체는 변경되지 않아지요. 불변 자료형의 세상에서는 프로토 타입 패턴이 필요 없게 되요.
 
 [source]
 ----
@@ -1237,20 +1429,36 @@ Eve: Every time you modify object, you get a fresh new immutable copy of your da
 
 Pedro: Great! But how this affects performance?
 Copying million rows each time you adding new value seems time consuming operation.
-Eve: No, it is not. Go to Google and search for persistent data structures and structural sharing
-Pedro: Thanks a lot.
+페드로: 훌륭하네요! 하지만 그런 식으로는 성능에 영향을 미치지 않을까요? 새로운 값을 추가할 때마다 수백만 개의 데이터를 복사하려면  꽤 시간이 걸리지 않나요? 
 
-Episode 9: Mediator
+Eve: No, it is not. Go to Google and search for persistent data structures and structural sharing
+이브: 아니, 그렇지 않아요. 구글에 가서 존속 데이터 구조(persistent data structures)와 구조 공유(structural sharing)에 관해 검색해 보세요.  
+
+Pedro: Thanks a lot.
+페드로: 고마워요.
+
+
+== Episode 9: Mediator
+== 에피소드 9. 중개자(Mediator) 패턴 
 
 [sidebar]
 ****
 Recently performed external code review shows a lot of issues with current codebase. Veerco Wierde emphasizes tight coupling in chat application.
+
+외부 인사가 최근에 코드를 검토한 결과, 현재의 코드에 문제가 많다고 한다. 특히 비어코 위어드(Veerco Wierde)씨는 채팅 애플리케이션에서의 강한 결합(tight coupling)을 지적하고 있다.
 ****
 
 Eve: What is tight coupling?
+이브: 강한 결합이 뭐요?
+
 Pedro: It's the problem when objects know too much about each other.
+페드로: 한 객체가 다른 객체에 대해 너무 많은 것을 알고 있을 때 나타나는 문제예요.
+  
 Eve: Could you be more specific?
+이브: 좀더 구체적으로 설명해 주실 수 있겠어요?
+
 Pedro: Look at the current chat implementation
+페드로: 현재의 채팅 프로그램 소스를 보시죠.
 
 [source,java]
 ----
@@ -1280,8 +1488,13 @@ public class User {
 ----
 
 Pedro: The problem here is the user knows everything about other users. It is very hard to use and maintain such code. When new user connects to the chat, you must add a reference to him via addUser for every existing user.
+페드로: 여기서의 문제는 사용자가 모든 다른 사용자들에 관한 정보를 갖고 있다는 것이죠. 이런 코드를 사용하고 유지/보수 하는 것은 대단히 어렵죠. 새로운 사용자가 이 채팅에 들어 올 때마다, 모든 사용자가 `addUser` 메소드를 통해 그 사용자에 대한 레퍼런스를 추가해야만 하거든요.  
+   
 Eve: So, we just move one piece of responsibility to another class?
+이브: 그러면 그 일에 해당하는 부분을 다른 클래스로 옮기면 되지 않나요?
+
 Pedro: Yes, kind of. We create mega-aware class, called mediator, that binds all parts together. Obviously, each part knows only about mediator.
+페드로: 어느 정도는 맞아요. 모든 사용자들을 관리하는 중개자( mediator)라고 불리는 클래스를 만들면 되요. 각 사용자는 이 중개자 객체만을 내부에 담게 되죠.  
 
 [source,java]
 ----
@@ -1320,10 +1533,19 @@ public class Mediator {
 ----
 
 Eve: That seems like a simple refactoring problem.
+이브: 이것은 단순한 리팩토링 문제같이 보이는 데요.
+
 Pedro: Profit may be underestimated, but if you have hundreds of mutually connected components (UI for example) mediator is really a savior.
+페드로: 그럴 수도 있지만, 예를 들어, Ui에서 서로 결함된 수백개의 부품들(components)이 있는 경우에는 이 중개자 패턴이 구세주 역할을 할 수 있어요. 
+
 Eve: Agreed.
+이브: 인정합니다.
+
 Pedro: Now the clojure turn.
+페드로: 클로저에서는 이런 경우 어떻게 처리하죠?
+ 
 Eve: Ok...let's look...your mediator is responsible for saving users and sending messages
+이브: 음, 보아 하니, 중개자라는 것이 하는 일이 사용자들을 저장하고 메시지를 보내는 것이네요. 
 
 [source]
 ----
@@ -1333,14 +1555,14 @@ Eve: Ok...let's look...your mediator is responsible for saving users and sending
                  (map #(receive % text) users))}))
 
 (defn add-user [u]
-    (swap! mediator
-      (fn [m]
-        (update-in m [:users] conj u))))
+  (swap! mediator
+         (fn [m]
+           (update-in m [:users] conj u))))
 
 (defn send-message [u text]
-    (let [send-fn (:send @mediator)
-          users (:users @mediator)]
-      (send-fn users (format "%s: %s\n" (:name u) text))))
+  (let [send-fn (:send @mediator)
+        users (:users @mediator)]
+    (send-fn users (format "%s: %s\n" (:name u) text))))
 
 (add-user {:name "Mister White"})
 (add-user {:name "Mister Pink"})
@@ -1348,18 +1570,30 @@ Eve: Ok...let's look...your mediator is responsible for saving users and sending
 ----
 
 Pedro: Good enough.
+페드로: 아주 좋네요.
+
 Eve: Nothing interesing here, because it is just a one approach to reduce coupling.
+이브: 여기에 특별한 것은 없어요. 단지 결합도를 줄이는 방법 중의 하나일 뿐이니까요.
+ 
 
-Episode 10: Observer
-
+== Episode 10: Observer
+== 에피소드: 관찰자(Observer) 패턴
+ 
 [sidebar]
 ****
 Independent security commision detected hacker Dartee Hebl has over a billion dollars balance on his account. Track big transactions to the accounts.
+
+독립 보안 위원회가 해커 다티 헤블(Dartee Hebl)이 자신의 계좌에 십억 달러의 잔고를 가지고 있는 것을 포착했다. 그래서 연관 계좌들과의 거래 내역을 추적해야 한다.
 ****
 
 Pedro: Are we Holmses?
+페즈로: 우리가 셜럭 홈즈가 되는 건가요? 
+
 Eve: No, but there is a lack of logging in the system, need to find a way to track all changes to balance.
-Pedro: We could add observers. Every time we modify balance, if change is big enough, notify about this and track the reason. We need Observer interface
+이브: 그런 건 아니지만, 지금 시스템에는 로깅 기능이 없어서, 모든 잔고 변화를 추적할 방법을 찾아야 해요.
+
+Pedro: We could add observers. Every time we modify balance, if change is big enough, notify about this and track the reason. We need Observer interface.
+페드로: 관잘자들을 추가하면 되요. 잔고의 변화가 큰 경우에만, 이것을 통지하고 그 이유를 추적하면 되죠. 먼저 `Observer` 인터페이스를 다음과 같이 정의합니다.
 
 [source,java]
 ----
@@ -1369,6 +1603,7 @@ public interface Observer {
 ----
 
 Pedro: And two specific observers
+페드로: 그리고 이 인터페이스를 구현하는 관찰자 클래스 두 개를 정의합니다.
 
 [source,java]
 ----
@@ -1388,6 +1623,7 @@ class BlockObserver implements Observer {
 ----
 
 Pedro: Tracker class would be responsible for managing observers.
+페즈로: `Tracker` 클래스에서 이 관찰자 객체들을 관리하는 일을 맡습니다. 
 
 [source,java]
 ----
@@ -1407,6 +1643,7 @@ public class Tracker {
 ----
 
 Pedro: And the last part: init tracker with the user and modify its addMoney method. If transcation amount is greaterthan 100$, notify FBI and block this user.
+페드로: 그리고 마지막으로 `User` 객체를 생성할 때 `initTracker()` 메소드를 호출해 이 두 관찰자 객체를 추가합니다. 그리고 `addMoney` 메소드에서 만약 거래액이 100$를 넘으면 FBI에 통지하고 이 사용자의 거래를 차단하도록 수정해 줍니다. 
 
 [source,java]
 ----
@@ -1425,7 +1662,6 @@ public class User {
     tracker.add(new BlockObserver());
   }
 
-
   public void addMoney(double amount) {
     balance += amount;
     if (amount > 100) {
@@ -1436,7 +1672,8 @@ public class User {
 ----
 
 Eve: Why are you created two separate observers? You could use it in a one.
-
+이브: 왜 관찰자를 따로 두 개를 만들었나요? 다음처럼 한 개만 만들어도 될 것 같은데.
+ 
 [source,java]
 ----
 class MailAndBlock implements Observer {
@@ -1449,9 +1686,16 @@ class MailAndBlock implements Observer {
 ----
 
 Pedro: Single responsibility principle.
+페드로: 일을 한 개만 처리한다는 윈칙(Single responsibility principle)을 따른 거죠.
+
 Eve: Oh, yeah.
+디브: 아 그렇군요.
+
 Pedro: And you can compose observer functionality dynamically.
+페드로: 그러면 관찰자 기능을 동적으로 결합할 수 있게 되거든요.
+
 Eve: I see your point.
+이브: 예, 알겠어요.
 
 [source]
 ----
@@ -1481,9 +1725,16 @@ Eve: I see your point.
 ----
 
 Pedro: It's a pretty the same way?
+페드로: 거의 같은 방식이네요?
+
 Eve: Yeah, in fact observer is just a way to register function, which will be called after another function.
+이브: 그래요, 사실 관찰자는 함수를 등록하는 한 가지 방법일 뿐이 거든요.  그리고 나서 다른 함수가 그 등록된 함수를 호출하게 되죠.
+
 Pedro: It is still the pattern.
+페드로: 이것도 여전히 패턴이네요.
+
 Eve Sure, but we can improve solution a bit using clojure watches.
+이브: 물론이죠, 하지만 다음처럼 클로저의 watch 기능을 이용하면 위의 코드를 더 개선할 수 있어요.
 
 [source]
 ----
@@ -1496,22 +1747,39 @@ Eve Sure, but we can improve solution a bit using clojure watches.
 ----
 
 Pedro: Why is that better?
-Eve: First of all, our add-money function is clean, it just adds money. Also, watcher tracks every change to the state, not the ones we handle in mutator functions, like add-money
-Pedro: Explain please.
-Eve: If there is provided another secred method secret-add-money for changing balance, watchers will handle that as well.
-Pedro: That's awesome!
+페드로: 왜 이 방식이 더 나은 거죠?
 
-Episode 11: Interpreter
+Eve: First of all, our add-money function is clean, it just adds money. Also, watcher tracks every change to the state, not the ones we handle in mutator functions, like add-money
+이브: 우선 `add-money` 함수가 더 깔끔해졌어요. 단순히 돈을 더하는 일만 하고 있죠. 아울러 watcher는 ``add-money`` 함수에서의 변경 내용 뿐만아니라,  user에게 일어나는 모든 상태 변화를 추적할 수 있어요. 
+
+Pedro: Explain please.
+페드로: 좀 더 설명해 주세요.
+
+Eve: If there is provided another secred method secret-add-money for changing balance, watchers will handle that as well.
+이브: 만약 또다른 함수 `secret-add-money`가 잔고를 바꾼다 하더라도, watcher는 그것도 처리할 수 있다는 겁니다. 
+
+Pedro: That's awesome!
+페드로: 오! 멋집니다.
+
+
+== Episode 11: Interpreter
+== 에피소드 11. 통역자(Interpreter) 패턴
 
 [sidebar]
 ****
 Bertie Prayc stole important data from our server and shared it via BitTorrent system. Create a fake account for Bertie to discredit him.
+
+버티 프레이시(Bertie Prayc)가 우리 서버에서 중요한 데이터를 훔쳐 BitTorrent 시스템을 통해 공유하고 있다.  버티의 가짜 계정을 만들어 그의 평판을 떨어뜨려야 한다. 
 ****
 
 Pedro: BitTorrent system based on .torrent files. We need to write Bencode encoder.
+페드로: BitTorrent 시스템은 .torrent 파일에 기반하고 있어서 Bencode 인코더를 만들어야 해요.
+
 Eve: Yes, but first let's agree on the format spec
+이브: 그렇군요, 하지만, Bencode 포맷에 대해 먼저 알야아 겠네요.
 
 Bencode encoding rules:
+다음은 Bencode 인코딩 규칙이다.
 
 * Two datatypes are supported:
 ** Integer N is encoded as i<N>e. (42 = i42e)
@@ -1522,11 +1790,29 @@ Bencode encoding rules:
 ** Map of values is encoded as d<contents>e ({"R" 2, "D" 2} = d1:Ri2e1:Di2ee)
 ***Keys are just strings, Values are any bencode element
 
+* 데이터 타입은 두 개가 지원된다.
+** 정수 N은 ``i<N>e``로 인코딩된다. (예) 42 = i42e
+** 문자열 S는 ``<length>:<contents>``로 인코딩된다. (예) hello = 5:hello
+
+* 컨데이너도 두 개가 지원된다.
+** 값의 리스트는 ``l<contents>e``로 인코딩된다. (예) [1, "Bye"] = li1e3:Byee
+** 값의 맵은 ``d<contents>e``로 인코딩된다. (예) {"R" 2, "D" 2} = d1:Ri2e1:Di2ee
+*** 키는 단순히 문자열이고, 값은 모든 Bencode 요소가 허용된다.
+
 Pedro: Seems easy.
+페드로: 쉬워 보이네요.
+
 Eve: Maybe, but take into account that values may be nested, list inside list, etc.
+이브: 그럴 수도 있지만, 값들은 중첩될 수 있다는 점을 고려해야 해요. 예를 들면 리스트 안에 리스트 같은. 
+
 Pedro: Sure. I think we can use Interpreter pattern for bencode encoding.
+페드로: 물론이죠. bencode 인코딩에는 통역자 패턴을 사용할 수 있을 것 같네요.
+
 Eve: Try it.
+이브: 한번 해 보시죠.
+
 Pedro: We start from interface for all bencode elements
+페드로: 모든 bencode 요소들을 위한 인터페이스부터 시작해 보죠.
 
 [source,java]
 ----
@@ -1536,6 +1822,7 @@ interface BencodeElement {
 ----
 
 Pedro: Then we provide implementation for each datatype and datacontainer
+페드로: 그리고 나서 각각의 데이터 타입과 데이터 컨데이너에서 위의 인터페이스를 구현합니다.
 
 [source,java]
 ----
@@ -1601,7 +1888,7 @@ class DictionaryElement implements BencodeElement {
 ----
 
 Pedro: And finally, our bencoded string can be constructed from common datastructures programmatically
-
+페드로: 마지막으로 bencode 인코딩 문자열을 만들 수 있어요ㅣ. 
 [source,java]
 ----
 // discredit user
@@ -1630,14 +1917,19 @@ BitTorrent.send(bencodedString);
 ----
 
 Eve: Interesting, but that is ton of code!
-Pedro: We pay readability for capabilities.
-Eve: I suppose you've heard concept Code is Data, that's a lot easier in clojure
+이브: 재미있네요, 그런데 코드량이 너무 많네요!
 
+Pedro: We pay readability for capabilities.
+페드로: 기능이 충실하려면 코드량은 많아질 수 밖에 없지요.
+
+Eve: I suppose you've heard concept Code is Data, that's a lot easier in clojure
+이브: 코드가 곧 데이터(Code is Data)라는 말을 들어 보신 적 있을 거예요. 그래서 클로저에서는 훨씬 수월해지죠. 
+ 
+[source]
+----
 ;; multimethod to handle bencode structure
 (defmulti interpret class)
 
-[source]
-----
 ;; implementation of bencode handler for each type
 (defmethod interpret java.lang.Long [n]
   (str "i" n "e"))
@@ -1669,27 +1961,53 @@ Eve: I suppose you've heard concept Code is Data, that's a lot easier in clojure
 ----
 
 Eve: You see how it is much easier define specific data?
+이브: 데이터를 정의하는 것이 얼마나 쉬운지 보이세요? 
+
 Pedro: Sure, and interpret it's just a function per bencode type, instead of separate class.
+페드로: 그러네요.``interpret``은 bencode 자료형 당 단순히 하나의 함수네요. 별도의 클래스가 아니라. 
+
 Eve: Correct, interpreter is nothing but a set of functions to process a tree.
+이브: 맞아요, 통역자 패턴은 단순히 트리를 처리하는 함수들일 뿐인 거죠.
 
 
-Episode 12: Flyweight
+== Episode 12: Flyweight
+== 에피소드 12. 플라이웨이트 패턴
 
 [sidebar]
 ****
 Administrators of the lawyer firm Cristopher, Matton & Pharts detected that reporting system consumes a lot of memory and garbage collector continiously hangs system for seconds. Fix that.
+한 법무 법인의 시스템 관리자 크리스토펴 매튼 & 파트(Cristopher, Matton & Pharts)는 보고 시스템이 많은 메모리를 소모해서 가비지 컬렉터가 끊임없이 시스템을 몇 초 동안 멈추게 한다는 것을 발견했다. 그것을 고쳐야 한다.  
 ****
 
 Pedro: I've seen this issue before.
+페드로: 저도 전에 이런 문제를 본 적이 있어요.
+ 
 Eve: What's wrong?
+이브: 무엇이 잘못된 거죠?
+
 Pedro: They have realtime charts with a lot of different points. It's a huge amount of memory. As a result garbage collector stops the system.
+페드로: 많은 점 데이터를 사용하는 실시간 차트 프로그램 때문이예요. 메모리를 많이 소모하거든요. 그래서 가비지 컬렉터가 시스템을 멈추게 하는 거고요.
+ 
 Eve: Hmmm, what we can do?
+이브: 음, 그럼 무엇을 해야 하죠?
+
 Pedro: Not much, caching does not help us because points are...
+페드로: 달리 할 수 있는 일이 별로 없어요. 캐싱도 별 도움이 안되고...
+
 Eve: Wait!
+이브:잠깐만요!
+
 Pedro: What?
+페드로: 무슨 일이죠?
+
 Eve: They use age values for points, why not precompute these points for most common ages? Say for age [0, 100]
+이브: 점들은 나이 데이터로 이루어져 있네요. 일반적인 나이(예를 들면, 나이 [0, 100])의 경우, 왜 미리 계산해 놓지 않는 거죠?
+
 Pedro: You mean use Flyweight pattern?
+페드로: 플라이웨이트 패턴을 사용하라는 말씀인가요?
+
 Eve: I mean reuse objects.
+이브: 제 말은 객체를 재사용하자는 겁니다.  
 
 [source,java]
 ----
@@ -1728,9 +2046,16 @@ class Point {
 ----
 
 Pedro: For this pattern we need two things: precompute most used points at a startup time, and use static factory method instead of constructor to return cached object.
+페드로: 이 패턴의 경우에는 두 가지가 필요해요. 프로그램 실행 시점에 대부분의 점 데이터를 미리 계산하는 것과, 캐시 객체를 만들기 위해 생성자 대신에 정적인 팩토리 메소드를 이용하는 것이 그것이죠.
+  
 Eve: Have you tested it?
+이브: 테스트해 본 적 있나요?
+
 Pedro: Sure, the system works like a clock.
+페드로: 물론이죠. 시스템은 아주 정확히 동작했습니다.
+
 Eve: Excellent, here is my version
+이브: 좋아요, 다음은 클로저 버전이예요.
 
 [source]
 ----
@@ -1749,16 +2074,33 @@ Eve: Excellent, here is my version
 ----
 
 Eve: It creates a flat map with pair [x, y] as a key, instead of two-dimensional array.
+이브: 이차원 배열 대신에, [x y] 좌표를 키로 갖는 일차원 맵을 만듭니다.
+ 
 Pedro: Pretty the same.
+페드로: 자바의 경우와 마찬가지네요.
+
 Eve: No, it is much flexible, you can't use two-dimensional array if you need to cache three points or non-integer values.
+이브; 아니에요, 훨씬 더 유연해요. 세 개의 점이나 정수가 아닌 값을 캐시해야 할 필요가 있을 때에는 이차원 배열을 사용할 수 없으니까요.
+ 
 Pedro: Oh, got it.
+페드로: 아, 이해했어요.
+
 Eve: Even better, in clojure you can just use memoize function to cache calls to factory function make-point
+이브: 더 좋은 것은, 클로저에서는 `memoize` 함수를 이용하면 팩토리 함수 ``make-point``를 호출한 결과를 캐싱할 수 있어요.
 
+[source]
+----
 (def make-point-memoize (memoize make-point))
-Eve: Every call (except first one) with the same parameters return cached value.
-Pedro: That's awesome!
-Eve: Of course, but remember if your function has side-effects, memoization is bad idea.
+----
 
+Eve: Every call (except first one) with the same parameters return cached value.
+이브: 그래서 최초의 호출할 때를 제외하고는, 같은 인자를 사용해 함수를 호출하게 되면 캐시에 저장된 값을 반환해요. 
+
+Pedro: That's awesome!
+페드로: 그것 참 멋진 기능이네요!
+
+Eve: Of course, but remember if your function has side-effects, memoization is bad idea.
+이브: 물론이죠. 하지만, 부수 효과(side effects)를 가진 함수인 경우에는 memoize 기능을 사용하지 않는 것이 좋다는 점도 기억해 두세요.
 
 
 Episode 13: Builder
