@@ -1149,13 +1149,13 @@ Eve: Let's save him.
 이브: 그를 구해 주도록 하죠.
 
 Pedro: I googled this problem. Most popular approach to implement save button is Memento pattern. You need originator, caretaker and memento objects.
-페드로: 이 문제로 구글을 검색해 보니, 저장 버튼을 구현하는 가장 일반적인 접근법은 페펜토 패턴이네요. originator와 caretaker, memento 색체가 필요해요.
+페드로: 이 문제로 구글을 검색해 보니, 저장 버튼을 구현하는 가장 일반적인 접근법은 메펜토 패턴이네요. originator와 caretaker, memento 객체가 필요해요.
   
 Eve: What's that?
-이브: 그것이 다 무엇인데요?
+이브: 그것이 다 뭐죠?
 
 Pedro: Originator is just an object or state that we want to preserve. (text inside a textbox), caretaker is responsible to save state (save button) and memento is just an object to encapsulate state.
-페즈로: originator는 저장하기 원하는 객체 또는 상태에요. 예를 들면 텍스트 박스 안의 텍스트이지요. caretaker는 상태를 저장하는 일을 맡아요. 그리고 memento는 상태를 보관하는 객체이고요.
+페즈로: originator는 저장하기 원하는 객체 또는 상태에요. 예를 들면 텍스트 박스 안의 텍스트를 말해요. caretaker는 상태를 저장하는 일을 맡아요. 그리고 memento는 상태를 보관하는 객체이고요.
 
 [source,java]
 ----
@@ -1295,27 +1295,53 @@ Eve: We will talk about Prototype in a minute, but just remember that Memento is
 
 
 == Episode 8: Prototype
-== 에피소ㄷ 8. 프로토타입(Prototype) 패턴 
+== 에피소드 8. 프로토타입(Prototype) 패턴 
 
 <상태>
 Dex Ringeus detected that users feel uncomfortable with registration form. Make it more usable.
+
+덱스 린지어스(Dex Ringeus)는 사용자들이 회원 등록 양식에 불편함을 느끼는 것을 발견했다. 이것을 좀 더 편리하게 만들어야 한다.
 </상태>
 
 Pedro: So, what's the problem with the registration?
+페드로: 등록 양식에 무슨 문제가 있나요?
+
 Eve: There are lot of fields users bored to type in.
+이브: 사용자들이 입력할 항목들이 너무 많아서 짜증날 정도예요.
+
 Pedro: For example?
+페드로: 예를 들면요?
+
 Eve: For example, weight. Having such field scares 90% of female users.
-Pedro: But this field is important for our analytics system, we make food and clothes recomendations based on that field.
+이브: 예를 들면 체중 항목이예요. 여성 사용자들의 90%가 그런 항목을 보면 짜증을 낼 거예요.
+  
+Pedro: But this field is important for our analytics system, we make food and clothes recomendat
+ions based on that field.
+페드로: 하지만 이 항목은 우리의 분석 팀에 중요해요. 이 항목 값에 근거해 음식과 옷을 추건해 주고 있거든요.
+
 Eve: Then, make it optional, and if it is not provided, take some default value.
+이브: 그러면 이 항목을 필수 입력 항목에서 제외하기로 하죠. 이 항목 값이 입력되지 않으면 기본값을 넣어 주는 방식으로요.
+
 Pedro: 60 kg is ok?
+페드로: 60kg이면 적당할가요?
+
 Eve: I think so.
+디브: 그런 것 같아요.
+
 Pedro: Ok, give me two minutes.
+페드로: 알았어여. 2분만 기다려 주세요.
 
 2 hours later
+두 시간이 흐른 뒤
 
 Pedro: I suggest to use some registration prototype which has all fields are filled with default values. After user completes the form we modify filled values.
+페드로: 모든 항목이 기본값으로 채워진 등록 프로토타입을 사용할 것을 제안했어요. 사용자가 값을 입력할 때는 기본값을 그 값으로 변경하면 되요.
+
 Eve: Sounds great.
+이브: 좋습니다.
+
 Pedro: Here it is our standard registration form, with prototype in clone() method.
+페드로: 여기에 표준 등록 양식이 있어요. `clone()` 메소드로 프로토타입 기본값을 설정합니다.
 
 [source,java]
 ----
@@ -1356,13 +1382,28 @@ public class RegistrationForm implements Cloneable {
 ----
 
 Pedro: Every time we create a user, call clone() and then override needed properties.
+페드로: 사용자를 생성할 때마다, ``clone()``을 호출해 기본값으로 설정해 줍니다.  
+
 Eve: Awful! In mutable world clone() is needed to create new object with the same properties. The hard part is the copy must be deep, i.e. instead of copying reference you need recursively clone() other objects, and what if one of them doesn't have clone()...
+이브: 끔직하네요! 가변 자료형의 세상에서는 동일한 값을 가진 새로운 객체를 생성하기 위해 ``clone()``이 필요하게 되요. 어려운 것은 깊은 복사가 이루어져야 한다는 점입니다. 단순히 레퍼런스를 복사하녀 안되고, 재귀적으로 내부의 객체들을 Clone() 해야만 하지요. 그런데 그 객체들 중의 일부가 clone() 메소드를 제공하지 않으면 어떻게 될까요?  
+
 Pedro: That's the problem and this pattern solves it.
+페드로: 그게 바로 문제인데, 이 패턴은 그 문제를 해결해 주죠.
+
 Eve: I don't think it is a solution if you need to implement clone every time you adding new object.
+이브: 제가 보기에, 새로운 객체를 추가해 줄 때마다 `clone` 메소드를 구현해 주어야만 한다면, 그것은 제대로 된 해결책이라고 보기 힘들다고 생각해요. 
+
 Pedro: How clojure avoid this?
+페드로: 클로저로는 이런 문제를 어떻게 피할 수 있죠?
+
 Eve: Clojure has immutable data structures. That's all.
+이브: 클로저는 불변 자료구조를 제공해요. 그것이 전부예요.
+
 Pedro: How does it solve prototype problem?
+페드로: 불변 자료구조로 프로토다입 문재를 어떻게 해결한다는 거죠?
+
 Eve: Every time you modify object, you get a fresh new immutable copy of your data, and old one is not changed. Prototype is not needed in immutable world
+이브: 객체를 변경할 때마다, 새로운 불변 객체를 얻게 되요. 그래서 예전 객체는 변경되지 않아지요. 불변 자료형의 세상에서는 프로토 타입 패턴이 필요 없게 되요.
 
 [source]
 ----
@@ -1388,20 +1429,36 @@ Eve: Every time you modify object, you get a fresh new immutable copy of your da
 
 Pedro: Great! But how this affects performance?
 Copying million rows each time you adding new value seems time consuming operation.
+페드로: 훌륭하네요! 하지만 그런 식으로는 성능에 영향을 미치지 않을까요? 새로운 값을 추가할 때마다 수백만 개의 데이터를 복사하려면  꽤 시간이 걸리지 않나요? 
+
 Eve: No, it is not. Go to Google and search for persistent data structures and structural sharing
+이브: 아니, 그렇지 않아요. 구글에 가서 존속 데이터 구조(persistent data structures)와 구조 공유(structural sharing)에 관해 검색해 보세요.  
+
 Pedro: Thanks a lot.
+페드로: 고마워요.
+
 
 Episode 9: Mediator
+에피소드 9. 중개자(Mediator) 패턴 
 
 [sidebar]
 ****
 Recently performed external code review shows a lot of issues with current codebase. Veerco Wierde emphasizes tight coupling in chat application.
+
+외부 인사가 최근에 코드를 검토한 결과, 현재의 코드에 문제가 많다고 한다. 특히 비어코 위어드(Veerco Wierde)씨는 채팅 애플리케이션에서의 강한 결합(tight coupling)을 지적하고 있다.
 ****
 
 Eve: What is tight coupling?
+이브: 강한 결합이 뭐요?
+
 Pedro: It's the problem when objects know too much about each other.
+페드로: 한 객체가 다른 객체에 대해 너무 많은 것을 알고 있을 때 나타나는 문제예요.
+  
 Eve: Could you be more specific?
+이브: 좀더 구체적으로 설명해 주실 수 있겠어요?
+
 Pedro: Look at the current chat implementation
+페드로: 현재의 채팅 프로그램 소스를 보시죠.
 
 [source,java]
 ----
@@ -1431,8 +1488,13 @@ public class User {
 ----
 
 Pedro: The problem here is the user knows everything about other users. It is very hard to use and maintain such code. When new user connects to the chat, you must add a reference to him via addUser for every existing user.
+페드로: 여기서의 문제는 사용자가 모든 다른 사용자들에 관한 정보를 갖고 있다는 것이죠. 이런 코드를 사용하고 유지/보수 하는 것은 대단히 어렵죠. 새로운 사용자가 이 채팅에 들어 올 때마다, 모든 사용자가 `addUser` 메소드를 통해 그 사용자에 대한 레퍼런스를 추가해야만 하거든요.  
+   
 Eve: So, we just move one piece of responsibility to another class?
+이브: 그러면 그 일에 해당하는 부분을 다른 클래스로 옮기면 되지 않나요?
+
 Pedro: Yes, kind of. We create mega-aware class, called mediator, that binds all parts together. Obviously, each part knows only about mediator.
+페드로: 어느 정도는 맞아요. 모든 사용자들을 관리하는 중개자( mediator)라고 불리는 클래스를 만들면 되요. 각 사용자는 이 중개자 객체만을 내부에 담게 되죠.  
 
 [source,java]
 ----
@@ -1471,10 +1533,19 @@ public class Mediator {
 ----
 
 Eve: That seems like a simple refactoring problem.
+이브: 이거은 단순한 리팩토링 문제같이 보이는 데요.
+
 Pedro: Profit may be underestimated, but if you have hundreds of mutually connected components (UI for example) mediator is really a savior.
+페드로: 그렇게 보일 수도 있지만, 예를 들어, Ui에서 서로 결함된 수백개의 부품들(components)이 있는 경우에는 이 중개자 패턴이 구세주 역할을 할 수 있어요. 
+
 Eve: Agreed.
+이브: 인정합니다.
+
 Pedro: Now the clojure turn.
+페드로: 클로저에서는 이런 경우 어떻게 처리하죠?
+ 
 Eve: Ok...let's look...your mediator is responsible for saving users and sending messages
+이브: 음, 보아 하니, 중개자라는 것이 하는 일이 사용자들을 저장하고 메시지를 보내는 것이네요. 
 
 [source]
 ----
@@ -1484,14 +1555,14 @@ Eve: Ok...let's look...your mediator is responsible for saving users and sending
                  (map #(receive % text) users))}))
 
 (defn add-user [u]
-    (swap! mediator
-      (fn [m]
-        (update-in m [:users] conj u))))
+  (swap! mediator
+         (fn [m]
+           (update-in m [:users] conj u))))
 
 (defn send-message [u text]
-    (let [send-fn (:send @mediator)
-          users (:users @mediator)]
-      (send-fn users (format "%s: %s\n" (:name u) text))))
+  (let [send-fn (:send @mediator)
+        users (:users @mediator)]
+    (send-fn users (format "%s: %s\n" (:name u) text))))
 
 (add-user {:name "Mister White"})
 (add-user {:name "Mister Pink"})
@@ -1499,7 +1570,11 @@ Eve: Ok...let's look...your mediator is responsible for saving users and sending
 ----
 
 Pedro: Good enough.
+페드로: 아주 좋네요.
+
 Eve: Nothing interesing here, because it is just a one approach to reduce coupling.
+이브: 여기에 특별한 것이 없어요. 단지 결합도를 줄이는 방법 중의 하나일 뿐이니까요.
+ 
 
 Episode 10: Observer
 
@@ -1509,7 +1584,9 @@ Independent security commision detected hacker Dartee Hebl has over a billion do
 ****
 
 Pedro: Are we Holmses?
+
 Eve: No, but there is a lack of logging in the system, need to find a way to track all changes to balance.
+
 Pedro: We could add observers. Every time we modify balance, if change is big enough, notify about this and track the reason. We need Observer interface
 
 [source,java]
@@ -1600,8 +1677,11 @@ class MailAndBlock implements Observer {
 ----
 
 Pedro: Single responsibility principle.
+
 Eve: Oh, yeah.
+
 Pedro: And you can compose observer functionality dynamically.
+
 Eve: I see your point.
 
 [source]
@@ -1632,9 +1712,13 @@ Eve: I see your point.
 ----
 
 Pedro: It's a pretty the same way?
+
 Eve: Yeah, in fact observer is just a way to register function, which will be called after another function.
+
 Pedro: It is still the pattern.
+
 Eve Sure, but we can improve solution a bit using clojure watches.
+
 
 [source]
 ----
@@ -1647,9 +1731,13 @@ Eve Sure, but we can improve solution a bit using clojure watches.
 ----
 
 Pedro: Why is that better?
+
 Eve: First of all, our add-money function is clean, it just adds money. Also, watcher tracks every change to the state, not the ones we handle in mutator functions, like add-money
+
 Pedro: Explain please.
+
 Eve: If there is provided another secred method secret-add-money for changing balance, watchers will handle that as well.
+
 Pedro: That's awesome!
 
 Episode 11: Interpreter
@@ -1660,6 +1748,7 @@ Bertie Prayc stole important data from our server and shared it via BitTorrent s
 ****
 
 Pedro: BitTorrent system based on .torrent files. We need to write Bencode encoder.
+
 Eve: Yes, but first let's agree on the format spec
 
 Bencode encoding rules:
@@ -1674,10 +1763,15 @@ Bencode encoding rules:
 ***Keys are just strings, Values are any bencode element
 
 Pedro: Seems easy.
+
 Eve: Maybe, but take into account that values may be nested, list inside list, etc.
+
 Pedro: Sure. I think we can use Interpreter pattern for bencode encoding.
+
 Eve: Try it.
+
 Pedro: We start from interface for all bencode elements
+
 
 [source,java]
 ----
@@ -1820,7 +1914,9 @@ Eve: I suppose you've heard concept Code is Data, that's a lot easier in clojure
 ----
 
 Eve: You see how it is much easier define specific data?
+
 Pedro: Sure, and interpret it's just a function per bencode type, instead of separate class.
+
 Eve: Correct, interpreter is nothing but a set of functions to process a tree.
 
 
@@ -1832,14 +1928,22 @@ Administrators of the lawyer firm Cristopher, Matton & Pharts detected that repo
 ****
 
 Pedro: I've seen this issue before.
+
 Eve: What's wrong?
+
 Pedro: They have realtime charts with a lot of different points. It's a huge amount of memory. As a result garbage collector stops the system.
+
 Eve: Hmmm, what we can do?
+
 Pedro: Not much, caching does not help us because points are...
 Eve: Wait!
+
 Pedro: What?
+
 Eve: They use age values for points, why not precompute these points for most common ages? Say for age [0, 100]
+
 Pedro: You mean use Flyweight pattern?
+
 Eve: I mean reuse objects.
 
 [source,java]
@@ -1879,8 +1983,11 @@ class Point {
 ----
 
 Pedro: For this pattern we need two things: precompute most used points at a startup time, and use static factory method instead of constructor to return cached object.
+
 Eve: Have you tested it?
+
 Pedro: Sure, the system works like a clock.
+
 Eve: Excellent, here is my version
 
 [source]
@@ -1900,14 +2007,20 @@ Eve: Excellent, here is my version
 ----
 
 Eve: It creates a flat map with pair [x, y] as a key, instead of two-dimensional array.
+
 Pedro: Pretty the same.
+
 Eve: No, it is much flexible, you can't use two-dimensional array if you need to cache three points or non-integer values.
+
 Pedro: Oh, got it.
+
 Eve: Even better, in clojure you can just use memoize function to cache calls to factory function make-point
 
 (def make-point-memoize (memoize make-point))
 Eve: Every call (except first one) with the same parameters return cached value.
+
 Pedro: That's awesome!
+
 Eve: Of course, but remember if your function has side-effects, memoization is bad idea.
 
 
