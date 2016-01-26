@@ -2662,40 +2662,41 @@ Episode 21: Decorator
 === 에피소드 21: 데코레이터(Decorator) 패턴
 
 Podrea Vesper caught us on cheating for the tournament. We have a choice: to be busted by police or to help his super knight to take part in competition
+포드래 베스퍼는 시합에서 속임수를 사용한 우리를 잡았다. 우리에겐 하나의 선택권이 있다: 경찰에 체포되거나 그의 슈퍼 기사를 시합에 참여하도록 돕는 것이다.
 
 
 Pedro: I don't wanna go to prison.
-페드로:
+페드로: 난 감옥에 가고 싶지 않아요.
 
 Eve: Me either.
-이브:
+이브: 저도요.
 
 Pedro: Let's cheat for him one more time.
-페드로:
+페드로: 그를 위해 한 번더 해보죠.
 
 Eve: This is the same solution, isn't it?
-이브:
+이브: 같은 방식이죠?
 
 Pedro Similar, but not the same. Commando was a soldier and they are not allowed on the tournament. We adapted it. But knight is allowed for tournament we don't need to adapt it, we must add functionality to existing object.
-페드로:
+페드로: 비슷하지만, 똑같지는 않아요. 코만도는 군인이어서 시합에 참여가 허용되지 않죠. 그래서 우리가 맞추어 넣은 거구요. 하지만 기사는 시합 참여가 가능하니, 맞출 필요가 없구요, 기존 것에 기능을 추가해야 해요.
 
 Eve: Inheritance or composition?
-이브:
+이브: 상속이나 합성?
 
 Pedro: Composition, the main goal of decorator to change behaviour at a runtime
-페드로:
+페드로: 합성, 런타임에 행위를 바꾸는 데코레이터 패턴의 주요 목적이죠.
 
 Eve: So how we deal with this super knight?
-이브:
+이브: 그러면 이 슈퍼 기사를 어떻게 할까요?
 
 Pedro: They plan to use Galahad knight and decorate it with more HP and Power Armor
-페드로:
+페드로: 그들은 ``Galahad`` 기사를 사용해서 더 많은 HP와 강력 갑옷을 장식할 계획이에요.
 
 Eve: Heh, funny that cops are playing Fallout
-이브:
+이브: 헤, 경찰이 Fallout을 하다니 재밌네요.
 
 Pedro: Yeah, let's make knight an abstract class
-페드로:
+페드로: 네, 기사를 추상 클래스로 만듭시다.
 
 
 [source, java]
@@ -2725,22 +2726,22 @@ public class Knight {
 ....
 
 Eve: So what we improved there?
-이브:
+이브: 그러면 저기서 무엇을 개선해야 되죠?
 
 Pedro: First af all we make class Knight instead of interface to have access to hit points. Then we provide two diferent constructors, default for standard behaviour, and decorated, which delegates call to decorated object.
-페드로:
+페드로: 우선 점수를 치기 위해 접근하는 인터페이스 대신에 클래스 ``Knight``를 만들어요. 그러고 나서 2개의 생성자를 만드는데, 하나는 표준 행위를 위한 디폴트이고, 데코레이트된 객체에 호출을 위임하는 데코레이트된 생성자이죠.
 
 Eve: Is it fair to use abstract class instead of interface?
-이브:
+이브: 인터페이스 대산 추상 클래스를 쓰는게 맞아요?
 
 Pedro: No, but we avoid two classes with similar behaviour and fill each decorated object with default implementation, instead of forcing to implement each of the methods.
-페드로:
+페드로: 아니요, 하지만 비슷한 행위를 하는 2개의 클래스를 피하고, 각 데코레이트된 객체를 디본 구현으로 채우는 거죠. 각 메소드를 구현을 강체하는 대신.
 
 Eve: Ok, what's about Power Armor?
-이브:
+이브: 오케이, 파워 갑옷은요?
 
 Pedro: Easy as well
-페드로:
+페드로: 쉽게 잘되죠.
 
 
 [source, java]
@@ -2767,7 +2768,7 @@ public class KnightWithAdditionalHP extends Knight {
 ....
 
 Pedro: Two decorators that fulfils FBI requirements, and we able to create super knight, with behaviour like Galahad, but super armor and 50 more hit points.
-페드로:
+페드로: FBI 요구 사항을 충족하는 2개의 데코레이터, 그리고 슈퍼 기사를 만들 수 있어요, Galahad같은 행위를 가진, 슈퍼 갑옷을 입고, 점수도 50점 더 높고.
 
 
 [source, java]
@@ -2779,13 +2780,13 @@ Knight superKnight =
 ....
 
 Eve: Nice trick!
-이브:
+이브: 괜찮은 트릭이네요
 
 Pedro: You are welcome to show the similar behaviour in clojure
-페드로:
+페드로: 자 이제 클로저로 비슷한 행위를 보여줘 보시죠.
 
 Eve: Here it is
-이브:
+이브: 여기요.
 
 
 [source, clojure]
@@ -2814,20 +2815,26 @@ Eve: Here it is
 ....
 
 Pedro: The same functionality.
-페드로:
+페드로: 똑같은 기능이네요.
 
 Eve: Yes, just pay attention to power armor decorator.
-이브:
+이브: 네, 단지 파뭐 갑옷 데코레이터에만 주의를 하는 거죠.
 
 
 Episode 22: Proxy
 === 에피소드 22: 프록시(Proxy) 패턴
 
 Deren Bart manages the system for making mixed drinks. It is rigid system, because after making a drink Bart must manually subtract used ingredients from the bar. Do this automatically.
+데렌 바트는 칵테일 만드는 시스템을 관리하고 있다. 이 시스템은 불편했는데, 칵테일을 만든 후 바트는 직접 손으로 쉐이커에서 남은 원료를 빼내야 했기 때문이다. 이것을 자동화하라.
 
 Pedro: Can we get access to his codebase?
-Eve: No, but he sent some APIs.
+페드로: 바트의 코드베이스에 접근할 수 있나요?
 
+Eve: No, but he sent some APIs.
+이브: 아니요, 하지만 바트가 API를 몇 개 보냈줬어요.
+
+[source, java]
+....
 interface IBar {
     void makeDrink(Drink drink);
 }
@@ -2840,12 +2847,25 @@ interface Ingredient {
     String getName();
     double getAmount();
 }
-Pedro: Bart doesn't want us to modify sources, instead we need to provide some additional implementation for IBar interface with autosubtracting used ingredients.
-Eve: And what are we responsible for?
-Pedro: Implementing Proxy Pattern, I've read about it some times ago.
-Eve: I'm all listening.
-Pedro: Basically we delegate all existing functionality to standard IBar implementation and provide new functionality inside ProxiedBar
+....
 
+Pedro: Bart doesn't want us to modify sources, instead we need to provide some additional implementation for IBar interface with autosubtracting used ingredients.
+페드로: 바트는 소스에 손 대는 원치 않아요, 대신에 ``IBar`` 인터페이스의 구현한 클래스를 추가로 몇 개 만들어서 남은 재료를 자동으로 제거할 필요가 있어요.
+
+Eve: And what are we responsible for?
+이브: 그러면 우리가 맡아야 할 일은 무엇인가요?
+
+Pedro: Implementing Proxy Pattern, I've read about it some times ago.
+페드로: 프록시 패턴을 구현하죠, 얼마전에 그에 대해 읽었어요.
+
+Eve: I'm all listening.
+이브: 어서 말해봐요.
+
+Pedro: Basically we delegate all existing functionality to standard IBar implementation and provide new functionality inside ProxiedBar
+페드로: 기본적으로 기존 모든 기능은 ``IBar``를 구현한 표준(standard) 클래스에 위임하고, 새 기능은 ``ProxiedBar``에 넣는 것이죠.
+
+[source, java]
+....
 class ProxiedBar implements IBar {
     BarDatabase bar;
     IBar standardBar;
@@ -2857,21 +2877,53 @@ class ProxiedBar implements IBar {
        }
     }
 }
-Pedro: They need to replace StandardBar implementation with our ProxiedBar.
-Eve: Seems super easy.
-Pedro: Yes, additional plus that we don't break existing functionality.
-Eve: Are you sure? We didn't run regression tests.
-Pedro: Everything we do is delegating functionality to already tested StandardBar
-Eve: But you also substracts used ingredients from BarDatabase
-Pedro: We assume, they are decoupled.
-Eve: Oh...
-Pedro: Does clojure have some alternative?
-Eve: Well, I don't know. What I see here you are using function composition.
-Pedro: Explain.
-Eve: IBar implementation is a set of functions, and another IBar is another set of functions. Everything you talking about additional implementation could be covered by function composition. It's like make-drink and after that subtract-ingredients from bar.
-Pedro: Maybe code is more clear?
-Eve: Yes, but I don't think something special here
+....
 
+Pedro: They need to replace StandardBar implementation with our ProxiedBar.
+페드로: ``StandardBar`` 구현 클래스를 우리의 ``ProxiedBar``로 바꿔야 해요.
+
+Eve: Seems super easy.
+이브: 아주 간단해 보이네요.
+
+Pedro: Yes, additional plus that we don't break existing functionality.
+페드로: 네, 게다가 덤으로 우리가 기존 기능을 깨지 않아도 되죠.
+
+Eve: Are you sure? We didn't run regression tests.
+이브: 확실해요? 회귀 테스트를 하지 않았어요.
+
+Pedro: Everything we do is delegating functionality to already tested StandardBar
+페드로: 우리가 한 것은 단지 기능을 기존에 이미 테스트된 ``StandardBar``에 위임한 거에요.
+
+Eve: But you also substracts used ingredients from BarDatabase
+이브: 하지만 여전히 ``BarDatabase``에서 쓰다 남은 원료를 제거하고 있어요.
+
+Pedro: We assume, they are decoupled.
+페드로: 우리가 가정했는데요, 그것들은 분리되어 있어요.
+
+Eve: Oh...
+이브: 오...
+
+Pedro: Does clojure have some alternative?
+페드로: 클로저는 다른 방식이 있나요?
+
+Eve: Well, I don't know. What I see here you are using function composition.
+이브: 글세요, 모르겠네요. 제가 아는 바로는 함수 합성을 사용한다는 거죠.
+
+Pedro: Explain.
+페드로: 설명해 보세요.
+
+Eve: IBar implementation is a set of functions, and another IBar is another set of functions. Everything you talking about additional implementation could be covered by function composition. It's like make-drink and after that subtract-ingredients from bar.
+이브: ``IBar`` 구현은 함수의 집합이고, 다른 IBar는 또다른 함수의 집합이죠. 당신이 추가적으로 구현해야 할 모든 것은 함수 합성으로 다 취급되요. ``make-drink``하고, 그 다음 bar에서 ``subtract-ingredients`` 하는 것과 같은 거죠.
+
+Pedro: Maybe code is more clear?
+페드로: 코드를 보여주시는 게 더 좋지 않을까요?
+
+Eve: Yes, but I don't think something special here
+이브: 네, 하지만 뭐 별로 여기서 특별한 것은 아니에요.
+
+
+[source, clojure]
+....
 ;; interface
 (defprotocol IBar
   (make-drink [this drink]))
@@ -2899,24 +2951,56 @@ Eve: Yes, but I don't think something special here
 (make-drink (ProxiedBar. {:db 1} (StandardBar.))
     {:name "Manhattan"
      :ingredients [["Bourbon" 75] ["Sweet Vermouth" 25] ["Angostura" 5]]})
-Eve: We could leverage protocol and types to group set of functions as a single object.
-Pedro: Looks like clojure has object-oriented capabilities as well.
-Eve: Correct, moreover it has a reify function, which allow you to create proxies in a runtime
-Pedro: Like class in a runtime?
-Eve: Sort of.
+....
 
+Eve: We could leverage protocol and types to group set of functions as a single object.
+이브: 함수의 집합을 단일 객체으로 그룹화하기 위해 프로토콜과 타입을 이용하죠.
+
+Pedro: Looks like clojure has object-oriented capabilities as well.
+페드로: 클로저가 객체지향 능력 또한 갖춘 것처럼 보이네요.
+
+Eve: Correct, moreover it has a reify function, which allow you to create proxies in a runtime
+이브: 맞아요, 더욱이 ``reify``함수가 있는데, 이것을 이용하면 runtime에 프록시를 만들 수 있어요.
+
+Pedro: Like class in a runtime?
+페드로: 런타임용 class같은 건가요?
+
+Eve: Sort of.
+이브: 그 비슷하죠.
+
+
+[source, clojure]
+....
 (reify IBar
   (make-drink [this drink]
     ;; implementation goes here
   ))
+....
+
 Pedro: Looks handy.
+페드로: 간편해 보이네요.
+
 Eve: Yes, but I still don't understand how it differs from Decorator.
+이브: 네, 하지만 전 여전히 이것이 데코레이터 패턴과 어떻게 다른지 이해가 않돼요.
+
 Pedro: They are completely different.
+페드로: 그들은 완전히 다르죠.
+
 Eve: Decorator adds functionality to the same interface, and so does Proxy.
+이브: 데코레이터는 같은 인터페이스에 기능을 추가하는데, 프록시도 같은 일을 해요.
+
 Pedro: Well, but Proxy is...
+페드로: 글세요, 하지만 프록시는...
+
 Eve: Even more, Adapter is not very different as well.
+이브: 더욱이, 어댑터 또한 그리 다르지 않아요.
+
 Pedro: It uses another interface.
+페드로: 어댑터는 다른 인터페이스를 이용하죠.
+
 Eve: But from implementation perspective all these pattern are the same, wrap something and delegate calls to wrapper. "Wrapper" could be a good name for these patterns.
+이브: 하지만 구현 관점에서 보면 이런 패턴들은 모두 같아요, 어떤 것을 랩핑하고 호출을 랩퍼에게 위임하죠. "랩퍼"는 이런 패턴들에 맞는 이름이에요.
+
 
 Episode 23: Bridge
 === 에피소드 23: 브릿지(Bridge) 패턴
@@ -2924,13 +3008,25 @@ Episode 23: Bridge
 Girls from HR agency "Hurece's Sour Man" trying to identify candidates to their open job positions. The problem is jobs often created by customers, but requirements to the jobs are developed by HR. Provide them with a flexible way of collaborating.
 
 Eve: I don't understand the problem.
-Pedro: I have a bit of background. They have a very strange system which defines job requirements as an interface.
+이브:
 
+Pedro: I have a bit of background. They have a very strange system which defines job requirements as an interface.
+페드로:
+
+
+[source, java]
+....
 interface JobRequirement {
     boolean accept(Candidate c);
 }
-Pedro: Every specific requirement implemented as a new subclass of this.
+....
 
+Pedro: Every specific requirement implemented as a new subclass of this.
+페드로:
+
+
+[source, java]
+....
 class JavaRequirement implements JobRequirement {
     public boolean accept(Candidate c) {
         return c.hasSkill("Java");
@@ -2942,15 +3038,35 @@ class Experience10YearsRequirement implements JobRequirement {
         return c.getExperience() >= 10;
     }
 }
-Eve: I've got an idea.
-Pedro: Take into account, this requirement hierarchy is designed by HR Department.
-Eve: Ok.
-Pedro: And they have a Job hierarchy, where each specific job is subclass as well.
-Eve: Why do they need a class for each job? It should be an object.
-Pedro: The system was designed when classes were more popular than objects, so live with this.
-Eve: Class were popular than objects?!
-Pedro: Yes, listen and don't interrupt me. Jobs with requirements is completely separate hierarchy, and it is developed by customers. We introduce pattern Bridge to separate these two hierarchies and allow them live independently.
+....
 
+Eve: I've got an idea.
+이브:
+
+Pedro: Take into account, this requirement hierarchy is designed by HR Department.
+페드로:
+
+Eve: Ok.
+이브:
+
+Pedro: And they have a Job hierarchy, where each specific job is subclass as well.
+페드로:
+
+Eve: Why do they need a class for each job? It should be an object.
+이브:
+
+Pedro: The system was designed when classes were more popular than objects, so live with this.
+페드로:
+
+Eve: Class were popular than objects?!
+이브:
+
+Pedro: Yes, listen and don't interrupt me. Jobs with requirements is completely separate hierarchy, and it is developed by customers. We introduce pattern Bridge to separate these two hierarchies and allow them live independently.
+페드로:
+
+
+[source, java]
+....
 abstract class Job {
     protected List<? extends JobRequirement> requirements;
 
@@ -2976,54 +3092,127 @@ class CognitectClojureDeveloper extends Job {
         ));
     }
 }
-Eve: So where is the bridge?
-Pedro: JobRequirement, JavaRequirement, ExperienceRequirement is one hierarchy, yes?
-Eve: Yes.
-Pedro: Job, CongnitectClojureDeveloperJob, OracleJavaDeveloperJob is another hierarchy.
-Eve: Oh, now I see. A link from Job to JobRequirement is a bridge.
-Pedro: Exactly! This is how HR can use this system to find candidate matches.
+....
 
+Eve: So where is the bridge?
+이브:
+
+Pedro: JobRequirement, JavaRequirement, ExperienceRequirement is one hierarchy, yes?
+페드로:
+
+Eve: Yes.
+이브:
+
+Pedro: Job, CongnitectClojureDeveloperJob, OracleJavaDeveloperJob is another hierarchy.
+페드로:
+
+Eve: Oh, now I see. A link from Job to JobRequirement is a bridge.
+이브:
+
+Pedro: Exactly! This is how HR can use this system to find candidate matches.
+페드로:
+
+
+[source, java]
+....
 Candidate joshuaBloch = new Candidate();
 (new CognitectClojureDeveloper()).accept(joshuaBloch);
 (new OracleSeniorJavaDeveloper()).accept(joshuaBloch);
-Pedro: Here is the point. Customers use Job as abstraction and JobRequirement as an implementation. They just create a job with descriptions or so, and HR is responsible to convert these descriptions into specific set of JobRequirement objects.
-Eve: Got it.
-Pedro: So as far as I understand, clojure could mimic this pattern by using defprotocol and defrecord?
-Eve: Yes, but I want to revisit the problem.
-Pedro: What's wrong?
-Eve: Here is we have a static flow: customer create job positions, human resources convert job position to a set of requirements and run a script against their candidates database to find a matches.
-Pedro: Correct.
-Eve: So there is already dependency, HR can't do anything without open job positions.
-Pedro: Well, yes. But they can develop a set of structured requirements without knowing what open positions might be.
-Eve: For what purpose?
-Pedro: Later this can be reused by Job creators, so HR avoid doing the same work twice.
-Eve: Okay, got it, but this problem is artificial. Basically what we need is a way to colaborate between abstraction and implementation.
-Pedro: Maybe, but I want to see your clojure way solution for that specific problem using bridge pattern.
-Eve: Easy. Let's use adhoc hierarchies.
-Pedro: For abstractions?
-Eve: Yes, jobs hierarchy is abstraction, and people need just to enhance hierarchy.
+....
 
+Pedro: Here is the point. Customers use Job as abstraction and JobRequirement as an implementation. They just create a job with descriptions or so, and HR is responsible to convert these descriptions into specific set of JobRequirement objects.
+페드로:
+
+Eve: Got it.
+이브:
+
+Pedro: So as far as I understand, clojure could mimic this pattern by using defprotocol and defrecord?
+페드로:
+
+Eve: Yes, but I want to revisit the problem.
+이브:
+
+Pedro: What's wrong?
+페드로:
+
+Eve: Here is we have a static flow: customer create job positions, human resources convert job position to a set of requirements and run a script against their candidates database to find a matches.
+이브:
+
+Pedro: Correct.
+페드로:
+
+Eve: So there is already dependency, HR can't do anything without open job positions.
+이브:
+
+Pedro: Well, yes. But they can develop a set of structured requirements without knowing what open positions might be.
+페드로:
+
+Eve: For what purpose?
+이브:
+
+Pedro: Later this can be reused by Job creators, so HR avoid doing the same work twice.
+페드로:
+
+Eve: Okay, got it, but this problem is artificial. Basically what we need is a way to colaborate between abstraction and implementation.
+이브:
+
+Pedro: Maybe, but I want to see your clojure way solution for that specific problem using bridge pattern.
+페드로:
+
+Eve: Easy. Let's use adhoc hierarchies.
+이브:
+
+Pedro: For abstractions?
+페드로:
+
+Eve: Yes, jobs hierarchy is abstraction, and people need just to enhance hierarchy.
+이브:
+
+
+[source, clojure]
+....
 ;; abstraction
 
 (derive ::clojure-job ::job)
 (derive ::java-job ::job)
 (derive ::senior-clojure-job ::clojure-job)
 (derive ::senior-java-job    ::java-job)
-Eve: HR department are like developers, they provide implementation for this abstraction.
+....
 
+Eve: HR department are like developers, they provide implementation for this abstraction.
+이브:
+
+
+[source, clojure]
+.....
 ;; implementation
 (defmulti accept :job)
 
 (defmethod accept :java [candidate]
   (and (some #{:java} (:skills candidate))
        (> (:experience candidate) 1)))
+....
+
 Eve: Later, when new jobs are created, but requirements are not yet developed and no accept method implementation for this type of job, we fallback using adhoc hierarchy.
+이브:
+
 Pedro: Hm?
+페드로:
+
 Eve: Assume someone created a new ::senior-java as a child of ::java job.
+이브:
+
 Pedro: Oh, and if HR not provided accept implementation for dispatch value ::senior-java, method with dispatch value ::java will be called, yes?
+페드로:
+
 Eve: You learning so fast.
+이브:
+
 Pedro: But is it real bridge pattern?
+페드로:
+
 Eve: There is no bridge here, but abstraction and implementation can live independently.
+이브:
 
 The End.
 
