@@ -10,7 +10,9 @@
 
 [.text-center]
 ****
-이 문서는 저자(link:http://mishadoff.com/about/[mishadoff])의 허락을 받아 link:http://mishadoff.com/blog/clojure-design-patterns[clojure design patterns]를 번역한 것이다.
+이 문서는 저자(link:http://mishadoff.com/about/[mishadoff])의 허락을 받아 link:http://mishadoff.com/blog/clojure-design-patterns[clojure design patterns]를 번역한 것입니다. +
+오탈자 및 번역 관련 문의는 아래 번역자에게 전자 메일을 보내주시기 바랍니다. +
+번역자: mailto:psk810@gmail.com[구르마], mailto:philos99@gmail.com[김영태], mailto:manmyung@gmail.com[김만명]
 ****
 
 GoF의 디자인 패턴을 클로저 관점에서 조명하기
