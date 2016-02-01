@@ -28,7 +28,7 @@ GoF의 디자인 패턴을 클로저 관점에서 조명하기
 * 에피소드 2. <<strategy, 전략(Strategy) 패턴>>
 * 에피소드 3. <<state, 상태(State) 패턴>>
 * 에피소드 4. <<visitor, 방문자(Visitor) 패턴>>
-* 에피소드 5. <<templete-method, 템플릿 메소드(Template Method) 패턴>>
+* 에피소드 5. <<template-method, 템플릿 메소드(Template Method) 패턴>>
 * 에피소드 6. <<iterator, 반복자(Iterator) 패턴>>
 * 에피소드 7. <<memento, 메멘토(Memento) 패턴>>
 * 에피소드 8. <<prototype, 프로토타입(Prototype) 패턴>>
@@ -42,7 +42,7 @@ GoF의 디자인 패턴을 클로저 관점에서 조명하기
 * 에피소드 16. <<chain-of-responsibility, 책임 연쇄(Chain of Responsibility) 패턴>>
 * 에피소드 17. <<composite, 합성(Composite) 패턴>>
 * 에피소드 18. <<factory-method, 팩토리 메소드(Factory Method) 패턴>>
-* 에피소드 19. <<abstractor-factory, 추상 팩토리(Abstract Factory) 패턴>>
+* 에피소드 19. <<abstract-factory, 추상 팩토리(Abstract Factory) 패턴>>
 * 에피소드 20. <<adapter, 어댑터(Adapter) 패턴>>
 * 에피소드 21. <<decorator, 데코레이터(Decorator) 패턴>>
 * 에피소드 22. <<proxy, 프록시(Proxy) 패턴>>
@@ -1547,7 +1547,7 @@ Eve Sure, but we can improve solution a bit using clojure watches.
 페드로: 오! 멋지네요.
 
 
-== 에피소드 11. [interpreter]]해석자(Interpreter) 패턴
+== 에피소드 11. [[interpreter]]해석자(Interpreter) 패턴
 
 [sidebar]
 ****
@@ -2964,7 +2964,7 @@ class Commando implements Knight {
 페드로: 좋아요.
 
 
-== 에피소드 21: [decorator]]데코레이터(Decorator) 패턴
+== 에피소드 21: [[decorator]]데코레이터(Decorator) 패턴
 
 [sidebar]
 ****
