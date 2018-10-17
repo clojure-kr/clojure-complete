@@ -56,6 +56,24 @@ WARNING: 위의 방식으로 pdf를 생성할 때, mathjax를 이용한 수식 �
 주의한다.
 
 
+== install asciidoctor-mathematical
+
+* 참고: https://github.com/asciidoctor/asciidoctor-mathematical
+ 
+ $ sudo apt install ruby-dev
+ $ sudo apt install bison flex libffi-dev libxml2-dev libgdk-pixbuf2.0-dev \
+                    libcairo2-dev libpango1.0-dev ttf-lyx
+
+ $ sudo add-apt-repository ppa:george-edison55/cmake-3.x
+ $ sudo apt-get update
+ $ sudo apt-get install cmake
+
+ $ sudo gem install asciidoctor-mathematical
+
+ $ asciidoctor-pdf -r asciidoctor-pdf-cjk-kai_gen_gothic -r asciidoctor-mathematical \
+                   -a pdf-style=KaiGenGothicKR sample.adoc
+
+
 == Chrome plugin asciidoctor.js 설치
 
 asciidoctor.js Chrome plugin을 설치한 후 크롬 브라우저 상에서 asciidoctor 문서를 열면,

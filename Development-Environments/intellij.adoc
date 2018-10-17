@@ -1,0 +1,78 @@
+= IntelliJ + Cursive 설치
+:source-language: clojure
+:source-highlighter: coderay
+:sectnums:
+:imagesdir: img
+:linkcss:
+:stylesdir: ../
+:stylesheet: my-asciidoctor.css
+:docinfo1:
+:toc: right
+
+
+=== IntelliJ
+
+IntelliJ에 Cursive 플러그인을 추가하면 소스 브라우징, 리팩토링, 디버깅 등을 디폴트로 이용할 수 있어 편리하다.
+
+==== IntelliJ 설치
+https://www.jetbrains.com/idea/download/[] 에서 Community Edition을 다운받아 설치.
+
+==== Cursive 플러그인 추가
+. https://cursiveclojure.com/userguide/[] 의 Manually installing Cursive 항목에서 IntelliJ 버전에 맞춘 zip파일 다운받는다. 지금은 https://cursiveclojure.com/cursive-14-0.1.50.zip[] 를 받았다. Repositories로 설치하는 방법은 이 포스트를 작성하는 시점에는 작동하지 않았다.
+
+. IntelliJ를 실행하여 Configure, Plugins를 선택. +
+image:intellij-1.png[]
+
+. Install Plugin from disk... 로 다운받은 zip 파일 선택하여 설치.
+
+==== 프로젝트 가져오기
+. 콘솔창에서 `lein new default first` 로 새 프로젝트를 만든다. IntelliJ는 프로젝트 단위로 관리되므로 클로저 파일 하나만으로는 실행이 불가능하다.
+
+. Import Project를 선택한 후, first 디렉토리의 project.clj를 선택한다. +
+image:intellij-2.png[]
+
+. 계속 Next를 눌러 Import한다. 중간에 project SDK를 선택하는 곳에서 자신의 JDK를 선택한다. 만약 컴퓨터에 JDK가 없으면 설치해야 한다. +
+image:intellij-3.png[]
+
+==== 환경 세팅
+. 오른쪽 아래 `Structural: On` 클릭하여 `Structural: Off` 로 바꾼다. On 으로 되어 있으면 소스 편집이 불편하다. +
+image:intellij-4.png[]
+
+. View에서 Toolbar와 Tool Buttons를 선택하여 모두 보이도록 한다.
+
+. Run->Edit Configurations... 선택. 왼쪽 위 + 버튼 누른다. Clojure REPL -> Local 선택한다. OK 버튼 눌러 Clojure REPL 만든다. 그러면 다음처럼 실행할 수 있는 버튼이 생긴다. +
+image:intellij-5.png[]
+
+. REPL에 단축키가 설정되어 있어야 편리하다.
+.. Setting->Appearance & Behavior->KeyMap을 연다.
+.. search box에 REPL을 쳐서 넣는다.
+.. `Load file in REPL` 에 `Alt + L` (맥은 `Command + L`) 단축키 세팅한다.
+.. `Run form before cursor in REPL` 에 `Alt + J` (맥은 `Command + J`) 단축키 세팅한다.
+.. `Run top form in REPL` 에 `Alt + K` (맥은 `Command + K`) 단축키 세팅한다. +
+image:intellij-6.png[]
+
+==== 실행
+. 벌레모양의 Debug 버튼 눌러 REPL 실행한다.
+
+. REPL 입력창에 1 치고 Enter를 눌러 REPL이 작동함을 확인한다. +
+image:intellij-7.png[]
+
+. 프로젝트 창에서 core.clj를 선택하여 연다. +
+image:intellij-8.png[]
+
+. `(ns first.core)` 뒤로 커서를 옮긴 후 `Alt + J` (맥은 `Command + J`)를 눌러 평가한다. `(defn foo ...)` 뒤로 커서를 옮긴 후 `Alt + J` (맥은 `Command + J`)를 눌러 평가한다. +
+image:intellij-9.png[]
+
+. `(foo "Cursive")`를 친 후 `Alt + J` (맥은 `Command + J`)를 눌러 평가한다. 그러면 REPL 창에 `Cursive Hello, World!`가 찍히는 것을 확인한다. +
+image:intellij-10.png[]
+
+==== 추가 환경 세팅
+필수는 아니지만 해두면 편리한 것들.
+
+. Tab키를 누를 때 indent가 자동으로 된다. 이를 위해서는 https://cursiveclojure.com/userguide/[] 의 내용대로 따라한다.
+.. Settings->Appearance & Behavior->KeyMap을 연다.
+.. search box에 tab을 쳐서 넣는다. 그러면 `Tab`과 `Emacs Tab` 옵션이 나온다.
+.. `Tab`을 더블클릭한 후 Remove Tab을 선택한다.
+.. `Emacs Tab`을 더블클릭한 후 Add Keyboard Shortcut을 선택한다.
+.. Tab키를 눌러 First Stroke에 Tab이 세팅되도록 한 후 OK를 누른다.
+.. Warning 창이 나오면 Leave를 선택한다.

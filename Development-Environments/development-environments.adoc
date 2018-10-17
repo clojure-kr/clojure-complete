@@ -2,7 +2,7 @@
 :source-language: clojure
 :source-highlighter: coderay
 :sectnums:
-:imagesdir: ../img
+:imagesdir: img
 :linkcss:
 :stylesdir: ../
 :stylesheet: my-asciidoctor.css
@@ -10,18 +10,8 @@
 :toc: right
 
 
-이 장에서는 `Windows 7` (64비트 버전)에 클로저 개발 환경을 설치하는 예를 보여준다. 다른
+이 장에서는 `Windows 10` (64비트 버전)에 클로저 개발 환경을 설치하는 예를 보여준다. 다른
 OS의 경우에는 이 장의 내용을 참고해서 약간 변용하면 설치가 가능할 것이다.
-
-[[environment-variables]]
-
-.Windows 환경 변수 설정하기
-****
-Windows에서 환경 변수를 설정할 때는 다음의 경로로 찾아 들어가, 해당 환경 변수를 설정해 주면
-된다.
-
-제어판 -> 시스템 및 보안 -> 시스템 -> 고급 시스템 설정 -> 고급 -> 환경변수
-****
 
 
 == Java JDK의 설치
@@ -30,23 +20,35 @@ Windows에서 환경 변수를 설정할 때는 다음의 경로로 찾아 들�
   Development Kit)를 설치해야 한다. 클로저는 JDK 1.6.0 이상의 버전에서 돌아가지만,
   특별한 요구 사항이 없다면 최신 버전의 JDK를 설치하도록 한다.
 
-. http://www.oracle.com/technetwork/java/javase/downloads/index.html[]를 방문해 'JDK
-  DOWNLOAD' 버튼을 클릭한 후, 자신의 OS에 맞는 최신 버전의 JDK을 내려 받는다. 여기에서는
-  `Windows 7` (64비트 버전) 상에서 JDK를 설치하는 예를 보이겠다. 따라서 Java SE Development
-  Kit 중에서 Windows x64 버전의 jdk-8u66-windows-x64.exe 파일을 다운로드 받는다.
+. http://www.oracle.com/technetwork/java/javase/downloads/index.html[]를 방문해 'Java SE
+  11 (LTS)'의 'Oracle JDK DOWNLOAD' 버튼을 클릭한 후, 자신의 OS에 맞는 최신 버전의 JDK을 내려
+  받는다. 여기에서는 `Windows` (64비트 버전) 상에서 JDK를 설치하는 예를 보이겠다. 따라서
+  Java SE Development Kit 11 중에서 Windows x64 버전의 jdk-11_windows-x64_bin.exe 파일을
+  다운로드 받는다.
 +
 CAUTION: JRE(Java Runtime Environment)가 아니라 JDK를 다운로드 받아야 한다.
 
 . 내려 받은 파일을 실행해, JDK 설치를 시작한다. 기본 설정 값대로 진행해 설치를 마친다.
 
-. 다음과 같이 실행해 메시지가 출력되면 Java SE JDK 버전 설치에 성공한 것이다.
+. Windows 'Path' 환경 변수 설정하기 [[environment-variables]]
+** 화면 좌측 최하단의 ['시작' 버튼 -- 'Windows 시스템' -- '제어판'] 을 선택한다.
+** ['시스템 및 보안' -- '시스템' -- '고급 시스템 설정' -- '고급' -- '환경변수' -- '시스템
+   변수' -- 'Path'] 항목을 클릭한다.
+** ['편집' -- '새로 만들기'] 클릭 후, 입력 상자에 `C:\Program Files\java\jdk-11\bin` 를 입력
+   후, '확인' 버튼을 누른다.
+
+. Java SDK 설치 확인
+** 화면 좌측 최하단의 ['시작' 버튼 -- 'Windows 시스템' -- '명령 프람프트'] 를 선택한다.
+** 명령창에서 다음과 같이 실행해 메시지가 출력되면, Java JDK 버전 설치에 성공한 것이다.
 +
 [listing]
 ----
 C:\> java -version
-java version "1.8.0_66"
-Java(TM) SE Runtime Environment (build 1.7.0_07-b18)
-Java HotSpot(TM) 64-Bit Server VM (build 25.66-b18, mixed mode)
+java version "11" 2018-09-25
+Java(TM) SE Runtime Environment 18.9 (build 11+28)
+Java HotSpot(TM) 64-Bit Server VM 18.9 (build 11+28, mixed mode)
+
+C:\>
 ----
 
 == wget 설치
@@ -54,152 +56,193 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.66-b18, mixed mode)
 클로저 프로젝트 관리 도구인 Leiningen이 라이브러리를 내려받을 때 wget 프로그램을 필요로
 하므로, 이 프로그램을 미리 설치해 두어야 한다.
 
-. https://eternallybored.org/misc/wget[]을 방문해, 64비트 버전인 wget-1.17-win64.zip
-  파일을 다운로드 받는다. 자신의 Windows가 32비트 버전이면 wget-1.17-win32.zip 파일을
-  다운로드 받는다.
+. https://eternallybored.org/misc/wget[]을 방문해, 최신 버전을 다운로드 받는다. 여기에서는
+  64비트 버전인 wget-1.19.4-win64.zip 파일을 다운로드 받는 것으로 한다.
 
-. 압축을 푼 후에, wget.exe 파일 을자신이 원하는 폴더로 복사한다. 여기에서는
-  `C:\util\Gnuwin32\` 폴더에 복사하는 것으로 한다.
+. 압축을 푼 후에, `wget.exe` 파일을 자신이 원하는 폴더로 복사한다. 여기에서는
+  `C:\dev\bin\` 폴더에 복사하는 것으로 한다.
 
-. 환경 변수 PATH에 wget.exe 파일이 위치한 폴더의 경로를 추가한다:
-  (<<environment-variables, Windows 환경 변수 설정하기 참고>>) +
-  [시스템 변수]에서 PATH 변수 선택 후, [편집] 누른 후에, [변수 값]에 `C:\util\Gnuwin32\bin`
-  경로를 추가한다.
+. 환경 변수 ``Path``에 `wget.exe` 파일이 위치한 폴더의 경로를 추가한다:
+  (<<environment-variables,  Windows 'Path' 환경 변수 설정하기 참고>>)
+** [시스템 변수]에서 [Path] 변수 선택 후, ['편집' -- '새로 만들기'] 클릭 후, 입력 상자에
+   `C:\dev\bin` 경로를 추가한 후, '확인' 버튼을 클릭한다.
 
+. wget 설치 확인
+** 화면 좌측 최하단의 ['시작' 버튼 -- 'Windows 시스템' -- '명령 프람프트'] 를 선택한다.
+** 명령창에서 다음과 같이 실행해 메시지가 출력되면, wget 설치에 성공한 것이다.
++
+[listing]
+----
+C:\> wget
+wget: Missing URL
+Usage: wget [OPTION]... [URL]...
+
+Try `wget --help' for more options.                                                              
+
+C:\>
+----
 
 == Leiningen 설치
 
 Leiningen(라이닝언)은 클로저 프로젝트 관리를 위한 기본 도구이다.
 
-. 다음과 같이 wget을 이용해 leiningen을 다운로드한다. 여기서는 leiningen을 C:\leiningen\
+. 다음과 같이 wget을 이용해 leiningen을 다운로드한다. 여기서는 leiningen을 `C:\dev\bin\`
   폴더 아래에 설치하는 것으로 한다.
 +
 [listing]
 ----
-C:\leiningen> wget --no-check-certificate https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein.bat
+C:\> cd dev\bin
+
+C:\dev\bin> wget --no-check-certificate https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein.bat
 ----
 
-. 환경 변수 PATH에, lein.bat을 포함하고 있는 폴더의 경로(C:\leiningen\bin)를 추가한다. +
-  [시스템 변수]에서 PATH 변수 선택 후, [편집] 누른 후에, [변수 값]에 C:\leiningen\bin 경로를
-  추가한다.
+. 환경 변수 ``LEIN_HOME`` 추가  (<<environment-variables,  Windows 'Path' 환경 변수 설정하기 참고>>)
++
+환경 변수 ``LEIN_HOME``을 새로 만들고, ``lein.bat``을 포함하고 있는 폴더의 경로를
+입력한다.
 
-. 환경 변수 LEIN_HOME을 새로 만들고, lein.bat을 포함하고 있는 폴더의 경로를 입력한다. +
-  [시스템 변수 -> 새로 만들기] 선택 후, [변수 이름] 란에 LEIN_HOME으로, [변수 값] 란에는
-  C:\leiningen\bin을 입력한다.
+* [시스템 변수 -> 새로 만들기] 선택 후, [변수 이름] 란에 LEIN_HOME으로, [변수 값] 란에는
+``C:\dev\bin``을 입력한다.
 
-. 이후 아무 폴더에나 들어가서 명령창을 연 후, 다음과 같이 입력해 leiningen 본체를 설치한다.
+. 이후 같은 명령창에서 다음과 같이 입력해 leiningen 본체를 설치하려 하면, 다음과 같은 에러가 날 것이다.
+
 +
 [listing]
 ----
-> lein self-install
+C:\dev\bin> lein self-install
+Downloading Leiningen now...
+"2"개의 인수가 있는 "DownloadFile"을(를) 호출하는 동안 예외가 발생했습니다.
+"요청이 중단되었습니다. SSL/TLS 보안 채널을  만들 수 없습니다."                                                                                         ......
 ----
 +
-위 명령이 실행된 후에, LEIN_HOME에 지정되어 있는 폴더에 self-installs 폴더가 생성되고 그 아래에 leiningen-2.5.3-SNAPSHOT-standalone.jar가 설치된 것을 확인할 수 있다.
+이 에러는 link:https://github.com/technomancy/leiningen/issues/2412[]에 이미 보고되어
+있다. lein 다음 버전에는 이 문제가 해결될 것으로 보인다.  하지만 당장은 임시방편으로
+위의 사이트에 나와 있는 대로, 다운 받은 `lein.bat` 파일의 내용 중 다음 라인을
 +
 [listing]
 ----
-C:\leiningen\bin> tree /a /f
-C:.
+powershell -Command "& {param($a,$f) $client = New-Object System.Net.WebClient;  $client.Proxy.Credentials =[System.Net.CredentialCache]::DefaultNetworkCredentials; $client.DownloadFile($a, $f)}" ""%2"" ""%1""
+----
++
+다음 라인으로 직접 대체해서 해결하도록 한다.
++
+[listing]
+----
+powershell -Command "& {param($a,$f) $client = New-Object System.Net.WebClient; [Net.ServicePointManager]::SecurityProtocol = 'tls12' ; $client.Proxy.Credentials =[System.Net.CredentialCache]::DefaultNetworkCredentials; $client.DownloadFile($a, $f)}" ""%2"" ""%1""
+----
++
+`lein.bat` 파일을 위와 같이 수정한 후, 다음 명령을 재실행해 leiningen 본체의 설치를 마친다.
++
+[listing]
+----
+C:\dev\bin> lein self-install
+----
++
+위 명령이 실행된 후에, ``LEIN_HOME``에 지정되어 있는 폴더에 `self-installs` 폴더가 생성되고 그
+아래에 ``leiningen-2.8.1-standalone.jar``가 설치된 것을 확인할 수 있다.
++
+[listing]
+----
+C:\dev\bin> tree /a /f
 |   lein.bat
+|   wget.exe
+|
 \---self-installs
-        leiningen-2.5.3-SNAPSHOT-standalone.jar
+    leiningen-2.8.1-standalone.jar                                                                                            
 ----
+
+. Leiningen 설치 확인
 +
-다음과 같이 입력해 메시지가 출력되면, Leiningen이 제대로 설지된 것이다.
+다음과 같이 실행해 메시지가 출력되면, Leiningen이 제대로 설지된 것이다.
 +
 [listing]
 ----
-> lein version
-Leiningen 2.5.3 on Java 1.8.0_66 Java HotSpot(TM) 64-bit Server VM
+C:\> lein version
+Leiningen 2.8.1 on Java 11 Java HotSpot(TM) 64-Bit Server VM  
 ----
+
+== 프로젝트 sample 만들기
+
+여기서는 ``sample``이라는 이름의 프로젝트를 만들 것이다. 이 프로젝트를 아래의 `IDE 설치`
+절에서 읽어 들여 실행해 볼 것이다.
+
+. 먼저 명령창에서 다음의 명령을 실행해 `C:\dev\projects` 폴더를 만들어 놓는다.
++
+[listing]
+----
+C:\> cd dev
+
+C:\dev> mkdir projects
+
+C:\dev> cd projects
+
+C:\dev\projects>
+----
+
+. 다음을 실행해 ``sample``이라는 이름의 프로젝트를 만든다. 그러면 `sample`
+폴더 아래에 이 프로젝트에 기본적으로 필요한 여러 개의 폴더와 파일이 만들어질 것이다.
++
+[listing]
+----
+C:\dev\projects> lein new sample
+Generating a project called sample based on the 'default' template.
+The default template is intended for library projects, not applications.
+To see other templates (app, plugin, etc), try `lein help new`. 
+
+C:\dev\projects> cd sample
+                                                                                                 C:\dev\projects\sample> dir
+
+ C:\dev\projects\sample 디렉터리
+
+2018-10-10  오후 08:12    <DIR>          .
+2018-10-10  오후 08:12    <DIR>          ..
+2018-10-10  오후 08:12               110 .gitignore
+2018-10-10  오후 08:12               134 .hgignore
+2018-10-10  오후 08:12               790 CHANGELOG.md
+2018-10-10  오후 08:12    <DIR>          doc
+2018-10-10  오후 08:12            11,433 LICENSE
+2018-10-10  오후 08:12               272 project.clj
+2018-10-10  오후 08:12               246 README.md
+2018-10-10  오후 08:12    <DIR>          resources
+2018-10-10  오후 08:12    <DIR>          src
+2018-10-10  오후 08:12    <DIR>          test
+               6개 파일              12,985 바이트
+               6개 디렉터리  11,568,414,720 바이트 남음
+----
+
+. 만들어진 파일들 중에서 `project.clj` 파일을 편집기로 열어, 다음과 같이 수정한다.
++
+[source]
+.project.clj
+....
+(defproject sample "0.1.0-SNAPSHOT"
+  :dependencies [[org.clojure/clojure "1.10.0-RC1"]])
+....
+
+. 다음과 같이 실행해, 의존 라이브러리들을 미리 다운로드 받아 놓는다.
++
+[listing]
+----
+C:\dev\projects\sample> lein deps
+Retrieving org/clojure/clojure/1.10.0-beta2/clojure-1.10.0-RC1.pom from central
+Retrieving org/clojure/spec.alpha/0.2.176/spec.alpha-0.2.176.pom from central
+Retrieving org/clojure/pom.contrib/0.2.2/pom.contrib-0.2.2.pom from central
+......
+
+C:\dev\projects\sample>
+----
+
 
 == IDE 설치
 
-클로저 프로그래밍을 위한 IDE(Intergrated Development Environment)는 여러가지가 있는데,
-초보자가 사용하기 편한 순서로 소개하겠다.
+클로저 프로그래밍을 위한 IDE(Intergrated Development Environment)는 여러가지가 있다.
 
-=== Light Table
 
-Light Table은 클로저스크립트로 작성된 에디터로, 비교적 최근에 등장해 에디터로서의 성숙도는
-부족하지만, 클로저 프로그래밍을 쉽게 해줄 수 있는 환경을 제공한다.
+* link:vscode.adoc[Visual Studio Code + Calva 설치]
+// * link:intellij.adoc[IntelliJ + Cursive 설치]
+// * link:lighttable.adoc[LightTable 설치]
+// * link:atom.adoc[Atom + proto-repl 설치]
 
-. http://lighttable.com[] 사이트를 방문해 자신의 OS에 맞는 Light Table을 다운로드
-  받는다. 여기서는 lighttable-0.8.0-alpha-windows.zip 파일을 다운로드 받는 것으로 한다.
 
-. 다운로드 받은 파일의 압축을 푼 후에, 자신이 원하는 폴더로 통쨰로 복사한다.
 
-. 폴더 내의 LightTable.exe 파일을 더블클릭하면 Light Table이 실행된다.
-
-. Light Table이 실행된 후, [View - Commands] 메뉴를 선택한 후, 입력창에 `instarepl`을
-  입력한다. 이떄 아래에 나열된 명령어 목록들 중에서, `Instarepl: Open a clojure
-  instarepl`을 선택하면 REPL이 뜬다.
-
-. 다음과 같은 화면이 뜨면 instarepl이 정상적으로 실행된 것이다. +
-image:light-table.png[]
-
-=== IntelliJ
-
-IntelliJ에 Cursive 플러그인을 추가하면 소스 브라우징, 리팩토링, 디버깅 등을 디폴트로 이용할 수 있어 편리하다.
-
-==== IntelliJ 설치
-https://www.jetbrains.com/idea/download/[] 에서 Community Edition을 다운받아 설치.
-
-==== Cursive 플러그인 추가
-. https://cursiveclojure.com/userguide/[] 의 Manually installing Cursive 항목에서 IntelliJ 버전에 맞춘 zip파일 다운받는다. 지금은 https://cursiveclojure.com/cursive-14-0.1.50.zip[] 를 받았다. Repositories로 설치하는 방법은 이 포스트를 작성하는 시점에는 작동하지 않았다.
-
-. IntelliJ를 실행하여 Configure, Plugins를 선택. +
-image:intellij-1.png[]
-
-. Install Plugin from disk... 로 다운받은 zip 파일 선택하여 설치.
-
-==== 프로젝트 가져오기
-. 콘솔창에서 `lein new default first` 로 새 프로젝트를 만든다. IntelliJ는 프로젝트 단위로 관리되므로 클로저 파일 하나만으로는 실행이 불가능하다.
-
-. Import Project를 선택한 후, first 디렉토리의 project.clj를 선택한다. +
-image:intellij-2.png[]
-
-. 계속 Next를 눌러 Import한다. 중간에 project SDK를 선택하는 곳에서 자신의 JDK를 선택한다. 만약 컴퓨터에 JDK가 없으면 설치해야 한다. +
-image:intellij-3.png[]
-
-==== 환경 세팅
-. 오른쪽 아래 `Structural: On` 클릭하여 `Structural: Off` 로 바꾼다. On 으로 되어 있으면 소스 편집이 불편하다. +
-image:intellij-4.png[]
-
-. View에서 Toolbar와 Tool Buttons를 선택하여 모두 보이도록 한다.
-
-. Run->Edit Configurations... 선택. 왼쪽 위 + 버튼 누른다. Clojure REPL -> Local 선택한다. OK 버튼 눌러 Clojure REPL 만든다. 그러면 다음처럼 실행할 수 있는 버튼이 생긴다. +
-image:intellij-5.png[]
-
-. REPL에 단축키가 설정되어 있어야 편리하다.
-.. Setting->Appearance & Behavior->KeyMap을 연다.
-.. search box에 REPL을 쳐서 넣는다.
-.. `Load file in REPL` 에 `Alt + L` (맥은 `Command + L`) 단축키 세팅한다.
-.. `Run form before cursor in REPL` 에 `Alt + J` (맥은 `Command + J`) 단축키 세팅한다.
-.. `Run top form in REPL` 에 `Alt + K` (맥은 `Command + K`) 단축키 세팅한다. +
-image:intellij-6.png[]
-
-==== 실행
-. 벌레모양의 Debug 버튼 눌러 REPL 실행한다.
-
-. REPL 입력창에 1 치고 Enter를 눌러 REPL이 작동함을 확인한다. +
-image:intellij-7.png[]
-
-. 프로젝트 창에서 core.clj를 선택하여 연다. +
-image:intellij-8.png[]
-
-. `(ns first.core)` 뒤로 커서를 옮긴 후 `Alt + J` (맥은 `Command + J`)를 눌러 평가한다. `(defn foo ...)` 뒤로 커서를 옮긴 후 `Alt + J` (맥은 `Command + J`)를 눌러 평가한다. +
-image:intellij-9.png[]
-
-. `(foo "Cursive")`를 친 후 `Alt + J` (맥은 `Command + J`)를 눌러 평가한다. 그러면 REPL 창에 `Cursive Hello, World!`가 찍히는 것을 확인한다. +
-image:intellij-10.png[]
-
-==== 추가 환경 세팅
-필수는 아니지만 해두면 편리한 것들.
-
-. Tab키를 누를 때 indent가 자동으로 된다. 이를 위해서는 https://cursiveclojure.com/userguide/[] 의 내용대로 따라한다.
-.. Settings->Appearance & Behavior->KeyMap을 연다.
-.. search box에 tab을 쳐서 넣는다. 그러면 `Tab`과 `Emacs Tab` 옵션이 나온다.
-.. `Tab`을 더블클릭한 후 Remove Tab을 선택한다.
-.. `Emacs Tab`을 더블클릭한 후 Add Keyboard Shortcut을 선택한다.
-.. Tab키를 눌러 First Stroke에 Tab이 세팅되도록 한 후 OK를 누른다.
-.. Warning 창이 나오면 Leave를 선택한다.
+ 

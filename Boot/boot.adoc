@@ -184,6 +184,15 @@ BOOT_CLOJURE_VERSION=1.7.0
 BOOT_VERSION=2.5.2
 ----
 
+== build.properties 파일 갱신하기
+
+[listing]
+----
+$ boot -V > build.properties
+----
+
+
+
 == task 설명 보기
 
 해당 작업에 대한 옵션이나 설명을 보려면 ``boot <task-name> -h``를 실행한다.
@@ -356,3 +365,5 @@ $ boot show -p
 == boot watch
 
 watch는 source-paths에 지정된 파일들이 변경되는 것을 감시한다.
+
+
