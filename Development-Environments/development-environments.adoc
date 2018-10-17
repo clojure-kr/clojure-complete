@@ -14,7 +14,7 @@
 OS의 경우에는 이 장의 내용을 참고해서 약간 변용하면 설치가 가능할 것이다.
 
 
-== Java JDK의 설치
+== Java JDK 설치
 
 . 클로저는 JVM(Java Virtual Machine) 상에서 실행되는 언어이므로, 먼저 JDK(Java
   Development Kit)를 설치해야 한다. 클로저는 JDK 1.6.0 이상의 버전에서 돌아가지만,
@@ -101,7 +101,7 @@ C:\dev\bin> wget --no-check-certificate https://raw.githubusercontent.com/techno
 환경 변수 ``LEIN_HOME``을 새로 만들고, ``lein.bat``을 포함하고 있는 폴더의 경로를
 입력한다.
 
-* [시스템 변수 -> 새로 만들기] 선택 후, [변수 이름] 란에 LEIN_HOME으로, [변수 값] 란에는
+* [시스템 변수 -- 새로 만들기] 선택 후, [변수 이름] 란에 LEIN_HOME으로, [변수 값] 란에는
 ``C:\dev\bin``을 입력한다.
 
 . 이후 같은 명령창에서 다음과 같이 입력해 leiningen 본체를 설치하려 하면, 다음과 같은 에러가 날 것이다.
@@ -161,7 +161,7 @@ C:\> lein version
 Leiningen 2.8.1 on Java 11 Java HotSpot(TM) 64-Bit Server VM  
 ----
 
-== 프로젝트 sample 만들기
+== 프로젝트 만들기
 
 여기서는 ``sample``이라는 이름의 프로젝트를 만들 것이다. 이 프로젝트를 아래의 `IDE 설치`
 절에서 읽어 들여 실행해 볼 것이다.
@@ -190,7 +190,8 @@ The default template is intended for library projects, not applications.
 To see other templates (app, plugin, etc), try `lein help new`. 
 
 C:\dev\projects> cd sample
-                                                                                                 C:\dev\projects\sample> dir
+
+C:\dev\projects\sample> dir
 
  C:\dev\projects\sample 디렉터리
 
