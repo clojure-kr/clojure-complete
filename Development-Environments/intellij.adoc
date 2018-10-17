@@ -76,7 +76,7 @@ image:intellij-repl-register-1.png[]
 image:intellij-repl-register-2.png[]
 
 
-== REPL 실행 예
+== Cursive REPL 실행 예
 
 === REPL 구동하기
 
