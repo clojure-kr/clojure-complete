@@ -14,17 +14,17 @@
 Light Table은 클로저스크립트로 작성된 에디터로, 비교적 최근에 등장해 에디터로서의 성숙도는
 부족하지만, 클로저 프로그래밍을 쉽게 해줄 수 있는 환경을 제공한다.
 
-. http://lighttable.com[] 사이트를 방문해 자신의 OS에 맞는 Light Table을 다운로드
-  받는다. 여기서는 lighttable-0.8.0-alpha-windows.zip 파일을 다운로드 받는 것으로 한다.
+* http://lighttable.com[] 사이트를 방문해 자신의 OS에 맞는 Light Table을 다운로드
+  받는다. 여기서는 `lighttable-0.8.1-windows.zip` 파일을 다운로드 받는 것으로 한다.
 
-. 다운로드 받은 파일의 압축을 푼 후에, 자신이 원하는 폴더로 통쨰로 복사한다.
+* 다운로드 받은 파일의 압축을 푼 후에, 자신이 원하는 폴더로 통째로 복사한다.
 
-. 폴더 내의 LightTable.exe 파일을 더블클릭하면 Light Table이 실행된다.
+* 폴더 내의 LightTable.exe 파일을 더블클릭하면 Light Table이 실행된다.
 
-. Light Table이 실행된 후, [View - Commands] 메뉴를 선택한 후, 입력창에 `instarepl`을
-  입력한다. 이떄 아래에 나열된 명령어 목록들 중에서, `Instarepl: Open a clojure
-  instarepl`을 선택하면 REPL이 뜬다.
+* Light Table이 실행된 후, [View - Commands] 메뉴를 선택한 후, 입력창에 ``instarepl``을
+  입력한다. 이떄 아래에 나열된 명령어 목록들 중에서, ``Instarepl: Open a clojure
+  instarepl``을 선택하면 REPL이 뜬다.
 
-. 다음과 같은 화면이 뜨면 instarepl이 정상적으로 실행된 것이다.
+* 다음과 같은 화면이 뜨면 instarepl이 정상적으로 실행된 것이다.
 +
-image:light-table.png[]
+image:lighttable.png[]

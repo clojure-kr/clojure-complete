@@ -31,11 +31,14 @@ image:vscode-calva-install.png[]
 
 == Calva REPL 실행 예
 
+* Calva에 대한 자세한 내용은 link:https://github.com/BetterThanTomorrow/calva[]를 참조하기
+  바란다.
+
+
 === 프로젝트 열기
 
 * VS Code를 실행한 후, `[File -- Open Folder...]` 메뉴를 선택해, 위에서 만든
-  `C:\dev\projects\sample` 폴더를 열고, `src\sample\core.clj` 파일을 아래와 같이 띄워
-  준다. 
+  `C:\dev\projects\sample` 폴더를 열고, `src\sample\core.clj` 파일을 아래와 같이 연다. 
 +
 image:vscode-start.png[]
 
@@ -91,7 +94,7 @@ image:vscode-repl-eval-1.png[]
 === 편집창에서 코드 실행하기
 
 * `core.clj` 편집창에 커서를 위치시킨 후, 아래와 같이 `(+ 10 20)` 코드를 입력해 보자. 닫는
-  괄호 뒤에 커서를 위치 시킨 후, `Ctrl-Alt-v e` 키를 누르면, 그 실행 결과가 `OUTPUT` 탬에
+  괄호 뒤에 커서를 위치 시킨 후, `Ctrl-Alt-v e` 키를 누르면, 그 실행 결과가 `OUTPUT` 탭에
   다음과 같이 표시된다
 +
 image:vscode-repl-eval-2.png[]

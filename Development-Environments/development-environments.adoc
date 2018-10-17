@@ -241,8 +241,8 @@ C:\dev\projects\sample>
 
 * link:vscode.adoc[Visual Studio Code + Calva 설치]
 // * link:intellij.adoc[IntelliJ + Cursive 설치]
-// * link:lighttable.adoc[LightTable 설치]
 // * link:atom.adoc[Atom + proto-repl 설치]
+// * link:lighttable.adoc[LightTable 설치]
 
 
 
