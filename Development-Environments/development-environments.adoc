@@ -148,7 +148,7 @@ C:\dev\bin> tree /a /f
 |   wget.exe
 |
 \---self-installs
-    leiningen-2.8.1-standalone.jar                                                                                            
+    leiningen-2.8.1-standalone.jar
 ----
 
 . Leiningen 설치 확인
@@ -161,7 +161,7 @@ C:\> lein version
 Leiningen 2.8.1 on Java 11 Java HotSpot(TM) 64-Bit Server VM  
 ----
 
-== 프로젝트 만들기
+== 예제 프로젝트 만들기
 
 여기서는 ``sample``이라는 이름의 프로젝트를 만들 것이다. 이 프로젝트를 아래의 `IDE 설치`
 절에서 읽어 들여 실행해 볼 것이다.
@@ -243,7 +243,3 @@ C:\dev\projects\sample>
 * link:intellij.adoc[IntelliJ + Cursive 설치]
 // * link:atom.adoc[Atom + proto-repl 설치]
 // * link:lighttable.adoc[LightTable 설치]
-
-
-
- 
