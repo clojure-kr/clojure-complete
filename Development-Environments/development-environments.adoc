@@ -243,4 +243,4 @@ C:\dev\projects\sample>
 
 * link:vscode.adoc[Visual Studio Code + Calva 설치]
 * link:intellij.adoc[IntelliJ + Cursive 설치]
-* link:emacs.adoc[Emacs + Cider 설치]
+// * link:emacs.adoc[Emacs + Cider 설치]

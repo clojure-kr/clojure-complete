@@ -1,0 +1,10 @@
+= Emacs + Cider 설치
+:source-language: clojure
+:source-highlighter: coderay
+:sectnums:
+:imagesdir: img
+:linkcss:
+:stylesdir: ../
+:stylesheet: my-asciidoctor.css
+:docinfo1:
+:toc: right
