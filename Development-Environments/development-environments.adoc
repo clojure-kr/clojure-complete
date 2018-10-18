@@ -236,10 +236,11 @@ C:\dev\projects\sample>
 
 == IDE 설치
 
-클로저 프로그래밍을 위한 IDE(Intergrated Development Environment)는 여러가지가 있다.
+클로저 프로그래밍을 위한 IDE(Intergrated Development Environment)는 여러가지가
+있다. 다음에는 설치와 사용이 수월한 것에서 어려운 순서대로 나열하였다. 자신에게 익숙하고
+편리한 IDE를 골라 설치하도록 한다.
 
 
 * link:vscode.adoc[Visual Studio Code + Calva 설치]
 * link:intellij.adoc[IntelliJ + Cursive 설치]
-// * link:atom.adoc[Atom + proto-repl 설치]
-// * link:lighttable.adoc[LightTable 설치]
+* link:emacs.adoc[Emacs + Cider 설치]

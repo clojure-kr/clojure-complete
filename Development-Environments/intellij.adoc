@@ -68,10 +68,8 @@ Cursive에서는 REPL을 따로 등록해 주어야 한다.
 +
 image:intellij-repl-register-1.png[]
 
-* `[Run -- Edit configurations...]` 메뉴를 선택하면 다음과 같은 화면이 나온다. 
-
-* `Name` 란에 자신이 원하는 REPL 이름을 입력한 후 `OK` 버튼을 누른다. 여기서는 편의상
-  ``Clojure REPL``이라고 명명하기로 한다.
+* 다음과 같은 화면이 나오면, `Name` 란에 자신이 원하는 REPL 이름을 입력한 후 `OK` 버튼을
+  누른다. 여기서는 편의상 ``My REPL``로 명명하기로 한다.
 +
 image:intellij-repl-register-2.png[]
 
@@ -88,22 +86,21 @@ image:intellij-repl-register-2.png[]
 image:intellij-repl-run.png[]
 
 
+=== namespace 변경하기
+
+* `core.clj` 편집창에 커서를 위치 시킨 후, `Alt-Shift-r` 키를 눌러 주면 REPL내의
+  namespace를 변경할 수 있다. REPL 창에 `(in-ns 'sample.core)` 코드가 실행된 결과, 우측
+  상단에 ``Local sample.core``가 표시되어 namespace가 변경되었다는 사실을 확인할 수 있다.
++
+image:intellij-ns-change.png[]
+
+
 === 파일 전체 평가하기
 
 * `core.clj` 편집창에 커서를 위치 시킨 후, `Alt-Shift-l` 키를 눌러 주면, `core.clj`
   파일 전체가 평가된다. 그 사실이 `REPL` 창에 표시되어 있다.
 +
 image:intellij-ns-eval.png[]
-
-
-=== namespace 변경하기
-
-* `core.clj` 편집창에 커서를 위치 시킨 후, `Alt-Shift-r n` 키를 눌러 주면 REPL내의
-  namespace를 변경할 수 있다. 우측의 REPL 창에 namespace 변경이 명시적으로 표시되어 있지는
-  않지만, `(in-ns 'sample.core)` 코드가 실행되어 namespace가 변경되었다는 사실을
-  간접적으로 확인할 수 있다.
-+
-image:intellij-ns-change.png[]
 
 
 === REPL 창에서 코드 실행하기

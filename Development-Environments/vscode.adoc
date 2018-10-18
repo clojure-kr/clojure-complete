@@ -67,14 +67,6 @@ NOTE: 이렇게 최초에 한 번 연결시켜 주면, 추후에 vscode를 재�
 image:vscode-repl-connect.png[]
 
 
-=== 파일 전체 평가하기
-
-* `core.clj` 편집창에 커서를 위치 시킨 후, `Ctrl-Alt-v <Enter>` 키를 눌러 주면, `core.clj`
-  파일 전체가 평가된다. 그 사실이 `OUTPUT` 탭에 표시되어 있다.
-+
-image:vscode-file-eval.png[]
-
-
 === namespace 변경하기
 
 * `core.clj` 편집창에 커서를 위치 시킨 후, `Ctrl-Alt-v n` 키를 눌러 주면 `TERMINAL` 탭의
@@ -83,12 +75,20 @@ image:vscode-file-eval.png[]
 image:vscode-repl-namespace.png[]
 
 
+=== 파일 전체 평가하기
+
+* `core.clj` 편집창에 커서를 위치 시킨 후, `Ctrl-Alt-v <Enter>` 키를 눌러 주면, `core.clj`
+  파일 전체가 평가된다. 그 사실이 `OUTPUT` 탭에 표시되어 있다.
++
+image:vscode-file-eval.png[]
+
+
 === 터미널 창에서 코드 실행하기
 
-* 이제 `TERMINAL` 탭에서 `(foo "Clojure")` 코드를 입력한 후 다음과 같이 실행하면 그 결과가
-  `OUTPUT` 탭에 보일 것이다.
+* 이제 `TERMINAL` 탭에서 `(foo "Clojure")` 코드를 입력한 후 `<Enter>` 키를 입력해 다음과
+  같이 실행하면 그 결과가 `TERMINAL` 탭에 보일 것이다.
 +
-image:vscode-repl-eval-1.png[]
+image:vscode-eval-in-repl.png[]
 
 
 === 편집창에서 코드 실행하기
@@ -97,4 +97,4 @@ image:vscode-repl-eval-1.png[]
   괄호 뒤에 커서를 위치 시킨 후, `Ctrl-Alt-v e` 키를 누르면, 그 실행 결과가 `OUTPUT` 탭에
   다음과 같이 표시된다
 +
-image:vscode-repl-eval-2.png[]
+image:vscode-eval-in-edit.png[]
