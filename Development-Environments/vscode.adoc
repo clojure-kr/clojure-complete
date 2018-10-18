@@ -67,7 +67,7 @@ NOTE: 이렇게 최초에 한 번 연결시켜 주면, 추후에 vscode를 재�
 image:vscode-repl-connect.png[]
 
 
-=== namespace 변경하기
+=== namespace 전환하기
 
 * `core.clj` 편집창에 커서를 위치 시킨 후, `Ctrl-Alt-v n` 키를 눌러 주면 `TERMINAL` 탭의
   namespace가 pass:q[`user=>`]에서 pass:q[`sample.core=>`]로 바뀐다.
