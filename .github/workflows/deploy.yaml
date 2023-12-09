@@ -3,7 +3,7 @@ name: Build and deploy GH Pages
 on: 
  push:
   branches:
-   - change-distribution-method
+   - deploy
 
 jobs:
   build:
