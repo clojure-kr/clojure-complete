@@ -21,8 +21,6 @@ jobs:
           TARGET_REPOSITORY=${GITHUB_REPOSITORY}
           remote_repo="https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@${GITHUB_HOSTNAME}/${TARGET_REPOSITORY}.git"
           remote_branch="gh-pages"
-          echo "remote_repo: ${remote_repo}"
-          echo "remote_branch: ${remote_branch}"
 
           sudo apt-get install -y asciidoctor
           ./to-html.sh
