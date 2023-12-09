@@ -16,4 +16,4 @@ prj/.nrepl-port
 .#*
 
 ## asciidoctor
-/public/     # asciidoctor output directory
+/public/
