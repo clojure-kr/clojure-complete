@@ -26,18 +26,18 @@ commit은 수시로 이루어지지만, 버전 번호는 큰 변화가 있다고
 .Table of Contents
 [sidebar]
 ****
-. <<Preface/preface.html#, Preface>>
+. <<Preface/preface#, Preface>>
 . 왜 클로저인가?
-. <<Development-Environments/development-environments.html#, 개발 환경>>
-. <<Start/start.html#, 클로저 시작하기>>
-. <<Simple-Values/simple-values.html#, 단순값>>
-. <<Flow-Controls/flow-controls.html#, 제어 구조>>
-. <<Collections-and-Sequences/collections-and-sequences.html#, 컬렉션과 시퀀스>>
+. <<Development-Environments/development-environments#, 개발 환경>>
+. <<Start/start#, 클로저 시작하기>>
+. <<Simple-Values/simple-values#, 단순값>>
+. <<Flow-Controls/flow-controls#, 제어 구조>>
+. <<Collections-and-Sequences/collections-and-sequences#, 컬렉션과 시퀀스>>
 . 함수형 프로그래밍
-. <<Destructuring/destructuring.html#, 구조분해(Destructuring)>>
+. <<Destructuring/destructuring#, 구조분해(Destructuring)>>
 . 변환자(Transducers)
-. <<Java-Interoperability/java-interoperability.html#, 자바 코드 가져다쓰기(Java Interoperability)>>
-. <<Namespaces-and-Libraries/namespaces-and-libraries.html#, 이름공간과 라이브러리>>
+. <<Java-Interoperability/java-interoperability#, 자바 코드 가져다쓰기(Java Interoperability)>>
+. <<Namespaces-and-Libraries/namespaces-and-libraries#, 이름공간과 라이브러리>>
 . 상태 관리와 동시성
 . core.async
 . 멀티메소드와 상속
