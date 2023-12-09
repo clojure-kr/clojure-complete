@@ -48,14 +48,14 @@ commit은 수시로 이루어지지만, 버전 번호는 큰 변화가 있다고
 . 입출력: 파일과 디렉토리
 . 프로젝트 관리
 . 예외 처리
-. <<Testing/testing.html#, 테스팅>>
+. <<Testing/testing#, 테스팅>>
 . 타입 검사
 . 데이타베이스 프로그래밍
 . 통신 및 웹 프로그래밍
 . 파서
 . 문자 인코딩
 . GUI 프로그래밍
-. <<Boot/boot.html#, Boot 사용하기>>
+. <<Boot/boot#, Boot 사용하기>>
 ****
 
 //. <<Why-Clojure/why-clojure.html#, Why Clojure?>>
