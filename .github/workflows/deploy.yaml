@@ -1,0 +1,39 @@
+name: Build and deploy GH Pages
+
+on: 
+ push:
+  branches:
+   - deploy
+
+jobs:
+  build:
+    name: Publish site
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: build_and_deploy
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          GITHUB_HOSTNAME="github.com"
+          TARGET_REPOSITORY=${GITHUB_REPOSITORY}
+          remote_repo="https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@${GITHUB_HOSTNAME}/${TARGET_REPOSITORY}.git"
+          remote_branch="gh-pages"
+
+          sudo apt-get install -y asciidoctor
+          ./to-html.sh
+          
+          echo "Pushing artifacts to ${TARGET_REPOSITORY}:$remote_branch"
+
+          cd public
+          git init
+          git config user.name "GitHub Actions"
+          git config user.email "github-actions-bot@users.noreply.${GITHUB_HOSTNAME}"
+          git add .
+
+          git commit -m "Deploy ${TARGET_REPOSITORY} to ${TARGET_REPOSITORY}:$remote_branch"
+          git push --force "${remote_repo}" master:"${remote_branch}"
+
+          echo "Deploy complete"
