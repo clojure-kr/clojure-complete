@@ -1,0 +1,66 @@
+name: Release PDF
+
+on: 
+ push:
+  tags:
+   - '*'
+
+jobs:
+  release:
+    name: Write Release Page
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Get Tagname
+        ## ref: https://github.blog/changelog/2022-10-11-github-actions-deprecating-save-state-and-set-output-commands/
+        ## echo "::set-output name={name}::{value}" (deprecated)
+        ## echo "{name}={value}" >> $GITHUB_OUTPUT  (updated)
+        id: tag_name
+        run: |
+          echo "current_version"="${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          draft: false
+          prerelease: false
+          release_name: ${{ github.ref }}
+          tag_name: ${{ github.ref }}
+          body: ""
+
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+
+  build:
+    needs: release
+    name: Build and upload pdf
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: generate pdf
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          echo "=== install dependencies"
+          sudo apt-get install -y asciidoctor
+          sudo gem install asciidoctor-pdf
+          sudo gem install coderay
+          ./to-pdf.sh
+
+      - name: Upload Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.release.outputs.upload_url }}
+          asset_path: ./clojure-complete.pdf
+          asset_name: clojure-complete.pdf
+          asset_content_type: application/octet-stream
