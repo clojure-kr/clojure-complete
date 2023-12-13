@@ -1,1 +1,2 @@
-asciidoctor-pdf -r asciidoctor-pdf-cjk-kai_gen_gothic -a pdf-style=KaiGenGothicKR -o clojure-programming.pdf -o clojure-complete.pdf clojure-complete-pdf.adoc
+# asciidoctor-pdf -r asciidoctor-pdf-cjk-kai_gen_gothic -a pdf-style=KaiGenGothicKR -o clojure-programming.pdf -o clojure-complete.pdf clojure-complete-pdf.adoc
+asciidoctor-pdf -a pdf-theme=asciidoctor-theme/notosansmono-cjk-kr/themes/default-ext-notosansmono-cjk-kr-theme.yml -a pdf-fontsdir=asciidoctor-theme/notosansmono-cjk-kr/fonts  -o clojure-programming.pdf -o clojure-complete.pdf clojure-complete-pdf.adoc
