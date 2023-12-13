@@ -1,6 +1,7 @@
 = 클로저 시작하기
 :sectnums:
 :source-language: clojure
+:source-highlighter: coderay
 :linkcss:
 :stylesdir: ../
 :stylesheet: my-asciidoctor.css

@@ -17,3 +17,8 @@ prj/.nrepl-port
 
 ## asciidoctor
 /public/
+
+## temp
+
+/.clj-kondo/
+/.lsp/
