@@ -23,7 +23,7 @@ commit은 수시로 이루어지지만, 버전 번호는 큰 변화가 있다고
 
 github가 asciidoc 형식의 문서 내용 중 일부를 html 형식으로 제대로 변환하지 못하는 문제가
 발견되었습니다. 따라서 앞으로 이곳은 문서를 보관하는 용도로만 사용하고, 실제 이 책의
-내용을 열람하실 떄에는 http://clojure.or.kr/books/clojure-complete[]에서 보시기를 권합니다.
+내용을 열람하실 떄에는 https://clojure-kr.github.io/clojure-complete/[]에서 보시기를 권합니다.
 
 
 === Table of Contents
