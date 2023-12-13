@@ -10,9 +10,7 @@
 :toclevels: 1
 
 [colophon]
-== Colophon
-
-=== Copyright
+== Copyright
 
 이 책의 저작권은 https://creativecommons.org/licenses/by-nc-sa/4.0/[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)]을 따른다.
 
@@ -23,7 +21,7 @@
 * 2차 저작물의 경우 위와 동일한 저작권을 사용해야 한다.
 
 
-=== Contributing
+== Contributing
 
 이 책의 집필에 함께 참여하고자 하는 분들을 환영합니다. 참여를 원하시는 분은
 https://github.com/[github]에 먼저 사용자 계정을 만드신 후, 이 repository를 자신의
@@ -40,7 +38,7 @@ http://asciidoctor.org/docs/user-manual/[Asciidoctor User Manual]에 자세히 �
 있음을 미리 밝힙니다.
 
 
-=== Contributors
+== Contributors
 
 * 김영태 (philos99@gmail.com) Main editor
 * 박상규 (psk810@gmail.com)
