@@ -23,6 +23,7 @@ jobs:
           remote_branch="gh-pages"
 
           sudo apt-get install -y asciidoctor
+          sudo gem install coderay
           ./to-html.sh
           
           echo "Pushing artifacts to ${TARGET_REPOSITORY}:$remote_branch"
