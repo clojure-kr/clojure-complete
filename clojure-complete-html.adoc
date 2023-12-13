@@ -100,7 +100,7 @@ request가 받아들여지고, 문서의 집필에 기여하신 분의 이름이
 이후부터 자유로운 commit이 가능해집니다.
 
 이 책의 문서 형식은 asciidoc이고, http://asciidoctor.org/[asciidoctor]를 이용해
-관리됩니다. 문서 관리에 필요한 asciidoctor 프로그램 설치 정보는 link:guide[] 디렉토리
+관리됩니다. 문서 관리에 필요한 asciidoctor 프로그램 설치 정보는 <<guide/asciidoctor#, guide>>디렉토리
 아래에 있는 문서를 참고하시기 바라며, asciidoc 문서 작성 요령은
 http://asciidoctor.org/docs/user-manual/[Asciidoctor User Manual]에 자세히 나와 있습니다.
 
