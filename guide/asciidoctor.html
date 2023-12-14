@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.16">
+<title>asciidoctor 사용법</title>
+<link rel="stylesheet" href="../my-asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>asciidoctor 사용법</h1>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_ruby_설치">1. ruby 설치</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>asciidoctor는 루비 언어로 작성되어 있으므로, 먼저 ruby를 설치한다. 다음은 리눅스
+Ubuntu에서 설치한 예이다.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo apt-get install ruby</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_asciidoctor_설치">2. asciidoctor 설치</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>asciidoctor gem을 설치한다. 참고로, 루비에서는 라이브러리를 gem이라 부른다.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo gem install asciidoctor</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_coderay_설치">3. coderay 설치</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>syntax highlighting을 위해 coderay gem을 설치한다.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo gem install coderay</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_asciidoctor_pdf_설치">4. asciidoctor-pdf 설치</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>pdf 변환을 위해 asciidoctor-pdf gem을 설치한다.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo gem install --pre asciidoctor-pdf</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_asciidoctor_pdf_cjk_kai_gen_gothic_설치">5. asciidoctor-pdf-cjk-kai_gen_gothic 설치</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>asciidoctor-pdf만으로 pdf를 만들면 한글이 제대로 출력되지 않는다. 따라서
+asciidoctor-pdf-cjk-kai_gen_gothic gem을 추가로 설치해 주어야 한다.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo gem install asciidoctor-pdf-cjk-kai_gen_gothic</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_asciidoctor_pdf_cjk_kai_gen_gothic_install_실행">6. asciidoctor-pdf-cjk-kai_gen_gothic-install 실행</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>다음을 실행해 pdf 생성에 필요한 폰트 파일을 다운로드 받는다. 한 번만 실행해 주면 된다.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo asciidoctor-pdf-cjk-kai_gen_gothic-install</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_pdf_만들기">7. pdf 만들기</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor-pdf -r asciidoctor-pdf-cjk-kai_gen_gothic -a pdf-style=KaiGenGothicKR sample.adoc</pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+위의 방식으로 pdf를 생성할 때, mathjax를 이용한 수식 처리는 아직 제대로 되지 않는다는 점에
+주의한다.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_install_asciidoctor_mathematical">8. install asciidoctor-mathematical</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>참고: <a href="https://github.com/asciidoctor/asciidoctor-mathematical" class="bare">https://github.com/asciidoctor/asciidoctor-mathematical</a></p>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo apt install ruby-dev
+$ sudo apt install bison flex libffi-dev libxml2-dev libgdk-pixbuf2.0-dev \
+                   libcairo2-dev libpango1.0-dev ttf-lyx</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo add-apt-repository ppa:george-edison55/cmake-3.x
+$ sudo apt-get update
+$ sudo apt-get install cmake</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo gem install asciidoctor-mathematical</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor-pdf -r asciidoctor-pdf-cjk-kai_gen_gothic -r asciidoctor-mathematical \
+                  -a pdf-style=KaiGenGothicKR sample.adoc</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_chrome_plugin_asciidoctor_js_설치">9. Chrome plugin asciidoctor.js 설치</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>asciidoctor.js Chrome plugin을 설치한 후 크롬 브라우저 상에서 asciidoctor 문서를 열면,
+문서를 저장할 때마다 실시간(실제로는 2초 간격)으로 변경된 내용이 반영되어 나타나므로
+설치하는 것이 편리하다.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2023-12-14 02:45:19 UTC
+</div>
+</div>
+</body>
+</html>

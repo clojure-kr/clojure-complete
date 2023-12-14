@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.16">
+<title>IntelliJ + Cursive 설치</title>
+<link rel="stylesheet" href="../my-asciidoctor.css">
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-71804757-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</head>
+<body class="article toc2 toc-right">
+<div id="header">
+<h1>IntelliJ + Cursive 설치</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_intellij_설치">1. IntelliJ 설치</a></li>
+<li><a href="#_cursive_플러그인_추가">2. Cursive 플러그인 추가</a></li>
+<li><a href="#_project_열기">3. Project 열기</a></li>
+<li><a href="#_repl_등록하기">4. REPL 등록하기</a></li>
+<li><a href="#_cursive_repl_실행_예">5. Cursive REPL 실행 예</a>
+<ul class="sectlevel2">
+<li><a href="#_repl_구동하기">5.1. REPL 구동하기</a></li>
+<li><a href="#_namespace_전환하기">5.2. namespace 전환하기</a></li>
+<li><a href="#_파일_전체_평가하기">5.3. 파일 전체 평가하기</a></li>
+<li><a href="#_repl_창에서_코드_실행하기">5.4. REPL 창에서 코드 실행하기</a></li>
+<li><a href="#_편집창에서_코드_실행하기">5.5. 편집창에서 코드 실행하기</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>IntelliJ에 Cursive 플러그인을 추가하면 소스 브라우징, 리팩토링, 디버깅 등을 디폴트로
+이용할 수 있어 편리하다.</p>
+</li>
+<li>
+<p>Cursive plugin에 대한 자세한 설명은 <a href="https://cursive-ide.com/userguide" class="bare">https://cursive-ide.com/userguide</a> 페이지를
+참조한다.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_intellij_설치">1. IntelliJ 설치</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.jetbrains.com/idea/download/" class="bare">https://www.jetbrains.com/idea/download/</a>에서 윈도우즈 버전의 Community Edition을
+내려받아 설치한다.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cursive_플러그인_추가">2. Cursive 플러그인 추가</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>설치한 IntelliJ를 실행한다.</p>
+</li>
+<li>
+<p>다음과 같은 화면이 나오면 <code>[Configure&#8201;&#8212;&#8201;Plugins]</code>을 선택한다.</p>
+<div class="paragraph">
+<p><span class="image"><img src="img/intellij-plugins.png" alt="intellij plugins"></span></p>
+</div>
+</li>
+<li>
+<p><code>[Browse repositories&#8230;&#8203;]</code> 버튼을 선택한 후, 다음 화면에서처럼 텍스트 입력상자에
+<code>cursive</code>라고 입력한 후 <code>install</code> 버튼을 눌러 <code>Cursive plugin</code> 설치를 마친다.</p>
+<div class="paragraph">
+<p><span class="image"><img src="img/intellij-cursive-install.png" alt="intellij cursive install"></span></p>
+</div>
+</li>
+<li>
+<p>IntelliJ를 재실행한다.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_project_열기">3. Project 열기</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Intellij를 재실행해서 다음과 같은 화면이 나오면, <code>Import project</code>를 선택한다.</p>
+</li>
+<li>
+<p>그후에 앞에서 미리 만들어 두었던 <code>C:\dev\projects\sample\project.clj</code> 파일을 선택한
+후, <code>OK</code> 버튼을 눌러 진행한다.</p>
+<div class="paragraph">
+<p><span class="image"><img src="img/intellij-open-project.png" alt="intellij open project"></span></p>
+</div>
+</li>
+<li>
+<p>계속해서 <code>Next</code> 버튼을 눌러 나가다가, 다음과 같은 <code>Please select project JDK</code> 창을
+만나면 바로 아래 <code>+</code> 버튼을 눌러 준 후, <code>JDK</code>를 선택하고 <code>Next</code> 버튼을 눌러 준다.</p>
+<div class="paragraph">
+<p><span class="image"><img src="img/intellij-open-new-jdk.png" alt="intellij open new jdk"></span></p>
+</div>
+</li>
+<li>
+<p>그후에 JDK가 default로 설치된 <code>C:\Program Files\Java\JDK-11</code> 경로를 다음과 같이 선택해
+준 후, <code>OK</code> 버튼을 누른다. 이후 계속해서 <code>Next</code> 버튼을 눌러 프로젝트 열기를 마친다.</p>
+<div class="paragraph">
+<p><span class="image"><img src="img/intellij-select-jdk.png" alt="intellij select jdk"></span></p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_repl_등록하기">4. REPL 등록하기</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Cursive에서는 REPL을 따로 등록해 주어야 한다.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>[<code>Run&#8201;&#8212;&#8201;Edit configurations&#8230;&#8203;</code>] 메뉴를 선택하면 다음과 같은 화면이 나온다. 이때 [+
+-- Clojure REPL -- Local]을 선택한 후, <code>OK</code> 버튼을 눌러 준다.</p>
+<div class="paragraph">
+<p><span class="image"><img src="img/intellij-repl-register-1.png" alt="intellij repl register 1"></span></p>
+</div>
+</li>
+<li>
+<p>다음과 같은 화면이 나오면, <code>Name</code> 란에 자신이 원하는 REPL 이름을 입력한 후 <code>OK</code> 버튼을
+누른다. 여기서는 편의상 <code>My REPL</code>로 명명하기로 한다.</p>
+<div class="paragraph">
+<p><span class="image"><img src="img/intellij-repl-register-2.png" alt="intellij repl register 2"></span></p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cursive_repl_실행_예">5. Cursive REPL 실행 예</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_repl_구동하기">5.1. REPL 구동하기</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>다음 화면의 우측 상단의 <code>우측 화살표</code> 모양을 클릭하면 REPL이 구동된다.</p>
+</li>
+<li>
+<p>REPL의 구동이 끝난 후, 우측 하단의 창에 <code>(+ 2 3)</code> 코드를 입력하고 <code>Shift-&lt;Enter&gt;</code> 키를
+누르면, 그 실행 결과가 우측 중앙의 REPL 창에 나타난다.</p>
+<div class="paragraph">
+<p><span class="image"><img src="img/intellij-repl-run.png" alt="intellij repl run"></span></p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_namespace_전환하기">5.2. namespace 전환하기</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><code>core.clj</code> 편집창에 커서를 위치 시킨 후, <code>Alt-Shift-r</code> 키를 눌러 주면 REPL내의
+namespace를 변경할 수 있다. REPL 창에 <code>(in-ns 'sample.core)</code> 코드가 실행된 결과, 우측
+상단에 <code>Local sample.core</code>가 표시되어 namespace가 전환되었다는 사실을 확인할 수 있다.</p>
+<div class="paragraph">
+<p><span class="image"><img src="img/intellij-ns-change.png" alt="intellij ns change"></span></p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_파일_전체_평가하기">5.3. 파일 전체 평가하기</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><code>core.clj</code> 편집창에 커서를 위치 시킨 후, <code>Alt-Shift-l</code> 키를 눌러 주면, <code>core.clj</code>
+파일 전체가 평가된다. 그 사실이 <code>REPL</code> 창에 표시되어 있다.</p>
+<div class="paragraph">
+<p><span class="image"><img src="img/intellij-ns-eval.png" alt="intellij ns eval"></span></p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_repl_창에서_코드_실행하기">5.4. REPL 창에서 코드 실행하기</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>이제 우측 하단의 창에서 <code>(foo "Clojure")</code> 코드를 입력한 후 <code>Shift-&lt;Enter&gt;</code> 키를 누르면,
+그 결과가 우측 중앙의 REPL 창에 보인다.</p>
+<div class="paragraph">
+<p><span class="image"><img src="img/intellij-eval-in-repl.png" alt="intellij eval in repl"></span></p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_편집창에서_코드_실행하기">5.5. 편집창에서 코드 실행하기</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><code>core.clj</code> 편집창에 커서를 위치시킨 후, 아래와 같이 <code>(+ 10 20)</code> 코드를 입력해 보자. 닫는
+괄호 뒤에 커서를 위치 시킨 후, <code>Alt-Shift-p</code> 키를 누르면, 그 실행 결과가 <code>REPL</code> 창에
+다음과 같이 표시된다</p>
+<div class="paragraph">
+<p><span class="image"><img src="img/intellij-eval-in-edit.png" alt="intellij eval in edit"></span></p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2023-12-14 02:45:19 UTC
+</div>
+</div>
+</body>
+</html>

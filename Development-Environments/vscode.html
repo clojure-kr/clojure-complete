@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.16">
+<title>Visual Studio Code + Calva 설치</title>
+<link rel="stylesheet" href="../my-asciidoctor.css">
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-71804757-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</head>
+<body class="article toc2 toc-right">
+<div id="header">
+<h1>Visual Studio Code + Calva 설치</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_visual_studio_code_설치">1. Visual Studio Code 설치</a></li>
+<li><a href="#_calva_extension_설치">2. Calva extension 설치</a></li>
+<li><a href="#_calva_repl_실행_예">3. Calva REPL 실행 예</a>
+<ul class="sectlevel2">
+<li><a href="#_프로젝트_열기">3.1. 프로젝트 열기</a></li>
+<li><a href="#_repl_실행하기">3.2. REPL 실행하기</a></li>
+<li><a href="#_repl_연결하기">3.3. REPL 연결하기</a></li>
+<li><a href="#_namespace_전환하기">3.4. namespace 전환하기</a></li>
+<li><a href="#_파일_전체_평가하기">3.5. 파일 전체 평가하기</a></li>
+<li><a href="#_터미널_창에서_코드_실행하기">3.6. 터미널 창에서 코드 실행하기</a></li>
+<li><a href="#_편집창에서_코드_실행하기">3.7. 편집창에서 코드 실행하기</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_visual_studio_code_설치">1. Visual Studio Code 설치</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://code.visualstudio.com/Download" class="bare">https://code.visualstudio.com/Download</a> 페이지를 방문해 Windows용 VS Code(여기서는
+User Installer 64 bit: VSCodeUserSetup-x64-1.28.1.exe)를 내려 받는다.</p>
+</li>
+<li>
+<p>내려 받은 파일을 실행해 설치를 마친 후, VS Code를 실행한다.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_calva_extension_설치">2. Calva extension 설치</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><code>[File&#8201;&#8212;&#8201;Preferences&#8201;&#8212;&#8201;Extensions]</code> 메뉴를 선택한다.</p>
+</li>
+<li>
+<p>다음과 같이 텍스트 입력상자에 <code>calva</code>를 입력한 후 <code>install</code> 버튼을 눌러 Calva
+extension을 설치한다.</p>
+<div class="paragraph">
+<p><span class="image"><img src="img/vscode-calva-install.png" alt="vscode calva install"></span></p>
+</div>
+</li>
+<li>
+<p>설치를 마친 후, VS Code를 재실행한다.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_calva_repl_실행_예">3. Calva REPL 실행 예</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Calva에 대한 자세한 내용은 <a href="https://github.com/BetterThanTomorrow/calva" class="bare">https://github.com/BetterThanTomorrow/calva</a>를 참조하기
+바란다.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_프로젝트_열기">3.1. 프로젝트 열기</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>VS Code를 실행한 후, <code>[File&#8201;&#8212;&#8201;Open Folder&#8230;&#8203;]</code> 메뉴를 선택해, 위에서 만든
+<code>C:\dev\projects\sample</code> 폴더를 열고, <code>src\sample\core.clj</code> 파일을 아래와 같이 연다.</p>
+<div class="paragraph">
+<p><span class="image"><img src="img/vscode-start.png" alt="vscode start"></span></p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_repl_실행하기">3.2. REPL 실행하기</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><code>[Termianl&#8201;&#8212;&#8201;New Terminal]</code> 메뉴를 선택해 새 터미널 창을 연 후, 아래와 같이 <code>lein repl</code>
+명령을 실행한다.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Calva는 아직 자동으로 repl을 실행해 주지 못해서, 수동으로 이와같이 실행해 주어야
+  한다. 하지만 이렇게 최초에 한 번 실행해 주면, 추후에 vscode를 재실행해 줄 때에는 이
+  단계를 거치지 않아도 된다.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="img/vscode-repl-start.png" alt="vscode repl start"></span></p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_repl_연결하기">3.3. REPL 연결하기</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>맨 아래 상태줄에 있는 <code>nREPL</code> 부분을 클릭하면, 다음과 같이 <code>localhost:&lt;포트번호&gt;</code>
+형식으로 작은 창이 하나 뜰 것이다. 이 상태에서 <code>&lt;Enter&gt;</code> 키를 눌러주면 nREPL에
+연결된다.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+이렇게 최초에 한 번 연결시켜 주면, 추후에 vscode를 재실행할 때에는 이 단계를 거치지
+  않아도 된다.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="img/vscode-repl-connect.png" alt="vscode repl connect"></span></p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_namespace_전환하기">3.4. namespace 전환하기</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><code>core.clj</code> 편집창에 커서를 위치 시킨 후, <code>Ctrl-Alt-v n</code> 키를 눌러 주면 <code>TERMINAL</code> 탭의
+namespace가 <code>user=></code>에서 <code>sample.core=></code>로 바뀐다.</p>
+<div class="paragraph">
+<p><span class="image"><img src="img/vscode-repl-namespace.png" alt="vscode repl namespace"></span></p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_파일_전체_평가하기">3.5. 파일 전체 평가하기</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><code>core.clj</code> 편집창에 커서를 위치 시킨 후, <code>Ctrl-Alt-v &lt;Enter&gt;</code> 키를 눌러 주면, <code>core.clj</code>
+파일 전체가 평가된다. 그 사실이 <code>OUTPUT</code> 탭에 표시되어 있다.</p>
+<div class="paragraph">
+<p><span class="image"><img src="img/vscode-file-eval.png" alt="vscode file eval"></span></p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_터미널_창에서_코드_실행하기">3.6. 터미널 창에서 코드 실행하기</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>이제 <code>TERMINAL</code> 탭에서 <code>(foo "Clojure")</code> 코드를 입력한 후 <code>&lt;Enter&gt;</code> 키를 입력해 다음과
+같이 실행하면 그 결과가 <code>TERMINAL</code> 탭에 보일 것이다.</p>
+<div class="paragraph">
+<p><span class="image"><img src="img/vscode-eval-in-repl.png" alt="vscode eval in repl"></span></p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_편집창에서_코드_실행하기">3.7. 편집창에서 코드 실행하기</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><code>core.clj</code> 편집창에 커서를 위치시킨 후, 아래와 같이 <code>(+ 10 20)</code> 코드를 입력해 보자. 닫는
+괄호 뒤에 커서를 위치 시킨 후, <code>Ctrl-Alt-v e</code> 키를 누르면, 그 실행 결과가 <code>OUTPUT</code> 탭에
+다음과 같이 표시된다</p>
+<div class="paragraph">
+<p><span class="image"><img src="img/vscode-eval-in-edit.png" alt="vscode eval in edit"></span></p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2023-12-14 02:45:19 UTC
+</div>
+</div>
+</body>
+</html>

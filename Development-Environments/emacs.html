@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.16">
+<title>Emacs + Cider 설치</title>
+<link rel="stylesheet" href="../my-asciidoctor.css">
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-71804757-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</head>
+<body class="article toc2 toc-right">
+<div id="header">
+<h1>Emacs + Cider 설치</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_emacs_설치">1. Emacs 설치</a></li>
+<li><a href="#_init_el_파일_만들기">2. <code>init.el</code> 파일 만들기</a></li>
+<li><a href="#_cider_설치">3. Cider 설치</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_emacs_설치">1. Emacs 설치</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="http://ftp.gnu.org/gnu/emacs/windows" class="bare">http://ftp.gnu.org/gnu/emacs/windows</a> 페이지를 방문해, 64 비트 Windows용 최신
+emacs 버전을 내려 받는다. 여기서는 <code>emacs-26/emacs-26.1-x86_64.zip</code> 파일을 내려 받는
+것으로 한다.</p>
+</li>
+<li>
+<p>내려 받는 압축 파일을 푼 후, 자신이 원하는 폴더로 통쨰로 옮긴다. 여기서는
+<code>C:\dev\bin\emacs</code> 폴더로 옮기는 것으로 한다.</p>
+<div class="listingblock">
+<div class="content">
+<pre>C:\&gt; cd dev\bin\emacs
+
+C:\dev\bin\emacs&gt; dir
+ C 드라이브의 볼륨에는 이름이 없습니다.
+ 볼륨 일련 번호: 8059-3BAA
+
+ C:\dev\bin\emacs 디렉터리
+
+2018-10-18  오후 06:38    &lt;DIR&gt;          .
+2018-10-18  오후 06:38    &lt;DIR&gt;          ..
+2018-10-18  오후 06:37    &lt;DIR&gt;          bin
+2018-10-18  오후 06:37    &lt;DIR&gt;          etc
+2018-10-18  오후 06:37    &lt;DIR&gt;          include
+2018-10-18  오후 06:38    &lt;DIR&gt;          lib
+2018-10-18  오후 06:38    &lt;DIR&gt;          libexec
+2018-10-18  오후 06:38    &lt;DIR&gt;          share
+2018-10-18  오후 06:38    &lt;DIR&gt;          ssl
+               0개 파일                   0 바이트
+               9개 디렉터리   9,383,415,808 바이트 남음
+
+C:\dev\bin\emacs&gt;</pre>
+</div>
+</div>
+</li>
+<li>
+<p><code>bin</code> 폴더 아래에 있는 <code>runemacs.exe</code> 파일을 더블 클릭하면 emacs가 실행된다.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_init_el_파일_만들기">2. <code>init.el</code> 파일 만들기</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>emacs가 실행되면, 먼저 <code>init.el</code>이라는 파일을 읽어 들여, 실행에 필요한 초기화 작업을
+수행한다.</p>
+</li>
+<li>
+<p>이 <code>init.el</code> 파일은 일반적으로 <code>사용자\&lt;자신의 사용자 아이디&gt;\AppData\Roaming\.emacs.d\</code>
+폴더에 위치한다.</p>
+</li>
+<li>
+<p>그런데 <code>사용자\&lt;자신의 사용자 아이디&gt;</code> 폴더에 들어가 보아도 <code>AppData</code>라는 폴더는
+아래의 화면에서처럼 일반적으로 보이지 않게 설정되어 있다.</p>
+<div class="paragraph">
+<p><span class="image"><img src="img/windows-appdata-no-show.png" alt="windows appdata no show"></span></p>
+</div>
+</li>
+<li>
+<p>이 <code>AppData</code> 폴더를 보이게 하려면, '파일 탐색기&#8217;를 실행한 후, [파일&#8201;&#8212;&#8201;폴더 및 검색
+옵션 변경&#8201;&#8212;&#8201;보기&#8201;&#8212;&#8201;고급 설정&#8201;&#8212;&#8201;숨김 파일 및 폴더&#8201;&#8212;&#8201;숨김 파일, 폴더 및 드라이브 표시]
+메뉴를 선택해 주고 <code>확인</code> 버튼을 눌러 준다.</p>
+</li>
+<li>
+<p>이제 <code>사용자\&lt;자신의 사용자 아이디&gt;</code> 폴더를 다시 확인해 보면, 다음과 같이 <code>AppData</code>
+폴더가 보일 것이다.</p>
+<div class="paragraph">
+<p><span class="image"><img src="img/windows-appdata-show.png" alt="windows appdata show"></span></p>
+</div>
+</li>
+<li>
+<p><code>AppData\Roaming\.emacs.d</code> 폴더의 위치에 <code>init.el</code> 파일을 만들어 준 후, 다음의 내용을
+입력한 후 저장한다.</p>
+<div class="listingblock">
+<div class="content">
+<pre>;; Hangul
+(set-language-environment "Korean")
+(prefer-coding-system 'utf-8)
+(setq input-method-verbose-flag nil)
+
+;; melpa 관련 설정
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa-stable" . "https://stable.melpa.org/packages/") t)</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cider_설치">3. Cider 설치</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>emacs를 실행한다.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>*</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2023-12-14 02:45:19 UTC
+</div>
+</div>
+</body>
+</html>

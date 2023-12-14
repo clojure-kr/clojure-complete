@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.16">
+<title>Java and JVM Interoperability</title>
+<link rel="stylesheet" href="../my-asciidoctor.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="../coderay-asciidoctor.css">
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-71804757-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</head>
+<body class="article toc2 toc-right">
+<div id="header">
+<h1>Java and JVM Interoperability</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_자바의_클래스_메소드_필드_사용하기">1. 자바의 클래스, 메소드, 필드 사용하기</a>
+<ul class="sectlevel2">
+<li><a href="#_자바_클래스_import하기">1.1. 자바 클래스 import하기</a></li>
+<li><a href="#_인스턴스_생성_및_인스턴스_메소드_호출">1.2. 인스턴스 생성 및 인스턴스 메소드 호출</a></li>
+<li><a href="#_정적_필드_및_정적_메소드_호출">1.3. 정적 필드 및 정적 메소드 호출</a></li>
+<li><a href="#_객체의_필드_읽고_쓰기">1.4. 객체의 필드 읽고 쓰기</a></li>
+</ul>
+</li>
+<li><a href="#_유용한_interop_관련_함수들">2. 유용한 Interop 관련 함수들</a>
+<ul class="sectlevel2">
+<li><a href="#_class">2.1. <code>class</code></a></li>
+<li><a href="#_instance">2.2. <code>instance?</code></a></li>
+<li><a href="#">2.3. <code>..</code></a></li>
+<li><a href="#_doto">2.4. <code>doto</code></a></li>
+</ul>
+</li>
+<li><a href="#_exceptions_and_error_handling">3. Exceptions and Error Handling</a></li>
+<li><a href="#_type_hinting_for_performance">4. Type Hinting for Performance</a></li>
+<li><a href="#_arrays">5. Arrays</a></li>
+<li><a href="#_defining_classes_and_implementing_interfaces">6. Defining Classes and Implementing Interfaces</a>
+<ul class="sectlevel2">
+<li><a href="#_무명_클래스의_인스턴스_만들기_proxy">6.1. 무명 클래스의 인스턴스 만들기: <code>proxy</code></a></li>
+<li><a href="#_이름_있는_클래스named_classes_정의하기_gen_class">6.2. 이름 있는 클래스(Named Classes) 정의하기: <code>gen-class</code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>클로저가 다른 리습 계열 언어들(Common Lisp, Scheme, Racket, &#8230;&#8203;)에 비해 갖는 장점들 중의
+하나는 풍부한 라이브러리들을 이용할 수 있다는 것이다. 리습 계열 언어가 자체적으로는 아무리
+뛰어나다 하더라도 이용할 수 있는 라이브러리가 제한적이어서 그 활용 가능성은 현저히 떨어질
+수 밖에 없었다. 하지만 클로저의 경우에는, 자바(더 정확히는, JVM 상)의 모든 방대한
+라이브러리들을 그대로 아주 쉽게 가져다 쓸 수 있다는 점에서 다른 리습 계열 언어들과는
+차별화된다.</p>
+</div>
+<div class="paragraph">
+<p>이 장에서는 클로저에서 자바 코드를 어떻게 불러다 쓸 수 있는지 살펴본다.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_자바의_클래스_메소드_필드_사용하기">1. 자바의 클래스, 메소드, 필드 사용하기</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>클로저는 자바 코드를 쉽게 호출할 수 있는 다양한 방법을 제공하는데, 다음의 표에 간결하게
+정리했다.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 40%;">
+<col style="width: 40%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Clojure forms</th>
+<th class="tableblock halign-left valign-top">Java equivalents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> 클래스의 인스턴스 생성</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> (ClassName.)
+(ClassName. arg1 arg2 ...)</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> new ClassName()
+new ClassName(arg1, arg2, ...)</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> 객체의 인스턴스 메소드 호출</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> (.methodName object)
+(.methodName object arg1 arg2 ...)</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> object.methodName()
+object.methodName(arg1, arg2, ...)</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> 객체의 인스턴스 필드 읽기</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> (.-field object)
+(.field object)</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> object.field</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> 객체의 인스턴스 필드 쓰기</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> (set! (.-fieldName object) 5)
+(set! (.fieldName object) 5)</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> object.fieldName = 5</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> 정적 메소드 호출</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> (ClassName/staticMethod)
+(ClassName/staticMethod arg1 arg2 ...)</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> ClassName.staticMethod()
+ClassName.staticMethod(arg1, arg2, ...)</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> 정적 필드 읽기</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> ClassName/FIELD</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> ClassName.FIELD</pre></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>위의 '객체의 인스턴스 필드 읽기' 항목에서 <code>.field</code>와 <code>.-field</code>의 두 가지 형태가
+제공되는데, 가급적이면 <code>.-field</code>의 형태를 쓰기를 권한다. 그 이유는 <code>(.field object)</code>의
+호출 형태가 객체의 인스턴스 메소드 호출 형태인 <code>(.methodName object)</code>와 겉모습이
+동일해서, 실제 사용될 떄 인스턴스 필드 읽기인지 아니면 인스턴스 메소드 호출인지 구분이
+가지 않기 때문이다. <code>.-</code> 형태는 클로저스크립트에서 먼저 도입되었는데 나중에 클로저에서도
+이 표기법을 수용한 결과로 현재는 두 가지 표기법이 혼재한다.</p>
+</div>
+<div class="paragraph">
+<p>위의 여러가지 Java Interp 형태는 일종의 syntactic sugar(구문 단축형)로, 내부적으로는 모두
+클로저의 특수 형식(special form)인<code>.</code>과 <code>new</code> 두 개로 구현되어 있다. 이 구문 단축형은
+특수 형식을 이용하는 것보다 짧고 편리하므로 굳이 특수 형식을 이용할 필요는 없겠지만,
+참고로 이 두 형태를 서로 비교해 보면 아래와 같다.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 40%;">
+<col style="width: 40%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre></pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> Clojure Syntactic Sugar</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> Clojure Special Form</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> 클래스의 인스턴스 생성</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> (ClassName.)
+(ClassName. arg1 arg2 ...)</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> (new ClassName)
+(new ClassName arg1 arg2 ...)</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> 객체의 인스턴스 메소드 호출</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> (.methodName object)
+(.methodName object arg1 arg2 ...)</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> (. object methodName)
+(. object methodName arg1, arg2, ...)</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> 객체의 인스턴스 필드 읽기</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> (.-field object)
+(.field object)</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> (. object field)</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> 객체의 인스턴스 필드 쓰기</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> (set! (.-fieldName object) 5)
+(set! (.fieldName object) 5)</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> (set! (. object fieldName) 5)</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> 정적 메소드 호출</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> (ClassName/staticMethod)
+(ClassName/staticMethod arg1 arg2 ...)</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> (. ClassName staticMethod)
+(. ClassName staticMethod arg1 arg2 ...)</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> 정적 필드 읽기</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> ClassName/FIELD</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> (. ClassName FIELD)</pre></div></td>
+</tr>
+</tbody>
+</table>
+<div class="sect2">
+<h3 id="_자바_클래스_import하기">1.1. 자바 클래스 import하기</h3>
+<div class="paragraph">
+<p>자바 클래스를 사용할 때는, <code>clojure.core/import</code> 함수를 이용해 먼저 import해 주면, 짧은
+클래스 이름만을 이용해 다음과 같이 간편하게 호출할 수 있다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">import</span> java.util.Date)
+
+(Date.)   <span class="comment">;=&gt; #inst &quot;2015-12-07T08:07:00.231-00:00&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>하지만 <code>import</code> 함수를 이용하지 않고, 다음과 같이 완전한 패키지명을 붙여 호출할 수도 있다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(java.util.Date.)   <span class="comment">;=&gt; #inst &quot;2015-12-07T08:08:23.918-00:00&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>자바 클래스 import와 관련된 자세한 내용은,
+<a href="../Namespaces-and-Libraries/namespaces-and-libraries.html#_import">Namespaces and
+Libraries: import</a> 부분을 참조하기 바란다.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_인스턴스_생성_및_인스턴스_메소드_호출">1.2. 인스턴스 생성 및 인스턴스 메소드 호출</h3>
+<div class="paragraph">
+<p>자바 클래스의 인스턴스를 생성하려먼, 클래스 이름 바로 뒤에 <code>.</code>을 붙인다. 생성자의
+인수들은 그 뒤에 나열하면 된다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">import</span> 'java.net.URL)
+
+(<span class="keyword">def</span> <span class="function">cnn</span> (URL. <span class="string"><span class="delimiter">&quot;</span><span class="content">http://cnn.com</span><span class="delimiter">&quot;</span></span>))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>그리고 해당 인스턴스의 메소드를 호출하려면, 메소드 이름 바로 앞에 <code>.</code>을 붙이고, 그 뒤에
+인스턴스 객체가 온다. 호출하려는 메소드에 추가로 인수가 있는 경우에는 이 인스턴스 객체
+뒤에 차례로 나열해 준다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">.</span>getHost cnn)   <span class="comment">;=&gt; &quot;cnn.com&quot;</span>
+
+(<span class="keyword">slurp</span> cnn)
+<span class="comment">;=&gt; &quot;&lt;html lang=\&quot;en\&quot;&gt;&lt;head&gt;&lt;title&gt;CNN.com.........&quot;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_정적_필드_및_정적_메소드_호출">1.3. 정적 필드 및 정적 메소드 호출</h3>
+<div class="paragraph">
+<p>정적 필드는 클래스명 뒤에 슬래시(<code>/</code>) 기호를 붙인 후 필드명을 써 준다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">Double/MAX_VALUE   <span class="comment">;=&gt; 1.7976931348623157E308</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>정적 메소드 역시 클래스명 뒤에 슬래시 기호를 붙인 후 메소드명을 써 준다. 정적 메소드의
+인수들은 메소드명 뒤에 차례대로 나열해 준다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(Double/parseDouble <span class="string"><span class="delimiter">&quot;</span><span class="content">3.141592653589793</span><span class="delimiter">&quot;</span></span>)   <span class="comment">;=&gt; 3.141592653589793</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_객체의_필드_읽고_쓰기">1.4. 객체의 필드 읽고 쓰기</h3>
+<div class="paragraph">
+<p>자바에서 필드를 public으로 노출하는 경우는 드물고, 그 값의 변경을 허용하는 예는 더욱
+드물지만, 클로저에서는 객체의 public 필드를 읽고 쓰는 방법을 제공한다. 객체의 필드에 값을
+설정할 때는 클로저의 특수 형식(special form)인 <code>set!</code>를 이용해야 한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">import</span> 'java.awt.Point)
+
+(<span class="keyword">def</span> <span class="function">pt</span> (Point. <span class="integer">5</span> <span class="integer">10</span>))
+
+(<span class="keyword">.</span>-x pt)   <span class="comment">;=&gt; 5</span>
+
+(set! (<span class="keyword">.</span>-x pt) <span class="integer">-42</span>)
+
+(<span class="keyword">.</span>-x pt)   <span class="comment">;=&gt; -42</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>물론, 위에서 <code>.-x</code> 대신 <code>.x</code>를 써도 된다.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_유용한_interop_관련_함수들">2. 유용한 Interop 관련 함수들</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p></p>
+</div>
+<div class="sect2">
+<h3 id="_class">2.1. <code>class</code></h3>
+<div class="paragraph">
+<p><code>class</code> 함수는 인수로 주어진 객체의 class를 반환한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">class</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>)   <span class="comment">;=&gt; java.lang.String</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_instance">2.2. <code>instance?</code></h3>
+<div class="paragraph">
+<p><code>instance?</code> 함수는 두 번째 인수가 첫 번째 인수로 주어진 클래스의 인스턴스인지 여부를
+반환한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">instance?</span> String <span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>)   <span class="comment">;=&gt; true</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="">2.3. <code>..</code></h3>
+<div class="paragraph">
+<p>다음과 같은 연속 호출(chained calls) 형태의 자바 코드를, 클로저에서는 <code>..</code> 매크로를 이용해
+표현할 수 있다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">java.util.Date</span>;
+
+<span class="predefined-type">Date</span> date = <span class="keyword">new</span> <span class="predefined-type">Date</span>();
+
+date.getTime().toString();</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">import</span> 'java.util.Date)
+
+(<span class="keyword">..</span> (Date.) getTime toString)   <span class="comment">;=&gt; &quot;1449477417080&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>호출하고자 하는 메소드가 인수를 필요로 하지 않으면 괄호로 둘러 싸지 않아도 된다. 즉,
+다음의 두 코드는 같은 결과를 반환한다. 하지만, 코드의 간결성을 위해서는 괄호로 둘러싸지
+않는 것이 바람직하다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">..</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">fooBAR</span><span class="delimiter">&quot;</span></span> (toLowerCase) (contains <span class="string"><span class="delimiter">&quot;</span><span class="content">ooba</span><span class="delimiter">&quot;</span></span>))   <span class="comment">;=&gt; true</span>
+
+(<span class="keyword">..</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">fooBAR</span><span class="delimiter">&quot;</span></span> toLowerCase (contains <span class="string"><span class="delimiter">&quot;</span><span class="content">ooba</span><span class="delimiter">&quot;</span></span>))     <span class="comment">;=&gt; true</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>위의 코드는 <code>-></code> 매크로를 통해서도 표현할 수 있다. 차이점은 <code>-></code> 매크로를
+사용할 떄에는, 자바 메소드 호출시 매번 <code>.</code>을 붙여 주어야 한다는 것이다. 그래서
+<code>-></code> 매크로는 자바 메소드와 클로저 함수를 혼합해 사용해마야만 하는 경우에
+유용하다(참고로, <code>..</code> 매크로 안에서는 클로저 함수를 호출할 수 없다). 개인적인
+취향의 문제이겠지만, 본인은 자바 메소드 호출만으로 이루어진 경우에는 코드의 간결성을 위해
+<code>..</code> 매크로를, 그 이외의 경우에는 <code>-></code> 매크로를 사용한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure"><span class="comment">;; 자바 메소드만을 호출한 경우</span>
+(<span class="keyword">-&gt;</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">fooBAR</span><span class="delimiter">&quot;</span></span> <span class="keyword">.</span>toLowerCase (<span class="keyword">.</span>contains <span class="string"><span class="delimiter">&quot;</span><span class="content">ooba</span><span class="delimiter">&quot;</span></span>))     <span class="comment">;=&gt; true</span>
+
+(<span class="keyword">require</span> '[clojure.string <span class="symbol">:as</span> <span class="keyword">str</span>])
+
+<span class="comment">;; 클로저 함수와 자바 메소드를 혼합해 호출한 경우</span>
+(<span class="keyword">-&gt;</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">fooBAR</span><span class="delimiter">&quot;</span></span> str/lower-case (<span class="keyword">.</span>contains <span class="string"><span class="delimiter">&quot;</span><span class="content">ooba</span><span class="delimiter">&quot;</span></span>))   <span class="comment">;=&gt; true</span></code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_doto">2.4. <code>doto</code></h3>
+<div class="paragraph">
+<p><code>doto</code> 매크로는 자바의 '동일한' 인스턴스 객체를 대상으로 여러 번의 설정 작업을 반복적으로
+수행할 때 이용하면 편리하다.</p>
+</div>
+<div class="paragraph">
+<p>예를 들면, 다음과 같은 자바 코드가 있을 때</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">ArrayList <span class="keyword">list</span> <span class="keyword">=</span> <span class="keyword">new</span> ArrayList()<span class="comment">;</span>
+
+list.add(<span class="integer">1</span>)<span class="comment">;</span>
+list.add(<span class="integer">2</span>)<span class="comment">;</span>
+list.add(<span class="integer">3</span>)<span class="comment">;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>이것을 클로저 코드로 변환하면 다음과 같다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">import</span> 'java.util.ArrayList)
+
+(<span class="keyword">let</span> [alist (ArrayList.)]
+  (<span class="keyword">.</span>add alist <span class="integer">1</span>)
+  (<span class="keyword">.</span>add alist <span class="integer">2</span>)
+  (<span class="keyword">.</span>add alist <span class="integer">3</span>)
+  alist)
+<span class="comment">;=&gt; [1 2 3]</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>하지만 <code>doto</code> 매크로를 이용하면 다음과 같이 간결하게 표현할 수 있다. <code>doto</code>는 설정을
+마친 인스턴스 객체를 반환한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">import</span> 'java.util.ArrayList)
+
+(<span class="keyword">doto</span> (ArrayList.)
+  (<span class="keyword">.</span>add <span class="integer">1</span>)
+  (<span class="keyword">.</span>add <span class="integer">2</span>)
+  (<span class="keyword">.</span>add <span class="integer">3</span>))
+<span class="comment">;=&gt; [1 2 3]</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>예를 들어, 다음의 <code>graphics</code>가 <code>java.awt.Graphics2D</code>의 객체일 때, 다음과 같은 연속적인
+작업을 <code>doto</code> 매크로를 이용해 수월하게 처리할 수 있다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">doto</span> graphics
+  (<span class="keyword">.</span>setBackground Color/white)
+  (<span class="keyword">.</span>setColor Color/black)
+  (<span class="keyword">.</span>scale <span class="integer">2</span> <span class="integer">2</span>)
+  (<span class="keyword">.</span>clearRect <span class="integer">0</span> <span class="integer">0</span> <span class="integer">500</span> <span class="integer">500</span>)
+  (<span class="keyword">.</span>drawRect <span class="integer">100</span> <span class="integer">100</span> <span class="integer">300</span> <span class="integer">300</span>))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>   </p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_exceptions_and_error_handling">3. Exceptions and Error Handling</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>클로저의 예외 처리는 자바의 예외 처리 방식을 그대로 이용한다. <code>catch</code> 절은 여러 개 나열될
+수 있고, <code>finally</code> 절은 선택적으로 올 수 있다.</p>
+</div>
+<div class="listingblock">
+<div class="title">자바의 예외 처리</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="directive">static</span> <span class="predefined-type">Integer</span> asInt (<span class="predefined-type">String</span> s) {
+  <span class="keyword">try</span> {
+    <span class="keyword">return</span> <span class="predefined-type">Integer</span>.parseInt(s);
+  } <span class="keyword">catch</span> (<span class="exception">NumberFormatException</span> e) {
+    e.printStackTrace();
+    <span class="keyword">return</span> <span class="predefined-constant">null</span>;
+  } <span class="keyword">finally</span> {
+    <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">Attempted to parse as integer: </span><span class="delimiter">&quot;</span></span> + s);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">클로저의 예외 처리</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">as-int</span>
+  [s]
+  (<span class="keyword">try</span>
+   (Integer/parseInt s)
+   (<span class="keyword">catch</span> NumberFormatException e
+     (<span class="keyword">.</span>printStackTrace e))
+   (finally
+    (<span class="keyword">println</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">Attempted to parse as integer: </span><span class="delimiter">&quot;</span></span> s))))</code></pre>
+</div>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+자바에서는 <code>catch</code>와 <code>finally</code> 절이 <code>try</code> 절과 병렬로 배치되어 있는 반면에,
+클로저에서는 <code>catch</code>와 <code>finally</code> 절이 <code>try</code> 절의 내부에 속해 있다는 차이점에 주의하자.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>예외를 던질 때에는 자바에서와 마찬가지로 <code>throw</code>를 이용한다. 이때 <code>throw</code>의 인수는
+반드시 예외 클래스의 인스턴스이어야 한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">throw</span> (IllegalStateException. <span class="string"><span class="delimiter">&quot;</span><span class="content">I don't know what to do!</span><span class="delimiter">&quot;</span></span>))
+<span class="comment">;&gt;&gt; IllegalStateException I don't know what to do!</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>자바에서는 다음과 같이 메소드를 정의할 때, <code>throws</code> 뒤에 그 메소드가 던질 예외를 미리
+선언할 수 있는데, 이런 예외를 checked exception<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup>이라 부른다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>public static int parseInt(String s) throws NumberFormatException
+{
+   ...
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>자바에서는, 이와 같은 메소드를 '호출&#8217;하는 코드에서 <code>try/catch/finally</code> 구문을 통해 이
+예외를 반드시 명시적으로 처리해 주어야 한다. 그렇지 않으면 컴파일러시 에러가 발생한다.</p>
+</div>
+<div class="paragraph">
+<p>하지만 클로저에서는 그럴 필요가 없다. 그 이유는 checked exception을 강제하는 것은 자바
+컴파일러이지 JVM 자체의 요구 사양은 아니기 때문이다. 클로저 소스 코드는 클로저의 자체
+컴파일러가 직접 컴파일을 수행하므로 자바 컴파일러의 요구 사항을 무시할 수 있다.</p>
+</div>
+<div class="paragraph">
+<p></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_type_hinting_for_performance">4. Type Hinting for Performance</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>클로저에서는 <code>^ClassName</code> 형식으로 type hinting 정보를 줄 수 있다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">length-of</span>
+  [^String text]
+  (<span class="keyword">.</span>length text))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>위와 같이 타입 힌팅 정보를 주면 <code>^{:tag String} text</code>의 형식으로 text 인수의 metadata
+맵의 <code>:tag</code> 키에 type 정보가 들어간다.</p>
+</div>
+<div class="paragraph">
+<p>그런데 타입 힌팅 정보를 주더라도, Java Interop 호출을 하지 않으면 그 정보는 쓰이지 않고
+컴파일러에 의해 무시된다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">clj-prog.java-interop</span>)
+
+(<span class="keyword">defn</span> <span class="function">accepts-anything-hint</span>
+  [^java.util.List x]
+  x)
+
+(<span class="keyword">defn</span> <span class="function">accepts-anything-no-hint</span>
+  [x]
+  x)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>위의 두 함수를 컴파일 한 후에, 컴파일된 <code>.class</code> 파일을 다시 decompile해 보면, 다음과 같이
+그 결과에 차이가 전혀 없다는 것을 확인할 수 있다.</p>
+</div>
+<div class="listingblock">
+<div class="title">accepts_anything_hint 함수의 decompile 결과</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">clojure.lang.AFunction</span>;
+
+<span class="directive">public</span> <span class="directive">final</span> <span class="type">class</span> <span class="class">java_interop</span><span class="error">$</span>accepts_anything_hint <span class="directive">extends</span> AFunction {
+    <span class="directive">public</span> java_interop<span class="error">$</span>accepts_anything_hint() {
+    }
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="predefined-type">Object</span> invokeStatic(<span class="predefined-type">Object</span> x) {
+        <span class="predefined-type">Object</span> var10000 = x;
+        x = <span class="predefined-constant">null</span>;
+        <span class="keyword">return</span> var10000;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">Object</span> invoke(<span class="predefined-type">Object</span> var1) {
+        <span class="predefined-type">Object</span> var10000 = var1;
+        var1 = <span class="predefined-constant">null</span>;
+        <span class="keyword">return</span> invokeStatic(var10000);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">accepts_anything_no_hint 함수 decompile 결과</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">clojure.lang.AFunction</span>;
+
+<span class="directive">public</span> <span class="directive">final</span> <span class="type">class</span> <span class="class">java_interop</span><span class="error">$</span>accepts_anything_no_hint <span class="directive">extends</span> AFunction {
+    <span class="directive">public</span> java_interop<span class="error">$</span>accepts_anything_no_hint() {
+    }
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="predefined-type">Object</span> invokeStatic(<span class="predefined-type">Object</span> x) {
+        <span class="predefined-type">Object</span> var10000 = x;
+        x = <span class="predefined-constant">null</span>;
+        <span class="keyword">return</span> var10000;
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">Object</span> invoke(<span class="predefined-type">Object</span> var1) {
+        <span class="predefined-type">Object</span> var10000 = var1;
+        var1 = <span class="predefined-constant">null</span>;
+        <span class="keyword">return</span> invokeStatic(var10000);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>반면에 Java Interop 호출이 있는 경우에는, type hinting 정보가 있으면 컴파일시 그 정보가
+반영되어, 런타임시 reflection으로 인한 실행 시간 지연을 막을 수 있다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">length-of-hint</span>
+  [^String text]
+  (<span class="keyword">.</span>length text))
+
+(<span class="keyword">defn</span> <span class="function">length-of-no-hint</span>
+  [text]
+  (<span class="keyword">.</span>length text))</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">length_of_hint 함수 decompile 결과</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">clojure.lang.AFunction</span>;
+
+<span class="directive">public</span> <span class="directive">final</span> <span class="type">class</span> <span class="class">java_interop</span><span class="error">$</span>length_of_hint <span class="directive">extends</span> AFunction {
+    <span class="directive">public</span> java_interop<span class="error">$</span>length_of_hint() {
+    }
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="predefined-type">Object</span> invokeStatic(<span class="predefined-type">Object</span> text) {
+        <span class="predefined-type">Object</span> var10000 = text;
+        text = <span class="predefined-constant">null</span>;
+        <span class="keyword">return</span> <span class="predefined-type">Integer</span>.valueOf(((<span class="predefined-type">String</span>)var10000).length()); <i class="conum" data-value="1"></i><b>(1)</b>
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">Object</span> invoke(<span class="predefined-type">Object</span> var1) {
+        <span class="predefined-type">Object</span> var10000 = var1;
+        var1 = <span class="predefined-constant">null</span>;
+        <span class="keyword">return</span> invokeStatic(var10000);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>(String)</code>으로 타입 캐스팅되어 있다.</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">length_of_no_hint 함수 decompile 결과</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">clojure.lang.AFunction</span>;
+<span class="keyword">import</span> <span class="include">clojure.lang.Reflector</span>;
+
+<span class="directive">public</span> <span class="directive">final</span> <span class="type">class</span> <span class="class">java_interop</span><span class="error">$</span>length_of_no_hint <span class="directive">extends</span> AFunction {
+    <span class="directive">public</span> java_interop<span class="error">$</span>length_of_no_hint() {
+    }
+
+    <span class="directive">public</span> <span class="directive">static</span> <span class="predefined-type">Object</span> invokeStatic(<span class="predefined-type">Object</span> text) {
+        <span class="predefined-type">Object</span> var10000 = text;
+        text = <span class="predefined-constant">null</span>;
+        <span class="keyword">return</span> Reflector.invokeNoArgInstanceMember(var10000, <span class="string"><span class="delimiter">&quot;</span><span class="content">length</span><span class="delimiter">&quot;</span></span>, <span class="predefined-constant">false</span>); <i class="conum" data-value="1"></i><b>(1)</b>
+    }
+
+    <span class="directive">public</span> <span class="predefined-type">Object</span> invoke(<span class="predefined-type">Object</span> var1) {
+        <span class="predefined-type">Object</span> var10000 = var1;
+        var1 = <span class="predefined-constant">null</span>;
+        <span class="keyword">return</span> invokeStatic(var10000);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>런타임에 reflection이 행해져 실행 시간의 지연을 초래하고 있다.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>타입 힌팅 정보를 주면, 실행 속도를 향상시킬 수 있다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">capitalize</span>
+  [s]
+  (<span class="keyword">-&gt;</span> s
+      (<span class="keyword">.</span>charAt <span class="integer">0</span>)
+      Character/toUpperCase
+      (<span class="keyword">str</span> (<span class="keyword">.</span>substring s <span class="integer">1</span>))))
+
+(<span class="keyword">time</span> (<span class="keyword">doseq</span> [s (<span class="keyword">repeat</span> <span class="integer">100000</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>)]
+        (capitalize s)))
+<span class="comment">;&gt;&gt; &quot;Elapsed time: 5040.218 msecs&quot;</span>
+
+(<span class="keyword">defn</span> <span class="function">fast-capitalize</span>
+  [^String s]
+  (<span class="keyword">-&gt;</span> s
+      (<span class="keyword">.</span>charAt <span class="integer">0</span>)
+      Character/toUpperCase
+      (<span class="keyword">str</span> (<span class="keyword">.</span>substring s <span class="integer">1</span>))))
+
+(<span class="keyword">time</span> (<span class="keyword">doseq</span> [s (<span class="keyword">repeat</span> <span class="integer">100000</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">foo</span><span class="delimiter">&quot;</span></span>)]
+        (fast-capitalize s)))
+<span class="comment">;&gt;&gt; &quot;Elapsed time: 154.889 msecs&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>위의 실행 결과를 보면, 타입 힌팅 정보가 주어졌을 때 실행 시간이 단축되는 것을 확인할 수
+있다. 하지만, 실행 속도를 향상시킬 수 있다고 해서 타입 힌팅 정보를 남발하는 것은
+바람직하지 못하다. 프로파일링(profiling)을 실시해서 병목 지점을 확인한 후, 그 부분을
+최적화할 때 타입 힌팅 정보를 주는 것이 바람직하다.</p>
+</div>
+<div class="paragraph">
+<p>그런데 클로저 컴파일러가 코드의 어느 부분에서 reflection 기능을 호출하고 있는지 확인할 수
+있으면 코드의 어느 부분에 타입 힌팅 정보를 주어야 할지 판단하는 데 도움이 될 것이다. 이런
+경우에 <code>*warn-on-reflection*</code> 값을 <code>true</code>로 설정해 주면, 컴파일시 클로저 컴파일러가
+코드의 어느 부분에서 reflection 기능을 호출하고 있는지 출력해 준다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(set! <span class="predefined-constant">*warn-on-reflection*</span> <span class="predefined-constant">true</span>)
+
+(<span class="keyword">defn</span> <span class="function">capitalize</span>
+  [s]
+  (<span class="keyword">-&gt;</span> s
+      (<span class="keyword">.</span>charAt <span class="integer">0</span>)
+      Character/toUpperCase
+      (<span class="keyword">str</span> (<span class="keyword">.</span>substring s <span class="integer">1</span>))))
+<span class="comment">;&gt;&gt; Reflection warning, NO_SOURCE_PATH:27 - call to charAt can't be resolved.</span>
+<span class="comment">;&gt;&gt; Reflection warning, NO_SOURCE_PATH:29 - call to toUpperCase can't be resolved.</span>
+<span class="comment">;&gt;&gt; Reflection warning, NO_SOURCE_PATH:29 - call to substring can't be resolved.</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>project.clj 파일에서 <code>:warn-on-reflection true</code>로 설정해도 같은 결과를 얻을 수 있다.</p>
+</div>
+<div class="paragraph">
+<p>타입 힌팅 정보는 어느 식(expression)에나 붙일 수 있다. 다음과 같이 함수의 반환값에도
+표시할 수 있다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">split-name</span>
+  [user]
+  (<span class="keyword">zipmap</span> [<span class="symbol">:first</span> <span class="symbol">:last</span>]
+          (<span class="keyword">.</span>split ^String (<span class="symbol">:name</span> user) <span class="string"><span class="delimiter">&quot;</span><span class="content"> </span><span class="delimiter">&quot;</span></span>)))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>함수를 정의할 때 반환값에도 표시할 수 있다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">file-extension</span>
+  ^String [^java.io.File f]   <span class="comment">; </span><i class="conum" data-value="1"></i><b>(1)</b>
+  (<span class="keyword">-&gt;</span> (<span class="keyword">re-seq</span> <span class="regexp"><span class="delimiter">#&quot;</span><span class="content">\.</span><span class="content">(.+)</span><span class="delimiter">&quot;</span></span> (<span class="keyword">.</span>getName f))
+      <span class="keyword">first</span>
+      <span class="keyword">second</span>))
+
+(<span class="keyword">.</span>toUpperCase (file-extension (java.io.File. <span class="string"><span class="delimiter">&quot;</span><span class="content">image.png</span><span class="delimiter">&quot;</span></span>)))</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>^String</code> 부분이 함수의 반환값이 String형임을 표시한다.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>var에도 표시할 수 있다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">def</span> <span class="function">a</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">image.png</span><span class="delimiter">&quot;</span></span>)
+
+(java.io.File. a)
+<span class="comment">;&gt;&gt; Reflection warning, NO_SOURCE_PATH:1 - call to java.io.File ctor can't be resolved.</span>
+
+(<span class="keyword">def</span> ^String a <span class="string"><span class="delimiter">&quot;</span><span class="content">image.png</span><span class="delimiter">&quot;</span></span>)
+
+(java.io.File. a)
+<span class="comment">;=&gt; #&lt;File image.png&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_arrays">5. Arrays</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>클로저에서는 자바의 기본(primitive) 자료형의 배열도 직접 다룰 수 있는 방법을
+제공한다. 그래서 필요한 경우 처리 속도를 높이는 데 사용할 수 있다. 자세한 내용은
+<a href="../Numerics-and-Mathematics.html#">Numerics and Mathematics</a>에서 다룬다.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 40%;">
+<col style="width: 40%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Operation</th>
+<th class="tableblock halign-left valign-top">Clojure expression</th>
+<th class="tableblock halign-left valign-top">Java equivalent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> 컬렉션으로부터 배열 생성하기</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> (into-array ["a" "b" "c"])</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> (String[]) coll.toArray(new String[list.size()]);</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> 빈 배열 생성하기</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> (make-array Integer 10 100)</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> new Integer[10][100]</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> long형의 빈 배열 생성하기</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> (long-array 10)
+(make-array Long/TYPE 10)</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> new long[10]</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> 배열의 값 읽기</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> (aget some-array 4)</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> some_array[4]</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> 배열에 값 쓰기</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> (aset some-array 4 "foo")
+(aset ^ints int-array 4 5)</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre> some_array[4] = 5.6</pre></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_defining_classes_and_implementing_interfaces">6. Defining Classes and Implementing Interfaces</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 28.5714%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2858%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-center valign-top">proxy</th>
+<th class="tableblock halign-center valign-top">gen-class</th>
+<th class="tableblock halign-center valign-top">reify</th>
+<th class="tableblock halign-center valign-top">deftype</th>
+<th class="tableblock halign-center valign-top">defrecord</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">무명 클래스의 인스턴스 반환</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">O</p></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">O</p></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이름 있는 클래스</p></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">O</p></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">O</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">O</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">부모 클래스 확장</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">O</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">O</p></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">implicit this</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">O</p></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">새 필드 정의</p></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">O</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">O</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AOT compile</p></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">O</p></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Object.equals, Object.hashcode 및 여러가지 클로저 인터페이스 default 제공</p></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">O</p></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<div class="title">용도별 분류</div>
+<ul>
+<li>
+<p>reify, defrecord, deftype: Clojure 내부에서 사용</p>
+</li>
+<li>
+<p>proxy, gen-class: Java Interop을 위해 사용</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p> </p>
+</div>
+<div class="sect2">
+<h3 id="_무명_클래스의_인스턴스_만들기_proxy">6.1. 무명 클래스의 인스턴스 만들기: <code>proxy</code></h3>
+<div class="paragraph">
+<p><code>reify</code>와 <code>proxy</code> 둘 다 무명 클래스의 인스턴스를 생성한다. 그리고 둘 다 top level
+form으로 쓰여서는 안된다. 이 무명 클래스는 컴파일할 때 한 번만 생성되고, <code>reify</code>와
+<code>proxy</code>를 감싸고 있는 함수가 호출될 때마다 이 무명 클래스의 인스턴스가 매번 생성된다.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>reify</code>는 자바의 인터페이스나 클로저의 프로토콜을 구현(implement)하고, 자바의 클래스들
+중 오직 <code>java.lang.Object</code> 클래스만을 확장(extend)할 수 있다. 그런데 실제로
+<code>java.lang.Object</code> 클래스를 확장하는 일은 거의 없으므로, 자바의 인터페이스나 클로저의
+프로토콜을 구현(implement)할 때 주로 사용된다고 보면 된다.</p>
+</li>
+<li>
+<p><code>proxy</code>는 <code>reify</code>가 할 수 있는 일에 더해, 모든 자바의 클래스를 확장할 수
+있다. 따라서 상위 클래스의 메소드를 재정의(overriding)할 필요가 있을 때 주로
+사용된다. 하지만 상위 클래스에는 없는 새로운 메소드를 정의할 수는 없다. 이 일을
+하려면 <code>gen-class</code>를 사용해야 한다.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+상위 클래스를 subclassing할 일이 없으면, <code>reify</code>를 사용하는 것이 좋다.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">proxy 형식</div>
+<div class="content">
+<pre>(proxy [super-class? interface*] [super-class-constructor-argument*]
+  fun*)
+
+super-class := 상속할 상위 클래스를 지정하며, 맨 처음에 와야 한다. 상위 클래스가
+               지정되지 않으면 java.lang.Objcet를 상속하게 된다.
+interface := 구현하고자 하는 자바의 인터페이스 또는 클로저의 프로토콜
+super-class-constructor-argument := 상위 클래스 생성자의 인수
+fun := 상위 클래스의 재정의하고자 하는 함수 또는 구현하고자 하는 인터페이스의 함수
+       (name [params*] body) |
+       (name ([params*] body) ([params+] body) ...)
+
+fun은 closure를 형성할 수 있다.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>다음은 <code>java.lang.Object</code>의 <code>toString</code> 메소드를 재정의하고, 클로저의 프로토콜
+<code>clojure.lang.IDeref</code>을 구현한 예이다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">make-some-example</span>
+  [msg]
+  (<span class="keyword">let</span> [state (<span class="keyword">atom</span> msg)]
+    (<span class="keyword">proxy</span> [clojure.lang.IDeref] []   <span class="comment">; </span><i class="conum" data-value="1"></i><b>(1)</b>
+      (toString [] @state)            <span class="comment">; </span><i class="conum" data-value="2"></i><b>(2)</b>
+      (<span class="keyword">deref</span> [] state))))
+
+(<span class="keyword">def</span> <span class="function">o</span> (make-some-example <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello, there!</span><span class="delimiter">&quot;</span></span>))
+
+(<span class="keyword">.</span>toString o)   <span class="comment">;=&gt; &quot;Hello, there!&quot;</span>
+
+(<span class="keyword">reset!</span> @o <span class="string"><span class="delimiter">&quot;</span><span class="content">Hi, everyone!</span><span class="delimiter">&quot;</span></span>)
+
+(<span class="keyword">.</span>toString o)   <span class="comment">;=&gt; &quot;Hi, everyone!&quot;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>clojure.lang.IDeref 프로토콜을 구현하므로, deref(또는 <code>@</code>)를 사용할 수 있다.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>proxy 내부에서 지역 심볼 state를 closure로 참조할 수 있다.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<code>proxy</code> 내에서 overloading하는 함수들 안에는 <code>(toString [this] &#8230;&#8203;)</code>와 같이
+<code>this</code>를 명시적으로 넣어줄 필요가 없다. 반면에, <code>proxy</code>를 제외한 다른 <code>reify</code>,
+<code>defrecord</code>, <code>deftype</code>, <code>gen-class</code>의 경우에는 모두 메소드의 첫 번째 인수에
+<code>this</code><sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup>를 명시적으로 넣어 주어야 한다.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_이름_있는_클래스named_classes_정의하기_gen_class">6.2. 이름 있는 클래스(Named Classes) 정의하기: <code>gen-class</code></h3>
+<div class="paragraph">
+<p><code>proxy</code>는 컴파일 타임에 컴파일한 후, 그 결과를 클래스 파일(*.class)에 저장하지는
+않는다. 반면에 <code>gen-class</code>는 컴파일 타임에 클래스 파일을 디스크 상에 직접 생성해
+준다<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnotedef_3" title="View footnote.">3</a>]</sup>. 따라서 클로저로 작성된 함수를 자바 언어에서 직접 호출해 사용할 필요가
+있을 때 유용하다. 예를 들어, 핵심 로직은 클로저로 작성하고 클래스 파일의 형태로 컴파일한
+후 자바 프로그래머에게 건네주면, 그 자바 프로그래머는 클로저에 대한 지식이 없어도 원하는
+작업을 수행할 수 있게 된다.</p>
+</div>
+<div class="paragraph">
+<p><code>gen-class</code>로 할 수 있는 일은 <code>proxy</code>가 할 수 있는 일에 더해 다음과 같은 일을 할 수 있다.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>상위 클래스의 protected 필드에 접근할 수 있다.</p>
+</li>
+<li>
+<p>여러 개의 생성자를 정의할 수 있다.</p>
+</li>
+<li>
+<p>상위 클래스에는 없는 새로운 정적(static) 메소드와 인스턴스 메소드를 정의할 수 있다.</p>
+</li>
+<li>
+<p>static main 메소드를 정의할 수 있다.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>하지만 <code>gen-class</code>는 가교 역할만을 담당하고 실제 일은 클로저 함수가 하게 된다는 점에서,
+일반적인 자바 클래스와는 차이가 있다. 그리고 반드시 AOT(Ahead of Time) 컴파일을 수행한 후,
+해당 클래스를 import해야만 그 효력이 발생한다는 점도 기억하자.</p>
+</div>
+<div class="listingblock">
+<div class="title">gen-class 형식</div>
+<div class="content">
+<pre>(gen-class
+  :name class-name
+  :prefix prefix
+  :extends super-class
+  :implements [interface+]
+  :constructors {[param-type*] [super-param-type*] ...}
+  :state state-name
+  :init init-name
+  :methods [[method-name [method-argument-type*] return-type]+]
+  :main boolean
+  ...)
+
+class-name := 생성할 클래스명을 지정해 준다.
+prefix := 메소드명 앞에 붙일 문자열 또는 심볼을 지정한다. default는 "-"이다.
+super-class := 상속할 상위 클래스를 지정한다. 지정하지 않으면 java.lang.Object를 상속한다.
+interface := 자바의 인터페이스 또는 클로저의 프로토콜
+param-type := 이 클래스의 생성자 인수들의 타입을 지정한다.
+super-param-type := 상속할 상위 클래스의 생성자 인수들의 타입을 지정한다.
+state-name := public final 속성을 가진 멤버 변수 한 개만 지정 가능하다.
+              여기에 atom을 지정하면 해당 값을 변경할 수 있다.
+init-name := [[superclass-constructor-argument*] state]
+             constructor가 호출될 때 이 함수를 호출한다.
+:methods := [[method-name [arguemnt-type*] return-type]+]
+             새로 추가하고자 하는 메소드를 선언한다.
+:main := true이면 static public main 함수가 생성된다.</pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_gen_class_이용_절차">6.2.1. <code>gen-class</code> 이용 절차</h4>
+<div class="paragraph">
+<p>먼저 간단한 예제로 시작해 보자.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>다음 예에서는 <code>:extends</code>를 지정하지 않았으므로 <code>java.lang.Object</code> 클래스를
+상속한다. 그리고 <code>:prefix</code>가 지정되지 않았으므로, 메소드 이름에는 default prefix인 "-"이
+붙어야 한다.</p>
+<div class="listingblock">
+<div class="title">java-interop.example1.clj</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">java-interop.example1</span>)
+
+(<span class="keyword">gen-class</span>
+  <span class="symbol">:name</span> java_interop.example1.MyClass)
+
+(<span class="keyword">defn</span> <span class="function">-toString</span>
+  [this]
+  <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello, World!</span><span class="delimiter">&quot;</span></span>)</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>project.clj 파일의 <code>:aot</code> 옵션에 <code>gen-class</code>가 정의되어 있는 이름공간을 다음과 같이
+추가해 준다.</p>
+<div class="listingblock">
+<div class="title">project.clj</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(defproject java-interop <span class="string"><span class="delimiter">&quot;</span><span class="content">0.1.0-SNAPSHOT</span><span class="delimiter">&quot;</span></span>
+  <span class="symbol">:dependencies</span> [[org.clojure/clojure <span class="string"><span class="delimiter">&quot;</span><span class="content">1.7.0</span><span class="delimiter">&quot;</span></span>]]
+  <span class="symbol">:aot</span> [java-interop.example1])</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>프로젝트의 루트 디렉토리에서 다음과 같이 컴파일해 준다.</p>
+<div class="listingblock">
+<div class="title">lein compile 실행</div>
+<div class="content">
+<pre>$ lein compile
+Compiling java-interop.example1</pre>
+</div>
+</div>
+</li>
+<li>
+<p>그러면 target/classes/java_interop/example1 디렉토리 아래에 MyClass.class로 컴파일되어
+있는 것을 확인할 수 있다.</p>
+</li>
+<li>
+<p>다음은 이 클래스 파일을 다른 이름공간에서 읽어들여 실행한 결과이다. 여기에서는 클로저에서
+읽어 들여 실행했지만, 실제로는 자바 언어로 읽어 들이게 될 것이다.</p>
+<div class="listingblock">
+<div class="title">java-interop.test1.clj</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">java-interop.test1</span>
+  (<span class="symbol">:import</span> java_interop.example1.MyClass))
+
+(<span class="keyword">.</span>toString (MyClass.))   <span class="comment">;=&gt; &quot;Hello, World!&quot;</span></code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_prefix_옵션_지정하기">6.2.2. <code>:prefix</code> 옵션 지정하기</h4>
+<div class="paragraph">
+<p><code>:prefix</code> 옵션에 다음과 같이 자신이 원하는 prefix를 지정할 수도 있다. 그리고 하나의 이름
+공간에 <code>gen-class</code>를 여러 번 정의할 수도 있다.</p>
+</div>
+<div class="listingblock">
+<div class="title">java_interop.example2.clj</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">java-interop.example2</span>)
+
+(<span class="keyword">gen-class</span>
+  <span class="symbol">:name</span>   java_interop.example1.MyClassA
+  <span class="symbol">:prefix</span> classA-)
+
+(<span class="keyword">gen-class</span>
+  <span class="symbol">:name</span>   java_interop.example1.MyClassB
+  <span class="symbol">:prefix</span> classB-)
+
+(<span class="keyword">defn</span> <span class="function">classA-toString</span>
+  [this]
+  <span class="string"><span class="delimiter">&quot;</span><span class="content">I'm an A.</span><span class="delimiter">&quot;</span></span>)</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">java-interop.test2.clj</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">java-interop.test2</span>
+  (<span class="symbol">:import</span> (java_interop.example1 MyClassA MyClassB)))
+
+(<span class="keyword">.</span>toString (MyClassA.))   <span class="comment">;=&gt; &quot;I'm an A.&quot;</span>
+(<span class="keyword">.</span>toString (MyClassB.))   <span class="comment">;=&gt; &quot;I'm an B.&quot;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_인터페이스_구현하기">6.2.3. 인터페이스 구현하기</h4>
+<div class="paragraph">
+<p><code>gen-class</code>는 <code>ns</code> 안에서도 정의할 수 있다. 이 때 <code>:name</code> 옵션을 지정해 주지 않으면, ns
+이름공간이 곧 클래스명이 된다.</p>
+</div>
+<div class="listingblock">
+<div class="title">java_interop.Example3.clj</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">java-interop.Example3</span>
+  (<span class="symbol">:gen-class</span>
+   <span class="symbol">:implements</span> [clojure.lang.IDeref]))
+
+(<span class="keyword">defn</span> <span class="function">-deref</span>
+  [this]
+  <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello, World!</span><span class="delimiter">&quot;</span></span>)</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">java-interop.test3.clj</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">java-interop.test3</span>
+  (<span class="symbol">:import</span> (java_interop.Example3)))
+
+@(Example3.)   <span class="comment">;=&gt; &quot;Hello, World!&quot;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_클래스_확장하기">6.2.4. 클래스 확장하기</h4>
+<div class="paragraph">
+<p><code>:extends</code> 옵션에 확장하고자 하는 상위 클래스를 지정할 수 있다. 앞에서 정의한 <code>Example3</code>
+클래스를 그대로 상속해 보자.</p>
+</div>
+<div class="listingblock">
+<div class="title">java_interop.Example4.clj</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">java-interop.Example4</span>
+  (<span class="symbol">:gen-class</span>
+   <span class="symbol">:extends</span> java_interop.Example3))</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">java-interop.test4.clj</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">java-interop.test4</span>
+  (<span class="symbol">:import</span> java_interop.Example4))
+
+@(Example4.)   <span class="comment">;=&gt; &quot;Hello, World!&quot;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_state_옵션_지정하기">6.2.5. <code>:state</code> 옵션 지정하기</h4>
+<div class="paragraph">
+<p><code>:constructors</code> 옵션을 지정하게 되면 <code>:init</code> 옵션과 <code>:state</code> 옵션도 함께 지정해 주어야
+한다. 이때 <code>:state</code> 옵션에는 public final 속성을 가진 멤버 변수 한 개만 지정 가능하지만,
+여기에 atom을 지정하면 해당 값을 변경할 수도 있다.</p>
+</div>
+<div class="listingblock">
+<div class="title">java_interop.Example5.clj</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">java-interop.Example5</span>
+  (<span class="symbol">:gen-class</span>
+   <span class="symbol">:implements</span>   [clojure.lang.IDeref]
+   <span class="symbol">:state</span>        state
+   <span class="symbol">:init</span>         init
+   <span class="symbol">:constructors</span> {[String] []}))
+
+(<span class="keyword">defn</span> <span class="function">-init</span>
+  [message]
+  [[] (<span class="keyword">atom</span> message)])   <span class="comment">; </span><i class="conum" data-value="1"></i><b>(1)</b>
+
+(<span class="keyword">defn</span> <span class="function">-deref</span>
+  [this]
+  @(<span class="keyword">.</span>state this))</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>-init</code> 함수 안에서 <code>:state</code> 옵션에 지정된 <code>state</code> 필드를 <code>(atom message)</code>으로
+초기화하고 있다. 따라서 이 필드의 값을 다음과 같이 변경할 수 있게 된다.</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">java-interop.test5.clj</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">java-interop.test5</span>
+  (<span class="symbol">:import</span> java_interop.Example5))
+
+(<span class="keyword">def</span> <span class="function">o</span> (Example5. <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello, there!</span><span class="delimiter">&quot;</span></span>))
+
+@o   <span class="comment">;=&gt; &quot;Hallo, there!&quot;</span>
+
+(<span class="keyword">reset!</span> (<span class="keyword">.</span>state o) <span class="string"><span class="delimiter">&quot;</span><span class="content">Good morning, everybody!</span><span class="delimiter">&quot;</span></span>)
+
+@o   <span class="comment">;=&gt; &quot;Good morning, everybody!&quot;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_새로운_메소드_추가하기">6.2.6. 새로운 메소드 추가하기</h4>
+<div class="paragraph">
+<p><code>gen-class</code>는 상위 클래스에는 없는 정적 메소드나 인스턴스 메소드를 추가할 수 있다.</p>
+</div>
+<div class="listingblock">
+<div class="title">java_interop.Example6.clj</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">java-interop.Example6</span>
+  (<span class="symbol">:gen-class</span>
+   <span class="symbol">:methods</span> [^<span class="symbol">:static</span> [greet [] String]   <span class="comment">; </span><i class="conum" data-value="1"></i><b>(1)</b>
+                      [greetMessage [String] String]]))
+
+(<span class="keyword">defn</span> <span class="function">-greet</span>
+  []
+  <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello, World!</span><span class="delimiter">&quot;</span></span>)
+
+(<span class="keyword">defn</span> <span class="function">-greetMessage</span>
+  [this msg]
+  msg)</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>metadata <code>^:static</code>를 추가하면 정적 메소드가 된다.</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">java-interop.test6.clj</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">ns</span> <span class="namespace">java-interop.test6</span>
+  (<span class="symbol">:import</span> java_interop.Example6))
+
+(Example6/greet)   <span class="comment">;=&gt; &quot;Hello, World!&quot;</span>
+
+(<span class="keyword">.</span>greetMessage (Example6.) <span class="string"><span class="delimiter">&quot;</span><span class="content">Good night!</span><span class="delimiter">&quot;</span></span>)   <span class="comment">;=&gt;  &quot;Good night!&quot;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. 컴파일 타임에 check하는 데서 이런 이름이 붙었다. 이에 대비되는 용어로 unchecked exception이 있는데, 이 예외들은 컴파일 타임에 check되지 않고 런 타임에 예외가 체크된다. 대부분의 예외는 unchecked exception이다.
+</div>
+<div class="footnote" id="_footnotedef_2">
+<a href="#_footnoteref_2">2</a>. 반드시 <code>this</code>일 필요는 없다.
+</div>
+<div class="footnote" id="_footnotedef_3">
+<a href="#_footnoteref_3">3</a>. project.clj 파일의 :aot 부분에 해당 이름 공간을 명시해 주어야 비로소 클래스 파일이 생성된다.
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2023-12-14 02:45:19 UTC
+</div>
+</div>
+</body>
+</html>

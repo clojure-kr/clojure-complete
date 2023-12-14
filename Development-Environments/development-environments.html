@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.16">
+<title>개발 환경 설정</title>
+<link rel="stylesheet" href="../my-asciidoctor.css">
+<link rel="stylesheet" href="../coderay-asciidoctor.css">
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-71804757-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</head>
+<body class="article toc2 toc-right">
+<div id="header">
+<h1>개발 환경 설정</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_java_jdk_설치">1. Java JDK 설치</a></li>
+<li><a href="#_wget_설치">2. wget 설치</a></li>
+<li><a href="#_leiningen_설치">3. Leiningen 설치</a></li>
+<li><a href="#_예제_프로젝트_만들기">4. 예제 프로젝트 만들기</a></li>
+<li><a href="#_ide_설치">5. IDE 설치</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>이 장에서는 <code>Windows 10</code> (64비트 버전)에 클로저 개발 환경을 설치하는 예를 보여준다. 다른
+OS의 경우에는 이 장의 내용을 참고해서 약간 변용하면 설치가 가능할 것이다.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_java_jdk_설치">1. Java JDK 설치</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>클로저는 JVM(Java Virtual Machine) 상에서 실행되는 언어이므로, 먼저 JDK(Java
+Development Kit)를 설치해야 한다. 클로저는 JDK 1.6.0 이상의 버전에서 돌아가지만,
+특별한 요구 사항이 없다면 최신 버전의 JDK를 설치하도록 한다.</p>
+</li>
+<li>
+<p><a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" class="bare">http://www.oracle.com/technetwork/java/javase/downloads/index.html</a>를 방문해 'Java SE
+11 (LTS)'의 'Oracle JDK DOWNLOAD' 버튼을 클릭한 후, 자신의 OS에 맞는 최신 버전의 JDK을 내려
+받는다. 여기에서는 <code>Windows</code> (64비트 버전) 상에서 JDK를 설치하는 예를 보이겠다. 따라서
+Java SE Development Kit 11 중에서 Windows x64 버전의 jdk-11_windows-x64_bin.exe 파일을
+다운로드 받는다.</p>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Caution</div>
+</td>
+<td class="content">
+JRE(Java Runtime Environment)가 아니라 JDK를 다운로드 받아야 한다.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>내려 받은 파일을 실행해, JDK 설치를 시작한다. 기본 설정 값대로 진행해 설치를 마친다.</p>
+</li>
+<li>
+<p>Windows 'Path' 환경 변수 설정하기 <a id="environment-variables"></a></p>
+<div class="ulist">
+<ul>
+<li>
+<p>화면 좌측 최하단의 ['시작' 버튼&#8201;&#8212;&#8201;'Windows 시스템'&#8201;&#8212;&#8201;'제어판'] 을 선택한다.</p>
+</li>
+<li>
+<p>['시스템 및 보안'&#8201;&#8212;&#8201;'시스템'&#8201;&#8212;&#8201;'고급 시스템 설정'&#8201;&#8212;&#8201;'고급'&#8201;&#8212;&#8201;'환경변수'&#8201;&#8212;&#8201;'시스템
+변수'&#8201;&#8212;&#8201;'Path'] 항목을 클릭한다.</p>
+</li>
+<li>
+<p>['편집'&#8201;&#8212;&#8201;'새로 만들기'] 클릭 후, 입력 상자에 <code>C:\Program Files\java\jdk-11\bin</code> 를 입력
+후, '확인' 버튼을 누른다.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Java SDK 설치 확인</p>
+<div class="ulist">
+<ul>
+<li>
+<p>화면 좌측 최하단의 ['시작' 버튼&#8201;&#8212;&#8201;'Windows 시스템'&#8201;&#8212;&#8201;'명령 프람프트'] 를 선택한다.</p>
+</li>
+<li>
+<p>명령창에서 다음과 같이 실행해 메시지가 출력되면, Java JDK 버전 설치에 성공한 것이다.</p>
+<div class="listingblock">
+<div class="content">
+<pre>C:\&gt; java -version
+java version "11" 2018-09-25
+Java(TM) SE Runtime Environment 18.9 (build 11+28)
+Java HotSpot(TM) 64-Bit Server VM 18.9 (build 11+28, mixed mode)
+
+C:\&gt;</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_wget_설치">2. wget 설치</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>클로저 프로젝트 관리 도구인 Leiningen이 라이브러리를 내려받을 때 wget 프로그램을 필요로
+하므로, 이 프로그램을 미리 설치해 두어야 한다.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="https://eternallybored.org/misc/wget" class="bare">https://eternallybored.org/misc/wget</a>을 방문해, 최신 버전을 다운로드 받는다. 여기에서는
+64비트 버전인 wget-1.19.4-win64.zip 파일을 다운로드 받는 것으로 한다.</p>
+</li>
+<li>
+<p>압축을 푼 후에, <code>wget.exe</code> 파일을 자신이 원하는 폴더로 복사한다. 여기에서는
+<code>C:\dev\bin\</code> 폴더에 복사하는 것으로 한다.</p>
+</li>
+<li>
+<p>환경 변수 <code>Path</code>에 <code>wget.exe</code> 파일이 위치한 폴더의 경로를 추가한다:
+(<a href="#environment-variables">Windows 'Path' 환경 변수 설정하기 참고</a>)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>[시스템 변수]에서 [Path] 변수 선택 후, ['편집'&#8201;&#8212;&#8201;'새로 만들기'] 클릭 후, 입력 상자에
+<code>C:\dev\bin</code> 경로를 추가한 후, '확인' 버튼을 클릭한다.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>wget 설치 확인</p>
+<div class="ulist">
+<ul>
+<li>
+<p>화면 좌측 최하단의 ['시작' 버튼&#8201;&#8212;&#8201;'Windows 시스템'&#8201;&#8212;&#8201;'명령 프람프트'] 를 선택한다.</p>
+</li>
+<li>
+<p>명령창에서 다음과 같이 실행해 메시지가 출력되면, wget 설치에 성공한 것이다.</p>
+<div class="listingblock">
+<div class="content">
+<pre>C:\&gt; wget
+wget: Missing URL
+Usage: wget [OPTION]... [URL]...
+
+Try `wget --help' for more options.
+
+C:\&gt;</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_leiningen_설치">3. Leiningen 설치</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Leiningen(라이닝언)은 클로저 프로젝트 관리를 위한 기본 도구이다.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>다음과 같이 wget을 이용해 leiningen을 다운로드한다. 여기서는 leiningen을 <code>C:\dev\bin\</code>
+폴더 아래에 설치하는 것으로 한다.</p>
+<div class="listingblock">
+<div class="content">
+<pre>C:\&gt; cd dev\bin
+
+C:\dev\bin&gt; wget --no-check-certificate https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein.bat</pre>
+</div>
+</div>
+</li>
+<li>
+<p>환경 변수 <code>LEIN_HOME</code> 추가  (<a href="#environment-variables">Windows 'Path' 환경 변수 설정하기 참고</a>)</p>
+<div class="paragraph">
+<p>환경 변수 <code>LEIN_HOME</code>을 새로 만들고, <code>lein.bat</code>을 포함하고 있는 폴더의 경로를
+입력한다.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>[시스템 변수&#8201;&#8212;&#8201;새로 만들기] 선택 후, [변수 이름] 란에 LEIN_HOME으로, [변수 값] 란에는
+<code>C:\dev\bin</code>을 입력한다.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>이후 같은 명령창에서 다음과 같이 입력해 leiningen 본체를 설치하려 하면, 다음과 같은 에러가 날 것이다.</p>
+<div class="listingblock">
+<div class="content">
+<pre>C:\dev\bin&gt; lein self-install
+Downloading Leiningen now...
+"2"개의 인수가 있는 "DownloadFile"을(를) 호출하는 동안 예외가 발생했습니다.
+"요청이 중단되었습니다. SSL/TLS 보안 채널을  만들 수 없습니다."                                                                                         ......</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>이 에러는 <a href="https://github.com/technomancy/leiningen/issues/2412" class="bare">https://github.com/technomancy/leiningen/issues/2412</a>에 이미 보고되어
+있다. lein 다음 버전에는 이 문제가 해결될 것으로 보인다.  하지만 당장은 임시방편으로
+위의 사이트에 나와 있는 대로, 다운 받은 <code>lein.bat</code> 파일의 내용 중 다음 라인을</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>powershell -Command "&amp; {param($a,$f) $client = New-Object System.Net.WebClient;  $client.Proxy.Credentials =[System.Net.CredentialCache]::DefaultNetworkCredentials; $client.DownloadFile($a, $f)}" ""%2"" ""%1""</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>다음 라인으로 직접 대체해서 해결하도록 한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>powershell -Command "&amp; {param($a,$f) $client = New-Object System.Net.WebClient; [Net.ServicePointManager]::SecurityProtocol = 'tls12' ; $client.Proxy.Credentials =[System.Net.CredentialCache]::DefaultNetworkCredentials; $client.DownloadFile($a, $f)}" ""%2"" ""%1""</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>lein.bat</code> 파일을 위와 같이 수정한 후, 다음 명령을 재실행해 leiningen 본체의 설치를 마친다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>C:\dev\bin&gt; lein self-install</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>위 명령이 실행된 후에, <code>LEIN_HOME</code>에 지정되어 있는 폴더에 <code>self-installs</code> 폴더가 생성되고 그
+아래에 <code>leiningen-2.8.1-standalone.jar</code>가 설치된 것을 확인할 수 있다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>C:\dev\bin&gt; tree /a /f
+|   lein.bat
+|   wget.exe
+|
+\---self-installs
+    leiningen-2.8.1-standalone.jar</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Leiningen 설치 확인</p>
+<div class="paragraph">
+<p>다음과 같이 실행해 메시지가 출력되면, Leiningen이 제대로 설지된 것이다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>C:\&gt; lein version
+Leiningen 2.8.1 on Java 11 Java HotSpot(TM) 64-Bit Server VM</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_예제_프로젝트_만들기">4. 예제 프로젝트 만들기</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>여기서는 <code>sample</code>이라는 이름의 프로젝트를 만들 것이다. 이 프로젝트를 아래의 <code>IDE 설치</code>
+절에서 읽어 들여 실행해 볼 것이다.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>먼저 명령창에서 다음의 명령을 실행해 <code>C:\dev\projects</code> 폴더를 만들어 놓는다.</p>
+<div class="listingblock">
+<div class="content">
+<pre>C:\&gt; cd dev
+
+C:\dev&gt; mkdir projects
+
+C:\dev&gt; cd projects
+
+C:\dev\projects&gt;</pre>
+</div>
+</div>
+</li>
+<li>
+<p>다음을 실행해 <code>sample</code>이라는 이름의 프로젝트를 만든다. 그러면 <code>sample</code>
+폴더 아래에 이 프로젝트에 기본적으로 필요한 여러 개의 폴더와 파일이 만들어질 것이다.</p>
+<div class="listingblock">
+<div class="content">
+<pre>C:\dev\projects&gt; lein new sample
+Generating a project called sample based on the 'default' template.
+The default template is intended for library projects, not applications.
+To see other templates (app, plugin, etc), try `lein help new`.
+
+C:\dev\projects&gt; cd sample
+
+C:\dev\projects\sample&gt; dir
+
+ C:\dev\projects\sample 디렉터리
+
+2018-10-10  오후 08:12    &lt;DIR&gt;          .
+2018-10-10  오후 08:12    &lt;DIR&gt;          ..
+2018-10-10  오후 08:12               110 .gitignore
+2018-10-10  오후 08:12               134 .hgignore
+2018-10-10  오후 08:12               790 CHANGELOG.md
+2018-10-10  오후 08:12    &lt;DIR&gt;          doc
+2018-10-10  오후 08:12            11,433 LICENSE
+2018-10-10  오후 08:12               272 project.clj
+2018-10-10  오후 08:12               246 README.md
+2018-10-10  오후 08:12    &lt;DIR&gt;          resources
+2018-10-10  오후 08:12    &lt;DIR&gt;          src
+2018-10-10  오후 08:12    &lt;DIR&gt;          test
+               6개 파일              12,985 바이트
+               6개 디렉터리  11,568,414,720 바이트 남음</pre>
+</div>
+</div>
+</li>
+<li>
+<p>만들어진 파일들 중에서 <code>project.clj</code> 파일을 편집기로 열어, 다음과 같이 수정한다.</p>
+<div class="listingblock">
+<div class="title">project.clj</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(defproject sample <span class="string"><span class="delimiter">&quot;</span><span class="content">0.1.0-SNAPSHOT</span><span class="delimiter">&quot;</span></span>
+  <span class="symbol">:dependencies</span> [[org.clojure/clojure <span class="string"><span class="delimiter">&quot;</span><span class="content">1.10.0-RC1</span><span class="delimiter">&quot;</span></span>]])</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>다음과 같이 실행해, 의존 라이브러리들을 미리 다운로드 받아 놓는다.</p>
+<div class="listingblock">
+<div class="content">
+<pre>C:\dev\projects\sample&gt; lein deps
+Retrieving org/clojure/clojure/1.10.0-beta2/clojure-1.10.0-RC1.pom from central
+Retrieving org/clojure/spec.alpha/0.2.176/spec.alpha-0.2.176.pom from central
+Retrieving org/clojure/pom.contrib/0.2.2/pom.contrib-0.2.2.pom from central
+......
+
+C:\dev\projects\sample&gt;</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ide_설치">5. IDE 설치</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>클로저 프로그래밍을 위한 IDE(Intergrated Development Environment)는 여러가지가
+있다. 다음에는 설치와 사용이 수월한 것에서 어려운 순서대로 나열하였다. 자신에게 익숙하고
+편리한 IDE를 골라 설치하도록 한다.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="vscode.adoc">Visual Studio Code + Calva 설치</a></p>
+</li>
+<li>
+<p><a href="intellij.adoc">IntelliJ + Cursive 설치</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2023-12-14 02:45:19 UTC
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.16">
+<title>Flow Controls</title>
+<link rel="stylesheet" href="../my-asciidoctor.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="../coderay-asciidoctor.css">
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-71804757-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</head>
+<body class="article toc2 toc-right">
+<div id="header">
+<h1>Flow Controls</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_논리적_true와_논리적_false">1. 논리적 true와 논리적 false</a></li>
+<li><a href="#_if">2. if</a></li>
+<li><a href="#_when">3. when</a></li>
+<li><a href="#_if_letwhen_let">4. if-let/when-let</a></li>
+<li><a href="#_cond">5. cond</a></li>
+<li><a href="#_condp">6. condp</a></li>
+<li><a href="#_case">7. case</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>이번 장에서는 클로저의 제어 구문에 대해 알아본다.</p>
+</div>
+<div class="paragraph">
+<p>클로저는 여러가지 제어 구문을 제공하지만, <code>if</code> 특수 형식(special form)을 제외한 나머지
+모든 제어 구문은, <code>if</code> 특수 형식을 내부적으로 감싼 매크로로 구현되어 있다. 따라서 가장
+중요한 제어 구문은 <code>if</code>이다.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_논리적_true와_논리적_false">1. 논리적 true와 논리적 false</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>클로저의 제어 구문에서 참과 거짓을 판별할 때, <code>false</code>와 <code>nil</code>을 제외한 모든 값은
+'논리적으로 true&#8217;이다. 오로지 <code>false</code>와 <code>nil</code>만이 '논리적으로 false&#8217;인 것으로
+취급된다. 따라서 <code>0</code>이나 빈 문자열 <code>""</code>, 빈 컬렉션인 <code>()</code>, <code>[]</code>, <code>{}</code>, <code>#{}</code> 모두
+논리적인 true로 평가된다는 점에 유의하자.</p>
+</div>
+<div class="paragraph">
+<p></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_if">2. if</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">if 형식</div>
+<div class="content">
+<pre>(if test then-part else-part?)</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>if</code> 구문은 <code>test</code> 부분을 평가한 결과가 논리적으로 참이면 <code>then-part</code>를, 논리적으로
+거짓이면 <code>else-part</code>를 평가한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">if</span> (<span class="keyword">&lt;</span> <span class="integer">5</span> <span class="integer">10</span>) <span class="string"><span class="delimiter">&quot;</span><span class="content">yes</span><span class="delimiter">&quot;</span></span> <span class="string"><span class="delimiter">&quot;</span><span class="content">no</span><span class="delimiter">&quot;</span></span>)   <span class="comment">;=&gt; &quot;yes&quot;</span>
+
+(<span class="keyword">if</span> (<span class="keyword">&gt;</span> <span class="integer">5</span> <span class="integer">10</span>) <span class="string"><span class="delimiter">&quot;</span><span class="content">yes</span><span class="delimiter">&quot;</span></span> <span class="string"><span class="delimiter">&quot;</span><span class="content">no</span><span class="delimiter">&quot;</span></span>)   <span class="comment">;=&gt; &quot;no&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>test</code> 부분을 평가한 결과가 논리적 거짓일 때, <code>else-part</code>가 제공되지 않으면 <code>nil</code>을
+반환한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">if</span> (<span class="keyword">&gt;</span> <span class="integer">5</span> <span class="integer">10</span>) <span class="string"><span class="delimiter">&quot;</span><span class="content">yes</span><span class="delimiter">&quot;</span></span>)   <span class="comment">;=&gt; nil</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>then-part</code>나 <code>else-part</code>에서 여러 개의 식을 평가하고자 할 때에는 <code>do</code> 특수 형식으로
+감싸 주어야 한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">if</span> (<span class="keyword">&lt;</span> <span class="integer">5</span> <span class="integer">10</span>)
+  (<span class="keyword">do</span>
+    (<span class="keyword">println</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">5 is less than 10.</span><span class="delimiter">&quot;</span></span>)
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">yes</span><span class="delimiter">&quot;</span></span>)
+  (<span class="keyword">do</span>
+    (<span class="keyword">println</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">This will not be printed.</span><span class="delimiter">&quot;</span></span>)
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">no</span><span class="delimiter">&quot;</span></span>))
+<span class="comment">;&gt;&gt; 5 is less than 10.</span>
+<span class="comment">;=&gt; &quot;yes&quot;</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><code>do</code> 특수 형식(special form)은, 다른 C++이나 자바 언어에서의 <code>{ &#8230;&#8203; }</code>와 같은 코드의
+'블럭&#8217;을 표시하는 기능을 수행한다. <code>do</code>는 그 안의 모든 식들을 차례대로 평가한 후, 맨
+마지막에 평가된 식의 결과를 반환한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">do</span>
+  (<span class="keyword">+</span> <span class="integer">1</span> <span class="integer">2</span>)
+  (<span class="keyword">+</span> <span class="integer">3</span> <span class="integer">4</span>)
+  (<span class="keyword">+</span> <span class="integer">5</span> <span class="integer">6</span>))
+<span class="comment">;=&gt; 11</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>맨 마지막 식을 제외한 그 앞에 있는 모든 식들은 결과적으로 부수 효과(side effect)를
+수행하게 된다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">do</span>
+  (<span class="keyword">println</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">LOG: Computing...</span><span class="delimiter">&quot;</span></span>)   <span class="comment">; printed in stdout</span>
+  (<span class="keyword">+</span> <span class="integer">1</span> <span class="integer">1</span>))
+<span class="comment">;&gt;&gt; LOG: Computing...</span>
+<span class="comment">;=&gt; 2</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>다음의 <code>fn</code>, <code>defn</code>, <code>let</code> 등도 클로저가 내부적으로 <code>do</code>로 자동적으로 감싸주기 떄문에 그
+안에 여러 개의 식들을 나열할 수 있게 된다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">((<span class="keyword">fn</span> [<span class="keyword">name</span>]
+  (<span class="keyword">println</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">Something</span><span class="delimiter">&quot;</span></span>)   <span class="comment">; printed in stdout</span>
+  (<span class="keyword">str</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello, </span><span class="delimiter">&quot;</span></span> <span class="keyword">name</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">!</span><span class="delimiter">&quot;</span></span>))
+ <span class="string"><span class="delimiter">&quot;</span><span class="content">Tom</span><span class="delimiter">&quot;</span></span>)
+<span class="comment">;&gt;&gt; Something</span>
+<span class="comment">;=&gt; &quot;Hello, Tom!&quot;</span>
+
+(<span class="keyword">defn</span> <span class="function">hello</span> [<span class="keyword">name</span>]
+  (<span class="keyword">println</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">Something</span><span class="delimiter">&quot;</span></span>)     <span class="comment">; printed in stdout</span>
+  (<span class="keyword">str</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello, </span><span class="delimiter">&quot;</span></span> <span class="keyword">name</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">!</span><span class="delimiter">&quot;</span></span>))
+
+(hello <span class="string"><span class="delimiter">&quot;</span><span class="content">Becky</span><span class="delimiter">&quot;</span></span>)
+<span class="comment">;&gt;&gt; Something</span>
+<span class="comment">;=&gt; &quot;Hello, Becky!&quot;</span>
+
+(<span class="keyword">let</span> [<span class="keyword">name</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">John</span><span class="delimiter">&quot;</span></span>]
+  (<span class="keyword">println</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">Something</span><span class="delimiter">&quot;</span></span>)     <span class="comment">; printed in stdout</span>
+  (<span class="keyword">str</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello, </span><span class="delimiter">&quot;</span></span> <span class="keyword">name</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">!</span><span class="delimiter">&quot;</span></span>))
+<span class="comment">;&gt;&gt; Something</span>
+<span class="comment">;=&gt; &quot;Hello, John!&quot;</span></code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><code>if-not</code>은 <code>if</code>와 정반대의 동작을 수행한다. </p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">if-not</span> (<span class="keyword">zero?</span> <span class="integer">0</span>) <span class="string"><span class="delimiter">&quot;</span><span class="content">not zero</span><span class="delimiter">&quot;</span></span> <span class="string"><span class="delimiter">&quot;</span><span class="content">zero</span><span class="delimiter">&quot;</span></span>)
+<span class="comment">;=&gt; &quot;zero&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_when">3. when</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">when 형식</div>
+<div class="content">
+<pre>(when test expression+)</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>when</code> 구문은 <code>test</code> 부분이 논리적인 참으로 평가될 때, 그 뒤의 모든 식을 내부적으로
+<code>do</code>로 감싸 평가한다. 그래서 다음의 두 식은 완전히 동일하다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">when</span> (<span class="keyword">=</span> <span class="integer">1</span> <span class="integer">1</span>)
+  (<span class="keyword">+</span> <span class="integer">1</span> <span class="integer">2</span>)
+  (<span class="keyword">+</span> <span class="integer">3</span> <span class="integer">4</span>)
+  (<span class="keyword">+</span> <span class="integer">5</span> <span class="integer">6</span>))
+<span class="comment">;=&gt; 11</span>
+
+(<span class="keyword">if</span> (<span class="keyword">=</span> <span class="integer">1</span> <span class="integer">1</span>)
+  (<span class="keyword">do</span>
+    (<span class="keyword">+</span> <span class="integer">1</span> <span class="integer">2</span>)
+    (<span class="keyword">+</span> <span class="integer">3</span> <span class="integer">4</span>)
+    (<span class="keyword">+</span> <span class="integer">5</span> <span class="integer">6</span>)))
+<span class="comment">;=&gt; 11</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>그리고 <code>test</code> 부분이 논리적인 거짓으로 평가될 때에는 단순히 <code>nil</code>을 반환한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">when</span> (<span class="keyword">=</span> <span class="integer">1</span> <span class="integer">2</span>)
+  (<span class="keyword">+</span> <span class="integer">1</span> <span class="integer">2</span>)
+  (<span class="keyword">+</span> <span class="integer">3</span> <span class="integer">4</span>)
+  (<span class="keyword">+</span> <span class="integer">5</span> <span class="integer">6</span>))
+<span class="comment">;=&gt; nil</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>그래서 <code>when</code>은 <code>if</code>의 <code>then-part</code>가 여러 개의 식들로 이루어져 있고, <code>else-part</code>는
+필요 없을 때 사용된다.</p>
+</div>
+<div class="paragraph">
+<p><code>when-not</code>은 <code>when</code>과 정반대의 동작을 수행한다. </p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">when-not</span> (<span class="keyword">=</span> <span class="integer">1</span> <span class="integer">2</span>)
+  (<span class="keyword">+</span> <span class="integer">1</span> <span class="integer">2</span>)
+  (<span class="keyword">+</span> <span class="integer">3</span> <span class="integer">4</span>)
+  (<span class="keyword">+</span> <span class="integer">5</span> <span class="integer">6</span>))
+<span class="comment">;=&gt; 11</span>
+
+(<span class="keyword">when-not</span> (<span class="keyword">=</span> <span class="integer">1</span> <span class="integer">1</span>)
+  (<span class="keyword">+</span> <span class="integer">1</span> <span class="integer">2</span>)
+  (<span class="keyword">+</span> <span class="integer">3</span> <span class="integer">4</span>)
+  (<span class="keyword">+</span> <span class="integer">5</span> <span class="integer">6</span>))
+<span class="comment">;=&gt; nil</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_if_letwhen_let">4. if-let/when-let</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p></p>
+</div>
+<div class="listingblock">
+<div class="title">if-let 형식</div>
+<div class="content">
+<pre>(if-let [local-symbol expression] then-part else-part?)</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>if-let</code>은 먼저 <code>expression</code>을 평가한 결과를 <code>local-symbol</code>에 바인딩한다. 그후에
+바인딩된 값이 논리적 참이면 <code>then-part</code>를, 그렇지 않으면 <code>else-part</code>를 실행한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">if-let-demo</span> [arg]
+  (<span class="keyword">if-let</span> [a arg]
+    (<span class="keyword">str</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">arg: </span><span class="delimiter">&quot;</span></span> a)
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">no</span><span class="delimiter">&quot;</span></span>))
+
+(if-let-demo <span class="integer">10</span>)      <span class="comment">;=&gt; &quot;arg: 10&quot;</span>
+(if-let-demo <span class="predefined-constant">nil</span>)     <span class="comment">;=&gt; &quot;no&quot;</span>
+(if-let-demo <span class="predefined-constant">false</span>)   <span class="comment">;=&gt; &quot;no&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>실제로 클로저로 코딩하다 보면 다음과 같은 패턴을 자주 접하게 된다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">drop-one</span> [coll]
+  (<span class="keyword">let</span> [s (<span class="keyword">seq</span> coll)]
+    (<span class="keyword">if</span> s
+      (<span class="keyword">rest</span> s)
+      coll)))
+
+(drop-one [<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>])   <span class="comment">;=&gt; (2 3)</span>
+(drop-one [])        <span class="comment">;=&gt; []</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>이럴 때 다음과 같이 <code>if-let</code>을 사용하면 코드가 간결해진다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">drop-one2</span> [coll]
+  (<span class="keyword">if-let</span> [s (<span class="keyword">seq</span> coll)]
+    (<span class="keyword">rest</span> s)
+    coll))
+
+(drop-one2 [<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>])   <span class="comment">;=&gt; (2 3)</span>
+(drop-one2 [])        <span class="comment">;=&gt; []</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>if-let</code>을 사용할 때 주의할 점은 다음과 같다.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>let</code>과는 달리, <code>if-let</code>은 지역 심볼을 한 개만 바인딩할 수 있다. 두 개 이상 바인딩하면
+다음과 같이 예외가 발생한다.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">if-let</span> [a <span class="integer">10</span>
+         b <span class="integer">20</span>]
+  (<span class="keyword">+</span> a b)
+  <span class="string"><span class="delimiter">&quot;</span><span class="content">no</span><span class="delimiter">&quot;</span></span>)
+<span class="symbol">:&gt;&gt;</span> IllegalArgumentException <span class="keyword">if-let</span> requires exactly <span class="integer">2</span> forms in <span class="keyword">binding</span> <span class="keyword">vector</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>이 문제를 우회하려면 <code>if-let</code>을 중첩해 사용해야 한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">if-let</span> [a <span class="integer">10</span>]
+  (<span class="keyword">if-let</span> [b <span class="integer">20</span>]
+    (<span class="keyword">+</span> a b)
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">no</span><span class="delimiter">&quot;</span></span>))
+<span class="comment">;=&gt; 30</span></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>바인딩된 지역 심볼을 <code>else-part</code>에서 참조해서는 안된다. 사용하면 다음과 같은 예외가 발생한다.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">if-let</span> [a <span class="integer">10</span>]
+  (<span class="keyword">+</span> a <span class="integer">20</span>)
+  (<span class="keyword">str</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">arg: </span><span class="delimiter">&quot;</span></span> a))
+<span class="comment">;&gt;&gt; CompilerException java.lang.RuntimeException: Unable to resolve symbol: a in this context</span></code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><code>when-let</code>과 <code>if-let</code>의 관계는 <code>when</code>과 <code>if</code>의 관계와 같다. </p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">drop-one3</span> [coll]
+  (<span class="keyword">when-let</span> [s (<span class="keyword">seq</span> coll)]
+    (<span class="keyword">println</span> s)
+    (<span class="keyword">rest</span> s)))
+
+(drop-one3 [<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>])
+<span class="comment">;&gt;&gt; (1 2 3)</span>
+<span class="comment">;=&gt; (2 3)</span>
+
+(drop-one3 [])
+<span class="comment">;=&gt; nil</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cond">5. cond</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>cond</code> 구문은 C 언어의 <code>switch</code> 구문과 유사하다.</p>
+</div>
+<div class="listingblock">
+<div class="title">cond 형식</div>
+<div class="content">
+<pre>(cond clause+)
+
+clause := test expression</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>이 구문은 나열된 <code>clause</code>를 차례대로 실행하다가, 최초로 논리적 참을 반환하는 <code>test</code>를
+만나면 그에 해당하는 <code>expression</code>을 평가한 후, 그 결과를 <code>cond</code> 구문의 결과로 즉시
+반환한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">pos-neg-or-zero</span> [n]
+  (<span class="keyword">cond</span>
+    (<span class="keyword">&lt;</span> n <span class="integer">0</span>) <span class="string"><span class="delimiter">&quot;</span><span class="content">negative</span><span class="delimiter">&quot;</span></span>
+    (<span class="keyword">&gt;</span> n <span class="integer">0</span>) <span class="string"><span class="delimiter">&quot;</span><span class="content">positive</span><span class="delimiter">&quot;</span></span>
+    <span class="symbol">:else</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">zero</span><span class="delimiter">&quot;</span></span>))
+
+(pos-neg-or-zero <span class="integer">5</span>)    <span class="comment">;=&gt; &quot;positive&quot;</span>
+(pos-neg-or-zero <span class="integer">-1</span>)   <span class="comment">;=&gt; &quot;negative&quot;</span>
+(pos-neg-or-zero <span class="integer">0</span>)    <span class="comment">;=&gt; &quot;zero&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>맨 마지막 <code>clause</code>의 <code>test</code> 부분은, 위의 코드에서처럼 관례적으로 <code>:else</code>라는
+키워드를 사용하지만, 논리적인 참값을 반환하는 어떤 식(expression)도 가능하다. 예를 들어,
+현실성은 없지만 다음과 같이 할 수도 있다. 즉, <code>(= 5 5)</code>는 언제나 <code>true</code>를 반환하므로
+default인 경우의 처리가 가능하다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">pos-neg-or-zero2</span> [n]
+  (<span class="keyword">cond</span>
+    (<span class="keyword">&lt;</span> n <span class="integer">0</span>) <span class="string"><span class="delimiter">&quot;</span><span class="content">negative</span><span class="delimiter">&quot;</span></span>
+    (<span class="keyword">&gt;</span> n <span class="integer">0</span>) <span class="string"><span class="delimiter">&quot;</span><span class="content">positive</span><span class="delimiter">&quot;</span></span>
+    (<span class="keyword">=</span> <span class="integer">5</span> <span class="integer">5</span>) <span class="string"><span class="delimiter">&quot;</span><span class="content">zero</span><span class="delimiter">&quot;</span></span>))
+
+(pos-neg-or-zero2 <span class="integer">0</span>)   <span class="comment">;=&gt; &quot;zero&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>만약 해당하는 <code>clause</code>가 한 개도 없을 때에는 <code>nil</code>을 반환한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">pos-neg-or-zero3</span> [n]
+  (<span class="keyword">cond</span>
+    (<span class="keyword">&lt;</span> n <span class="integer">0</span>) <span class="string"><span class="delimiter">&quot;</span><span class="content">negative</span><span class="delimiter">&quot;</span></span>
+    (<span class="keyword">&gt;</span> n <span class="integer">0</span>) <span class="string"><span class="delimiter">&quot;</span><span class="content">positive</span><span class="delimiter">&quot;</span></span>))
+
+(pos-neg-or-zero3 <span class="integer">0</span>)   <span class="comment">;=&gt; nil</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_condp">6. condp</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">condp 형식</div>
+<div class="content">
+<pre>(condp pred expr clause+ default-expr?)
+
+clause := test-expr result-expr | test-expr :&gt;&gt; result-fn
+
+pred := 두 개의 인수를 받는 함수이어야 한다.
+        이 함수의 첫 번째 인자로 clause 부분의 test-expr이 들어가고, 두 번째 인자로 expr이 들어간다.
+        결과적으로 (pred test-expr expr) 식이 실행된다.
+result-fn := 한 개의 인수를 받는 함수이어야 한다.
+             (pred test-expr expr) 식을 평가한 결과가 이 함수의 인수로 들어간다.
+default-expr := 디폴트 처리를 담당한다.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>다음과 같은 <code>cond</code> 구문이 있다고 할 때,</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">cond-demo</span> [value]
+  (<span class="keyword">cond</span>
+    (<span class="keyword">instance?</span> Number value) (<span class="keyword">*</span> value <span class="integer">2</span>)
+    (<span class="keyword">instance?</span> String value) (<span class="keyword">*</span> (<span class="keyword">count</span> value) <span class="integer">2</span>)
+    <span class="symbol">:else</span>                    <span class="string"><span class="delimiter">&quot;</span><span class="content">Unexpected type.</span><span class="delimiter">&quot;</span></span>))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>condp</code> 구문을 이용하면, 다음과 같이 더 간단하게 표현할 수 있다<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">condp-demo</span> [value]
+  (<span class="keyword">condp</span> <span class="keyword">instance?</span> value
+    Number (<span class="keyword">*</span> value <span class="integer">2</span>)
+    String (<span class="keyword">*</span> (<span class="keyword">count</span> value) <span class="integer">2</span>)
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">Unexpected type.</span><span class="delimiter">&quot;</span></span>))   <span class="comment">; </span><i class="conum" data-value="1"></i><b>(1)</b>
+
+(condp-demo <span class="integer">10</span>)          <span class="comment">;=&gt; 20</span>
+(condp-demo <span class="string"><span class="delimiter">&quot;</span><span class="content">Clojure</span><span class="delimiter">&quot;</span></span>)   <span class="comment">;=&gt; 14</span>
+(condp-demo <span class="symbol">:hello</span>)      <span class="comment">;=&gt; &quot;Unexpected type.&quot;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>default-expr 부분은 식이 한 개뿐인 것에 주목하자.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><code>condp</code> 구문은 <code>cond</code> 구문과는 달리, 일치하는 절(clause)이 없을 경우에 디폴트 처리부인
+<code>default-expr</code> 부분이 없으면 예외가 발생한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">condp-demo2</span> [value]
+  (<span class="keyword">condp</span> <span class="keyword">instance?</span> value
+    Number (<span class="keyword">*</span> value <span class="integer">2</span>)
+    String (<span class="keyword">*</span> (<span class="keyword">count</span> value) <span class="integer">2</span>)))
+
+(condp-demo2 <span class="symbol">:hello</span>)
+<span class="symbol">:&gt;&gt;</span> IllegalArgumentException No matching clause<span class="error">:</span> <span class="symbol">:hello</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>clause</code> 부분이 다음과 같이 세 개의 식으로 이루어질 수도 있다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>test-expr :&gt;&gt; result-fn</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>이때 두 번째 식은 반드시 <code>:&gt;&gt;</code> 키워드이어야 하고, 세 번째 식은 인수가 하나인 함수이어야
+한다. <code>(pred test-expr expr)</code> 식을 평가한 결과가 이 함수의 인수로 들어간다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">condp-demo3</span> [value]
+  (<span class="keyword">condp</span> <span class="keyword">some</span> value
+    #{<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>} <span class="symbol">:&gt;&gt;</span> <span class="keyword">inc</span>
+    #{<span class="integer">4</span> <span class="integer">5</span> <span class="integer">6</span>} <span class="symbol">:&gt;&gt;</span> <span class="keyword">dec</span>
+    #{<span class="integer">7</span> <span class="integer">8</span> <span class="integer">9</span>} <span class="symbol">:&gt;&gt;</span> #(<span class="keyword">+</span> % <span class="integer">3</span>)))
+<span class="comment">;; (some #{1 2 3} [1 2 3]) =&gt; 1</span>
+<span class="comment">;; (some #{4 5 6} [6 5 4]) =&gt; 6</span>
+<span class="comment">;; (some #{7 8 9} [8 7 9]) =&gt; 8</span>
+
+(condp-demo3 [<span class="integer">1</span> <span class="integer">2</span> <span class="integer">3</span>])   <span class="comment">;=&gt; 2</span>
+(condp-demo3 [<span class="integer">6</span> <span class="integer">5</span> <span class="integer">4</span>])   <span class="comment">;=&gt; 5</span>
+(condp-demo3 [<span class="integer">8</span> <span class="integer">7</span> <span class="integer">9</span>])   <span class="comment">;=&gt; 11</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_case">7. case</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">case 형식</div>
+<div class="content">
+<pre>(case expr clause+ default-expr?)
+
+clause := test-constant result-expr |
+          (test-constant1 ... test-constantN)  result-expr</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>case</code> 구문<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup>은 <code>clause</code> 내의 <code>test-constant</code> 부분에 나열된
+값들이 컴파일 타임에 그 값을 알 수 있어야 한다는 제약이 있다. 따라서 문자열이나 키워드
+같은 자기 자신으로 평가되는 값들이 주로 나열된다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">case-demo</span> [value]
+  (<span class="keyword">case</span> value
+    <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>      <span class="integer">0</span>
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">hello</span><span class="delimiter">&quot;</span></span> (<span class="keyword">count</span> value)))
+
+(case-demo <span class="string"><span class="delimiter">&quot;</span><span class="content">hello</span><span class="delimiter">&quot;</span></span>)   <span class="comment">;=&gt; 5</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>condp</code>와 마찬가지로, 일치하는 절(clause)이 없을 경우에 디폴트 처리부인 <code>default-expr</code>
+부분이 없으면 예외가 발생한다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(case-demo <span class="string"><span class="delimiter">&quot;</span><span class="content">hi</span><span class="delimiter">&quot;</span></span>)
+<span class="comment">;&gt;&gt; IllegalArgumentException No matching clause: hi</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>다음은 <code>default-expr</code> 부분을 제공한 예이다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">case-demo2</span> [value]
+  (<span class="keyword">case</span> value
+    <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>      <span class="integer">0</span>
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">hello</span><span class="delimiter">&quot;</span></span> (<span class="keyword">count</span> value)
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">no match</span><span class="delimiter">&quot;</span></span>))   <span class="comment">; </span><i class="conum" data-value="1"></i><b>(1)</b>
+
+(case-demo2 <span class="string"><span class="delimiter">&quot;</span><span class="content">hi</span><span class="delimiter">&quot;</span></span>)   <span class="comment">;=&gt; &quot;no match&quot;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>default-expr 부분은 식이 한 개뿐인 것에 주목하자.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><code>clause</code>의 <code>test-constant</code> 부분에 다음과 같이 심볼이 올 수도 있다. 이 심볼은 런타임에
+평가되지 않고, 컴파일시에 (앞에 인용 기호가 자동으로 붙는) 심볼로 컴파일된다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">def</span> <span class="function">x</span> <span class="integer">10</span>)
+
+(<span class="keyword">let</span> [value 'x]
+  (<span class="keyword">case</span> value
+    x <span class="string"><span class="delimiter">&quot;</span><span class="content">x</span><span class="delimiter">&quot;</span></span>
+    y <span class="string"><span class="delimiter">&quot;</span><span class="content">y</span><span class="delimiter">&quot;</span></span>
+    z <span class="string"><span class="delimiter">&quot;</span><span class="content">z</span><span class="delimiter">&quot;</span></span>
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">no-match</span><span class="delimiter">&quot;</span></span>)
+<span class="comment">;=&gt; &quot;x&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>위의 코드에서 <code>case</code> 내부의 <code>x</code>는 런타임에 <code>10</code>으로 평가되지 않고, 컴파일시에 심볼
+<code>'x</code>로 값이 바뀌에 된다. 따라서 런타임에 심볼 <code>'x</code>와 일치하게 되어, 결과적으로
+<code>"x"</code>라는 문자열을 반환하게 된다.</p>
+</div>
+<div class="paragraph">
+<p>위의 코드는 다음처럼 심볼 <code>x</code>, <code>y</code>, <code>z</code>를 리스트로 묶어 한꺼번에 처리할 수도 있다. 이
+경우에는 <code>value</code>가 심볼 <code>x</code>나 <code>y</code> 또는 <code>z</code>이면 <code>"x, y or z"</code>를 반환하게 된다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">let</span> [value 'x]
+  (<span class="keyword">case</span> value
+    (x y z) <span class="string"><span class="delimiter">&quot;</span><span class="content">x, y or z</span><span class="delimiter">&quot;</span></span>   <span class="comment">; </span><i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">no-match</span><span class="delimiter">&quot;</span></span>)</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>여기서 <code>(x y z)</code>는 <code>x</code>라는 함수를 인수 <code>y</code>와 <code>z</code>에 적용하라는 의미가 아닌 것에
+주의해아 한다. <code>(x y z)</code>는 컴파일시에 <code>'(x y z)</code>의 형태로 리스트 자료형 자체로
+컴파일되기 때문이다.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>몇 가지 예를 더 들어 본다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">let</span> [value ()]
+  (<span class="keyword">case</span> value
+    (())    <span class="string"><span class="delimiter">&quot;</span><span class="content">empty seq</span><span class="delimiter">&quot;</span></span>   <span class="comment">; </span><i class="conum" data-value="1"></i><b>(1)</b>
+    ((<span class="integer">1</span> <span class="integer">2</span>)) <span class="string"><span class="delimiter">&quot;</span><span class="content">my seq</span><span class="delimiter">&quot;</span></span>
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">no match</span><span class="delimiter">&quot;</span></span>))
+<span class="comment">;=&gt; &quot;empty seq&quot;</span>
+
+(<span class="keyword">let</span> [value ()]
+  (<span class="keyword">case</span> value
+    []      <span class="string"><span class="delimiter">&quot;</span><span class="content">empty seq</span><span class="delimiter">&quot;</span></span>   <span class="comment">; </span><i class="conum" data-value="2"></i><b>(2)</b>
+    ((<span class="integer">1</span> <span class="integer">2</span>)) <span class="string"><span class="delimiter">&quot;</span><span class="content">my seq</span><span class="delimiter">&quot;</span></span>
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">no match</span><span class="delimiter">&quot;</span></span>))
+<span class="comment">;=&gt; &quot;empty seq&quot;</span>
+
+(<span class="keyword">let</span> [value [<span class="integer">1</span> <span class="integer">2</span>]]
+  (<span class="keyword">case</span> value
+    []          <span class="string"><span class="delimiter">&quot;</span><span class="content">empty vec</span><span class="delimiter">&quot;</span></span>
+    (<span class="keyword">vec</span> (<span class="integer">1</span> <span class="integer">2</span>)) <span class="string"><span class="delimiter">&quot;</span><span class="content">my vec</span><span class="delimiter">&quot;</span></span>      <span class="comment">; </span><i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">no match</span><span class="delimiter">&quot;</span></span>))
+<span class="comment">;;=&gt; &quot;my vec&quot;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>(())</code>에서 바깥의 괄호는 test-expr의 시작과 끝을 알리는 기호로 쓰이므로, 빈 리스트를
+나열하고자 할 때는 그 안에 다시 나열해 주어야 한다.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>그래서 빈 리스트를 검사하고자 할 때는, <code>(())</code>처럼 해 주기 보다는 <code>[]</code>로 해 주는 것이
+낫다. 왜냐하면 <code>(= () [])</code>의 평가 결과는 <code>true</code>이기 때문이다.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><code>(= [1 2] '(1 2))</code>의 결과는 <code>true</code>이므로, <code>"my vec"</code>이 반환되었다.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. <code>condp</code> 구문은 내부적으로 <code>cond</code> 구문으로 확장된다.
+</div>
+<div class="footnote" id="_footnotedef_2">
+<a href="#_footnoteref_2">2</a>. <code>case</code> 구문은 내부적으로 <code>condp</code> 구문으로 확장된다. 더 정확히는, <code>(condp = &#8230;&#8203;.)</code>의 형태로 확장된다. 즉 <code>=</code> 함수가 <code>pred</code> 함수로 사용된다. 이것을 이해해야 <code>case</code>의 동작이 제대로 이해된다.
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2023-12-14 02:45:19 UTC
+</div>
+</div>
+</body>
+</html>
