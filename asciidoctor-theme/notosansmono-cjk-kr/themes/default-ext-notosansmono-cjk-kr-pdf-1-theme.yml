@@ -1,0 +1,14 @@
+# FOR Asciidoctor-PDF 1.x
+extends: default-with-fallback-font
+font:
+  catalog:
+    merge: true
+    Noto Sans Mono CJK KR:
+      normal: notosansmono-cjk-kr-normal.ttf
+      bold: notosansmono-cjk-kr-bold.ttf
+      italic: notosansmono-cjk-kr-italic.ttf
+      bold_italic: notosansmono-cjk-kr-bold_italic.ttf
+  fallbacks: [M+ 1p Fallback, Noto Emoji, Noto Sans Mono CJK KR]      
+base_font_family: Noto Sans Mono CJK KR
+base_align: left
+
